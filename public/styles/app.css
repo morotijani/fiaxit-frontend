@@ -1,0 +1,62 @@
+:root {
+    --danger-color: #922322;
+    --theme-xdark: #272828;
+    --theme-dark: #505368;
+    --theme-medium: #7D6891;
+    --theme-light: #985FCE;
+    --theme-accent: #347FC4;
+    --gray-dark: #333;
+    --gray-medium: #888;
+    --gray-light: #BBB;
+    --gray-xlight: #DDD;
+    --white: #FFF;
+    --black: #000;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box
+}
+
+body {
+    font-family: Georgia, Melvetica, sans-serif
+}
+
+h1, h2, h3, h4, h5 {
+    margin-bottom: 1em;
+    color: var(--theme-accent);
+}
+
+:is(a:hover, a:active) {
+    color: var(--theme-medium)
+}
+
+.app {
+    position: relative
+}
+
+/* NAV */
+nav .main-nav {
+    position: fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 55px;
+    display: flex;
+    align-items: center;
+    background-color: var(--theme-xdark);
+    padding: 0px 25px;
+    gap: 18px
+}
+
+nav h2 {
+    margin-bottom: 2px;
+}
+
+nav .main-nav .left {
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
