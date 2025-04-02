@@ -1,10 +1,11 @@
 import React from 'react'
+import MainNav from './components/MainNav'
 
 function AppIndex() {
     return(
-        <div>
-            App Index
-        </div>
+        <main>
+            <MainNav />
+        </main>
     )
 }
 
