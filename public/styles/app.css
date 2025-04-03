@@ -37,7 +37,7 @@ h1, h2, h3, h4, h5 {
 }
 
 /* NAV */
-nav .main-nav {
+nav.main-nav {
     position: fixed;
     top: 0px;
     left: 0px;
@@ -54,9 +54,40 @@ nav h2 {
     margin-bottom: 2px;
 }
 
-nav .main-nav .left {
+nav.main-nav .left {
     flex-grow: 1;
     display: flex;
     align-items: center;
     gap: 18px;
+}
+
+nav.main-nav .right {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+}
+
+nav.main-nav .brand {
+    color: var(--theme-light);
+    margin-right: 20px; 
+}
+
+nav.main-nav :is(a, button) {
+    color: var(--gray-light);
+    background: transparent;
+    border: none;
+    display: inline-block
+}
+
+nav.main-nav :is(a, button):hover {
+    cursor: pointer;
+    color: var(--white);
+}
+
+nav.main-nav, a:hover, nav.main-nav a:active {
+    color: var(--white)
+}
+
+nav.main-nav .greeting {
+    color: var(--theme-light);
 }
