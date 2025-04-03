@@ -1,6 +1,6 @@
 :root {
-    --danger-color: #922322;
-    --theme-xdark: #272828;
+    --danger-color: #022323;
+    --theme-xdark: #272838;
     --theme-dark: #505368;
     --theme-medium: #7D6891;
     --theme-light: #985FCE;
@@ -84,7 +84,7 @@ nav.main-nav :is(a, button):hover {
     color: var(--white);
 }
 
-nav.main-nav, a:hover, nav.main-nav a:active {
+nav.main-nav a:hover, nav.main-nav a:active {
     color: var(--white)
 }
 
