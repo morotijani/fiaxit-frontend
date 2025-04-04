@@ -7,7 +7,7 @@ function AppIndex() {
         <main>
             <MainNav />
             <div className="main-content">
-                <Button variant="primary">
+                <Button variant="primary" onClick={() => window.alert("Button clicked")}>
                     Button One <span>%</span>
                 </Button>
                 <Button variant="secondary">

@@ -16,7 +16,7 @@ function MainNav(props) {
                 <div className="greeting">
                     Hi Alhaji
                 </div>
-                <button className="right" onclick={() => window.alert("log out")}>Logout</button>
+                <button className="right" onClick={() => window.alert("log out")}>Logout</button>
             </section>
         </nav>
     )

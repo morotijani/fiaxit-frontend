@@ -1,4 +1,5 @@
-import React from 'react'
+import React, {Component} from 'react'
+import {PropTypes} from 'prop-types'
 
 // function base component
 const Button = (props) => {
@@ -14,12 +15,23 @@ const Button = (props) => {
     }
 
     return (
-        <button className={klass} > {props.children}</button>
+        <button className={klass} onClick={props.onClick}>{props.children}</button>
     )
 }
 
+// Define default values
+Button.defaultProps = {
+    variant: "primary",
+    onClick: () => {}
+};
+
+Button.propTypes = {
+    onClick: PropTypes.func.isRequired, 
+    variant: PropTypes.string.isRequired
+};
+
 // creating it as a class component
-export class Btn extends React.Component {
+export class Btn extends Component {
     render () { // render method
         return (
             <button>{this.props.children}</button>
