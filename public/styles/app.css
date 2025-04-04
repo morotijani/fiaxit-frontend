@@ -1,5 +1,5 @@
 :root {
-    --danger-color: #022323;
+    --danger-color: #B22323;
     --theme-xdark: #272838;
     --theme-dark: #505368;
     --theme-medium: #7D6891;
@@ -20,13 +20,17 @@
 }
 
 body {
-    font-family: Georgia, Melvetica, sans-serif
+    font-family: Georgia, Helvetica, sans-serif
 }
 
 h1, h2, h3, h4, h5 {
     margin-bottom: 1em;
-    color: var(--theme-accent);
+    color: var(--theme-xdark);
 }
+
+a, a:visited {
+    color: var(--theme-accent)
+} 
 
 :is(a:hover, a:active) {
     color: var(--theme-medium)
@@ -34,6 +38,11 @@ h1, h2, h3, h4, h5 {
 
 .app {
     position: relative
+}
+
+.main-content {
+    margin-top: 55px;
+    padding: 28px;
 }
 
 /* NAV */
