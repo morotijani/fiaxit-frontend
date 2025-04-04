@@ -1,6 +1,6 @@
 import React from 'react'
 import MainNav from './components/MainNav'
-import Button, {Btn} from './components/elements/Button'
+import Button from './components/elements/Button'
 
 function AppIndex() {
     return(
