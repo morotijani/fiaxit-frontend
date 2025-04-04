@@ -83,6 +83,7 @@ nav.main-nav .brand {
 
 nav.main-nav :is(a, button) {
     color: var(--gray-light);
+    text-decoration: none;
     background: transparent;
     border: none;
     display: inline-block
@@ -99,4 +100,36 @@ nav.main-nav a:hover, nav.main-nav a:active {
 
 nav.main-nav .greeting {
     color: var(--theme-light);
+}
+
+/* Buttons */
+:is(a, button).btn {
+    background-color: var(--gray-medium);
+    border: 1px solid #555;
+    font-size: 16px;
+    pading: 8px 16px;
+    border-radius: 2px;
+    color: var(--black);
+    text-decoration: none;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+:is(a, button):hover {
+    cursor: pointer;
+}
+
+:is(a, button).btn--xs {
+    padding: 2px 4px;
+    font-size: 12px;
+}
+
+:is(a, button).btn--primary {
+    background-color: var(--theme-dark);
+    color: var(--white);
+    border-color: var(--theme-medium)
+}
+
+:is(a, button).btn--primary:hover {
+    background-color: var(--theme-medium)
 }

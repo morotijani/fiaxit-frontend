@@ -1,9 +1,10 @@
 import React from 'react'
 
 // function base component
-const Button = () => {
+const Button = (props) => {
+    console.log(props)
     return (
-        <button>Text</button>
+        <button>{props.children}</button>
     )
 }
 
@@ -11,7 +12,7 @@ const Button = () => {
 export class Btn extends React.Component {
     render () { // render method
         return (
-            <button>Text</button>
+            <button>{this.props.children}</button>
         )
     }
 }
