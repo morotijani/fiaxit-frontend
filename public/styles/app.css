@@ -107,7 +107,7 @@ nav.main-nav .greeting {
     background-color: var(--gray-medium);
     border: 1px solid #555;
     font-size: 16px;
-    pading: 8px 16px;
+    padding: 8px 16px;
     border-radius: 2px;
     color: var(--black);
     text-decoration: none;
@@ -132,4 +132,28 @@ nav.main-nav .greeting {
 
 :is(a, button).btn--primary:hover {
     background-color: var(--theme-medium)
+}
+
+:is(a, button).btn--primary-alt {
+    color: var(--white);
+    background-color: var(--theme-accent);
+    border-color: var(--theme-accent);
+}
+
+:is(a, button).btn--primary-alt:hover {
+    color: var(--white);
+    background-color: #1F4C75;
+    border-color: #1F4C75;
+}
+
+:is(a, button).btn--danger {
+    color: var(--white);
+    background-color: var(--danger-color);
+    border-color: var(--danger-color);
+}
+
+:is(a, button).btn--danger:hover {
+    color: var(--white);
+    background-color: #711616;
+    border-color: #711616;
 }

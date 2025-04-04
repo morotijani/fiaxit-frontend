@@ -4,7 +4,7 @@ import React from 'react'
 const Button = (props) => {
     console.log(props)
     return (
-        <button>{props.children}</button>
+        <button class="btn btn--primary-alt btn--xs">{props.children}</button>
     )
 }
 
