@@ -2,10 +2,14 @@ import React, {useState} from 'react'
 import MainNav from './components/MainNav'
 import Button from './components/elements/Button'
 import FieldBlock from './components/FieldBlock'
+import {jsonPost} from './helpers/Ajax'
 
 function AppIndex() {
     const [username, setUsername] = useState();
     const [password, setPassword] = useState();
+    
+    jsonPost('auth/login', {email: "email@email.com", password: "password"}, (resp) => (console.log(resp)));
+
     return(
         <main>
             <MainNav />

@@ -56,5 +56,5 @@ export function jsonPatch(url, data, callback) {
 
 // delete
 export function jsonDelete(url, callback) {
-    return runFetch(url, 'DELETE', {}, )
+    return runFetch(url, 'DELETE', {}, callback)
 }
