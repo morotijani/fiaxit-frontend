@@ -18,9 +18,10 @@ function AppIndex() {
                     Button One <span>%</span>
                 </Button>
 
-                <Button variant="danger">
+                <Button variant="danger" size="xs">
                     Button One <span>%</span>
                 </Button>
+                <Button>No prop</Button>
                 {/* <Button>Button Two</Button>
                 <Btn>Class base component</Btn> */}
             </div>
