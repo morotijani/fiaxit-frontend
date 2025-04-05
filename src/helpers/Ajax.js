@@ -4,7 +4,7 @@ export function runFetch(url, method, data, callback) {
         method: method, 
         headers: {
             'Accept': 'application/json', 
-            'Content-type': 'application/json'
+            'Content-Type': 'application/json'
         }
     }
 

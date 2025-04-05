@@ -8,7 +8,7 @@ function AppIndex() {
     const [username, setUsername] = useState();
     const [password, setPassword] = useState();
     
-    jsonPost('auth/login', {email: "email@email.com", password: "password"}, (resp) => (console.log(resp)));
+    jsonPost('users/login', {email: "email@email.com", password: "password"}, (resp) => (console.log(resp)));
 
     return(
         <main>
