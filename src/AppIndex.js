@@ -10,7 +10,7 @@ function AppIndex() {
         <main>
             <MainNav />
             <div className="main-content">
-                <h2>Your username will be: {username}</h2>
+                <h2>Your username will be: {process.env.REACT_APP_API}</h2>
                 <FieldBlock 
                     id="username" value={username} onChange={(evt) => {setUsername(evt.target.value)}}
                     label="Username:"
