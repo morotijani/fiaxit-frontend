@@ -3,8 +3,9 @@ import React from 'react'
 // function base component
 const Button = (props) => {
     console.log(props)
+    const Klass = `btn btn--${props.variant} ${props.hasOwnProperty('className')? props.className : ""}`;
     return (
-        <button class="btn btn--primary-alt btn--xs">{props.children}</button>
+        <button className={Klass} > {props.children}</button>
     )
 }
 

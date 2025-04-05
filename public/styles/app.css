@@ -157,3 +157,14 @@ nav.main-nav .greeting {
     background-color: #711616;
     border-color: #711616;
 }
+
+:is(a, button).btn--secondary {
+    color: var(--black);
+    background-color: var(--gray-medium);
+    border-color: var(--gray-medium);
+}
+
+:is(a, button).btn--secondary:hover {
+    color: var(--white);
+    background-color: var(--gray-dark);
+}
