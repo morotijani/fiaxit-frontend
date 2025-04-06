@@ -1,51 +1,32 @@
-import React, {useState} from 'react'
-import MainNav from './components/MainNav'
-import Button from './components/elements/Button'
-import FieldBlock from './components/FieldBlock'
-import {jsonPost} from './helpers/Ajax'
+import React, {useState, useEffect} from 'react';
+import MainNav from './components/MainNav';
+import FieldBlock from './components/elements/FieldBlock';
+import {jsonPost} from './helpers/Ajax';
 
-function AppIndex() {
+function AppIndex(){
     const [username, setUsername] = useState();
     const [password, setPassword] = useState();
-    
-    jsonPost('users/login', {email: "email@email.com", password: "password"}, (resp) => (console.log(resp)));
 
+    jsonPost('auth/login', {email:'curtis@freeskills.com', password: 'password'}, (resp) => {console.log(resp)});
+  
     return(
-        <main>
+        <main className="app">
             <MainNav />
             <div className="main-content">
-                <h2>Your username will be: {process.env.REACT_APP_API}</h2>
-                <FieldBlock 
-                    id="username" value={username} onChange={(evt) => {setUsername(evt.target.value)}}
+                <h2>Your api domain is: {process.env.REACT_APP_API}</h2>
+               <FieldBlock
+                    id="username" value={username} onChange={(evt) => {setUsername(evt.target.value)}} 
                     label="Username:"
-                />
-                <FieldBlock
-                    id="password" value={password} onChange={(evt) => setPassword(evt.target.value)} 
-                    label="Password:" type="password" feedback="must be 8 characters !" isInvalid={true}
-                />
-
-
-
-                <Button variant="primary" onClick={() => window.alert("Button clicked")}>
-                    Button One <span>%</span>
-                </Button>
-                <Button variant="secondary">
-                    Button One <span>%</span>
-                </Button>
-
-                <Button variant="primary-alt">
-                    Button One <span>%</span>
-                </Button>
-
-                <Button variant="danger" size="xs">
-                    Button One <span>%</span>
-                </Button>
-                <Button>No prop</Button>
-                {/* <Button>Button Two</Button>
-                <Btn>Class base component</Btn> */}
+               />
+               <FieldBlock
+                    id="password" value={password} onChange={(evt) => setPassword(evt.target.value)}
+                    label="Password:" type="password" feedback="must be 8 characters" isInvalid={true}
+               />
+               
             </div>
+            
         </main>
-    )
+    );
 }
 
-export default AppIndex
+export default AppIndex;
