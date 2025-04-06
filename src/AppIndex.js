@@ -6,8 +6,6 @@ import {jsonPost} from './helpers/Ajax';
 function AppIndex(){
     const [username, setUsername] = useState();
     const [password, setPassword] = useState();
-
-    jsonPost('auth/login', {email:'curtis@freeskills.com', password: 'password'}, (resp) => {console.log(resp)});
   
     return(
         <main className="app">
