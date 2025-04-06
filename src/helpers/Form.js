@@ -1,4 +1,4 @@
-import {jspnPost, jsonGet, jsonPatch, jsonDelete} from './Ajax'
+import {jspnPost, jsonGet, jsonPatch, jsonDelete, jsonPost} from './Ajax'
 
 export class Form {
     url;
@@ -15,5 +15,20 @@ export class Form {
         this.method = method;
     }
 
-    methodMap = {POST}
+    // 
+    methodMap = {
+        POST: jsonPost, 
+        GET: jsonGet, 
+        PATCH: jsonPatch, 
+        DELETE: jsonDelete
+    };
+
+    // setters
+    setUrl = (url) => {
+        this.url = url;
+    }
+
+    setMethod = (method) => {
+        this.method = method;
+    }
 }
