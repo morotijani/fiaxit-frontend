@@ -22,12 +22,12 @@ function AppIndex() {
             <div className="main-content">
                 <h2>Your api domain is: {process.env.REACT_APP_API}</h2>
                <FieldBlock
-                    id="username" value={username} onChange={(evt) => {setUsername(evt.target.value)}} 
-                    label="Username:"
+                    id="email" value={fields.email.value} onChange={form.handleInputChanges} 
+                    label="Username:" isInvalid={fields.email.isInvalid} feedback={fields.email.msg}
                />
                <FieldBlock
-                    id="password" value={password} onChange={(evt) => setPassword(evt.target.value)}
-                    label="Password:" type="password" feedback="must be 8 characters" isInvalid={true}
+                    id="password" value={fields.password.value} onChange={form.handleInputChanges}
+                    label="Password:" type="password" isInvalid={fields.password.isInvalid} feedback={fields.password.msg}
                />
                
             </div>
