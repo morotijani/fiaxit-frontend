@@ -3,10 +3,8 @@ import MainNav from './components/MainNav';
 import FieldBlock from './components/elements/FieldBlock';
 import {Form} from './helpers/Form';
 
-function AppIndex(){
-    const [username, setUsername] = useState();
-    const [password, setPassword] = useState();
-
+function AppIndex() {
+    
     const [fields, setFields] = useState({
         emil: {value: "", isInvalid: false, msg: ""}, 
         password: {value: "", isInvalid: false, msg: ""}
