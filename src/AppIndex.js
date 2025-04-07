@@ -6,7 +6,7 @@ import {Form} from './helpers/Form';
 function AppIndex() {
     
     const [fields, setFields] = useState({
-        emil: {value: "", isInvalid: false, msg: ""}, 
+        email: {value: "", isInvalid: false, msg: ""}, 
         password: {value: "", isInvalid: false, msg: ""}
     });
 
