@@ -31,4 +31,11 @@ export class Form {
     setMethod = (method) => {
         this.method = method;
     }
+
+    handleInputChanges = (evt) => {
+        const key = evt.target.name;
+        const value = evt.target.value;
+
+        
+    }
 }
