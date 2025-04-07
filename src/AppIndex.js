@@ -1,11 +1,22 @@
 import React, {useState, useEffect} from 'react';
 import MainNav from './components/MainNav';
 import FieldBlock from './components/elements/FieldBlock';
-import {jsonPost} from './helpers/Ajax';
+import {Form} from './helpers/Form';
 
 function AppIndex(){
     const [username, setUsername] = useState();
     const [password, setPassword] = useState();
+
+    const [fields, setFields] = useState({
+        emil: {value: "", isInvalid: false, msg: ""}, 
+        password: {value: "", isInvalid: false, msg: ""}
+    });
+
+    async function success(resp) {
+        console.log(resp);
+    }
+
+    const form = new Form('auth/login', fields, setFields, success)
   
     return(
         <main className="app">
