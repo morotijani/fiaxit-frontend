@@ -2,6 +2,7 @@ import React, {useState, useEffect} from 'react';
 import MainNav from './components/MainNav';
 import FieldBlock from './components/elements/FieldBlock';
 import {Form} from './helpers/Form';
+import Button from './components/elements/Button'
 
 function AppIndex() {
     
@@ -29,7 +30,7 @@ function AppIndex() {
                     id="password" value={fields.password.value} onChange={form.handleInputChanges}
                     label="Password:" type="password" isInvalid={fields.password.isInvalid} feedback={fields.password.msg}
                />
-               
+               <Button variant="primary" onClick={form.submitForm}>Login</Button>
             </div>
             
         </main>

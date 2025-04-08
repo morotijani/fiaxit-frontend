@@ -41,4 +41,22 @@ export class Form {
         
         this.setFields({...newFields}); // take newFields, and for every key in there set that up here
     }
+
+    // submit form
+    submitForm = async(evt) => {
+        evt.preventDefault()
+        const disabled = evt.target.getAttribute('disabled');
+        if (disabled && (disabled === true || disabled === 'true')) return; // prevent from clicking the submit button over and over and fire off the submit each time
+        evt.target.setAttribute('disabled', true);
+
+        const data = {};
+        const resp = await this.methodMap[this.method](this.url, data); // run jsonPost and pass url and data
+        
+        if (resp.success) {
+            this.success(resp)
+        } else {
+            this.processFormErrors(resp);
+        }
+        evt.target.removeAtrribute('disabled');
+    }
 }
