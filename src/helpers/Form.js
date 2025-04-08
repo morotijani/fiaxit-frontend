@@ -48,6 +48,7 @@ export class Form {
         const disabled = evt.target.getAttribute('disabled');
         if (disabled && (disabled === true || disabled === 'true')) return; // prevent from clicking the submit button over and over and fire off the submit each time
         evt.target.setAttribute('disabled', true);
+        this.clearFormErrors()
 
         const data = this.prepareForPost()
         const resp = await this.methodMap[this.method](this.url, data); // run jsonPost and pass url and data
@@ -57,7 +58,7 @@ export class Form {
         } else {
             this.processFormErrors(resp);
         }
-        evt.target.removeAtrribute('disabled');
+        evt.target.removeAttribute('disabled');
     }
 
     prepareForPost = () => {
@@ -80,5 +81,13 @@ export class Form {
             }
         })
         this.setFields({...newState});
+    }
+
+    clearFormErrors = () => {
+        const newState = this.fields;
+        for (const[key] of Object.entries(this.fields)) {
+            newState[key].isInvalid = false;
+            newState[key].msg = "";
+        }
     }
 }
