@@ -36,6 +36,9 @@ export class Form {
         const key = evt.target.name;
         const value = evt.target.value;
 
+        const newFields = this.fields;
+        newFields[key].value = value;
         
+        this.setFields({...newFields}); // take newFields, and for every key in there set that up here
     }
 }
