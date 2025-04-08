@@ -49,7 +49,7 @@ export class Form {
         if (disabled && (disabled === true || disabled === 'true')) return; // prevent from clicking the submit button over and over and fire off the submit each time
         evt.target.setAttribute('disabled', true);
 
-        const data = {};
+        const data = {test: "test"};
         const resp = await this.methodMap[this.method](this.url, data); // run jsonPost and pass url and data
         
         if (resp.success) {
