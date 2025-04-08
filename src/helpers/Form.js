@@ -112,4 +112,4 @@ export class Form {
         // update state by setting state into new object manipulated
         this.setFields({...newState});
     }
-} //set to 9 april
+}
