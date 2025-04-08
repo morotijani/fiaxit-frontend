@@ -109,5 +109,9 @@ export class Form {
                 newState[key].value = vals[key];
             }
         }
+        // update state by setting state into new object manipulated
+        this.setFields({...newState});
     }
+
+
 }
