@@ -54,6 +54,8 @@ export class Form {
         const resp = await this.methodMap[this.method](this.url, data); // run jsonPost and pass url and data
         
         if (resp.success) {
+            this.clearFormErrors();
+            this.clearFormValues();
             this.success(resp)
         } else {
             this.processFormErrors(resp);
@@ -88,6 +90,24 @@ export class Form {
         for (const[key] of Object.entries(this.fields)) {
             newState[key].isInvalid = false;
             newState[key].msg = "";
+        }
+        this.setFields({...newState});
+    }
+
+    clearFormValues = () => {
+        const newState = this.fields;
+        for (const[key] of Object.entries(this.fields)) {
+            newState[key].value = "";
+        }
+        this.setFields({...newState});
+    }
+
+    populateFormValues = (vals) => {
+        const newState = this.fields;
+        for (const[key] of Object.entries(this.fields)) {
+            if (vals.hasOwnProperty(key)) {
+                newState[key].value = vals[key];
+            }
         }
     }
 }
