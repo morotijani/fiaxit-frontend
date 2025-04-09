@@ -12,7 +12,6 @@ function AppIndex() {
         password: {value: "", isInvalid: false, msg: ""}
     });
     const data = useContext(AuthContext);
-    console.log(data);
 
     async function success(resp) {
         console.log(resp);
