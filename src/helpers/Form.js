@@ -49,7 +49,7 @@ export class Form {
         if (disabled && (disabled === true || disabled === 'true')) return; // prevent from clicking the submit button over and over and fire off the submit each time
         evt.target.setAttribute('disabled', true);
 
-        const data = {email: "test", password: 'password'};
+        const data = this.prepareForPost()
         const resp = await this.methodMap[this.method](this.url, data); // run jsonPost and pass url and data
         
         if (resp.success) {
@@ -58,5 +58,14 @@ export class Form {
             this.processFormErrors(resp);
         }
         evt.target.removeAtrribute('disabled');
+    }
+
+    prepareForPost = () => {
+        const data = {};
+        // loop through each one of our fields 
+        for (const[key, value] of Object.entries(this.fields)) {
+            data[key] = value.value;
+        }
+        return data;
     }
 }
