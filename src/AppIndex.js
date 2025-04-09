@@ -3,7 +3,7 @@ import MainNav from './components/MainNav';
 import FieldBlock from './components/elements/FieldBlock';
 import {Form} from './helpers/Form';
 import Button from './components/elements/Button'
-import {AuthContext} from './context/AuthContext'
+import {AuthContext} from './contexts/AuthContext'
 
 function AppIndex() {
     
