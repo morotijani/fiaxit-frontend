@@ -68,4 +68,17 @@ export class Form {
         }
         return data;
     }
+
+    processFormErrors = (resp) => {
+        const newState = this.fields
+        resp.errors.forEach(error => {
+            const key = error.path;
+            const msg = error.message;
+            if (newState.hasOwnProperty(key)) {
+                newState[key].isInvalid = true;
+                newState[key].msg = msg;
+            }
+        })
+        this.setFields({...newState});
+    }
 }
