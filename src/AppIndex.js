@@ -1,8 +1,9 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useContext, useEffect} from 'react';
 import MainNav from './components/MainNav';
 import FieldBlock from './components/elements/FieldBlock';
 import {Form} from './helpers/Form';
 import Button from './components/elements/Button'
+import {AuthContext} from './context/AuthContext'
 
 function AppIndex() {
     
@@ -10,6 +11,8 @@ function AppIndex() {
         email: {value: "", isInvalid: false, msg: ""}, 
         password: {value: "", isInvalid: false, msg: ""}
     });
+    const data = useContext(AuthContext);
+    console.log(data);
 
     async function success(resp) {
         console.log(resp);
