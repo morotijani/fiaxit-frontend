@@ -1,10 +1,16 @@
 import React from 'react'
+import {Switch, Route} from 'react-router-dom'
+import Login from './Login'
 
 function AuthIndex() {
     return (
-        <div>
-            Auth Index
-        </div>
+        <main className="auth-layout">
+            <div className="poster">
+                <Switch>
+                    <Route exact path="/auth/login" component={Login} />
+                </Switch>
+            </div>
+        </main>
     )
 }
 
