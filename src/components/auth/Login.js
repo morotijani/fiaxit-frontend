@@ -1,12 +1,12 @@
 import {useState, useContext} from 'react';
-import {Link, useHistory} from 'react-router-dom';
+import {Link, useNavigate} from 'react-router-dom';
 import FieldBlock from '../elements/FieldBlock'
 import {Form} from '../../helpers/Form'
 import Button from '../elements/Button'
 import {AuthContext} from "../../contexts/AuthContext"
 
 function Login() {
-    const history = useHistory();
+    const history = useNavigate();
     const [fields, setFields] = useState({
         email: {value: "", isInvalid: false, msg: ""},
         password: {value: "", isInvalid: false, msg: ""}

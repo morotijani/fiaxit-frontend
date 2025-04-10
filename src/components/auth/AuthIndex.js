@@ -1,17 +1,17 @@
 import React from 'react'
-import {Switch, Route} from 'react-router-dom'
-import Login from './Login'
+import { Routes, Route } from 'react-router-dom';
+import Login from './Login';
 
 function AuthIndex() {
     return (
         <main className="auth-layout">
             <div className="poster">
-                <Switch>
-                    <Route exact path="/auth/login" component={Login} />
-                </Switch>
+                <Routes>
+                    <Route exact path="login" element={<Login />} />
+                </Routes>
             </div>
         </main>
     )
 }
 
-export default AuthIndex
+export default AuthIndex;

@@ -9,7 +9,7 @@ function App() {
 		<ContextProvider>
 			<Router>
 				<Switch>
-					<Route path="/auth" element={<AuthIndex />} />
+					<Route path="/auth/*" element={<AuthIndex />} />
 					<Route path="/" element={<AppIndex />} />
 				</Switch>
 			</Router>
