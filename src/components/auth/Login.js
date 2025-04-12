@@ -12,10 +12,11 @@ function Login() {
         password: {value: "", isInvalid: false, msg: ""}
     });
 
-    const [authStore, authDispatch] = useContext(AuthContext)
+    const [authStore, authDispatch, getUser] = useContext(AuthContext)
 
     async function success(resp) {
         authDispatch({type: 'login', payload: resp.token});
+        await getUser()
         console.log(authStore);
     }
 

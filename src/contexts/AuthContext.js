@@ -8,6 +8,8 @@ function reducer(store, action) {
         case 'login': 
             localStorage.setItem(store.tokenName, action.payload);
             return {...store, loggedIn: true}
+        case 'setUser': 
+            return {...store, user: action.payload}
         default: return store;
     }
 }
@@ -23,13 +25,16 @@ export function AuthStore(props) {
     async function getUser() {
         // check if isloggedin and make sure we don't already have it to save some api calls
         if (store.loggedIn && !store.user.hasOwnProperty('id')) {
-            const resp = await jsonGet('auth/loggedInUser')
+            const resp = await jsonGet('auth/loggedInUser');
+            if (resp.success) {
+                dispatch({type: "setUser", payload: resp.user})
+            }
         }
     }
 
     return (
         // provide information down to our children
-        <AuthContext.Provider  value={[store, dispatch]}>
+        <AuthContext.Provider  value={[store, dispatch, getUser]}>
             {props.children}
         </AuthContext.Provider>
     )
