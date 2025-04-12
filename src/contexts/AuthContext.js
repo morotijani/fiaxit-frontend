@@ -12,10 +12,14 @@ function reducer(store, action) {
 }
 
 export function AuthStore(props) {
-    const [store, dispatch] = useReducer();
-    return(
+    const [store, dispatch] = useReducer(reducer, {
+        tokenName: "userJWTToken", 
+        loggedIn: (localStorage.getItem('userJWTToken') !== null), 
+        user: {}
+    });
+    return (
         // provide information down to our children
-        <AuthContext.Provider  value={{userId: 123}}>
+        <AuthContext.Provider  value={[store, dispatch]}>
             {props.children}
         </AuthContext.Provider>
     )
