@@ -12,8 +12,11 @@ function Login() {
         password: {value: "", isInvalid: false, msg: ""}
     });
 
+    const [authStore, authDispatch] = useContext(AuthContext)
+
     async function success(resp) {
-        console.log(resp)
+        authDispatch({type: 'login', payload: resp.token});
+        console.log(authStore);
     }
 
     const form = new Form('auth/login', fields, setFields, success);

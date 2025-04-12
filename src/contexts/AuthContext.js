@@ -1,4 +1,5 @@
 import React, {createContext, useReducer} from 'react';
+import {jsonGet} from '../helpers/Ajax'
 
 export const AuthContext = createContext();
 
@@ -17,6 +18,15 @@ export function AuthStore(props) {
         loggedIn: (localStorage.getItem('userJWTToken') !== null), 
         user: {}
     });
+
+    //
+    async function getUser() {
+        // check if isloggedin and make sure we don't already have it to save some api calls
+        if (store.loggedIn && !store.user.hasOwnProperty('id')) {
+            const resp = await jsonGet('auth/loggedInUser')
+        }
+    }
+
     return (
         // provide information down to our children
         <AuthContext.Provider  value={[store, dispatch]}>
