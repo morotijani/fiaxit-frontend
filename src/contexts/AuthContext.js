@@ -10,6 +10,9 @@ function reducer(store, action) {
             return {...store, loggedIn: true}
         case 'setUser': 
             return {...store, user: action.payload}
+        case 'isLoggedIn': 
+            const loggedIn = localStorage.getItem(store.tokenName) !== null
+            return {...store, loggedIn: loggedIn} // return store and update loggedIn
         default: return store;
     }
 }

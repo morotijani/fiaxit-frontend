@@ -12,12 +12,12 @@ function Login() {
         password: {value: "", isInvalid: false, msg: ""}
     });
 
-    const [authStore, authDispatch, getUser] = useContext(AuthContext)
+    const [, authDispatch, getUser] = useContext(AuthContext)
 
     async function success(resp) {
         authDispatch({type: 'login', payload: resp.token});
         await getUser()
-        console.log(authStore);
+        history.push('/'); // redirect to main page or root directory after loggedin
     }
 
     const form = new Form('auth/login', fields, setFields, success);
