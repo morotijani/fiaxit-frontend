@@ -1,4 +1,4 @@
-import React, {createContext, useReducer} from 'react';
+import React, {createContext, useReducer, useEffect} from 'react';
 import {jsonGet} from '../helpers/Ajax'
 
 export const AuthContext = createContext();
@@ -21,15 +21,22 @@ export function AuthStore(props) {
         user: {}
     });
 
+    useEffect(() => {
+        if (store.loggedIn && !store.user.hasOwnProperty('id')) {
+            getUser();
+        }
+    }, [store.loggedIn]) // anytime store.loggedIn is changed then we want to call getUser()
+
     //
     async function getUser() {
         // check if isloggedin and make sure we don't already have it to save some api calls
         if (store.loggedIn && !store.user.hasOwnProperty('id')) {
             const resp = await jsonGet('auth/loggedInUser');
             if (resp.success) {
-                dispatch({type: "setUser", payload: resp.user})
+                dispatch({type: "setUser", payload: resp.data})
             }
         }
+        return store.user;
     }
 
     return (
