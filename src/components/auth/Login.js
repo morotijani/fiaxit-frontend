@@ -6,7 +6,7 @@ import Button from '../elements/Button'
 import {AuthContext} from "../../contexts/AuthContext"
 
 function Login() {
-    const history = useNavigate();
+    const navigate = useNavigate();
     const [fields, setFields] = useState({
         email: {value: "", isInvalid: false, msg: ""},
         password: {value: "", isInvalid: false, msg: ""}
@@ -17,7 +17,7 @@ function Login() {
     async function success(resp) {
         authDispatch({type: 'login', payload: resp.token});
         await getUser()
-        history.push('/'); // redirect to main page or root directory after loggedin
+        navigate('/'); // redirect to main page or root directory after loggedin
     }
 
     const form = new Form('auth/login', fields, setFields, success);
