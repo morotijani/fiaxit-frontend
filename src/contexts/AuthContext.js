@@ -13,6 +13,9 @@ function reducer(store, action) {
         case 'isLoggedIn': 
             const loggedIn = localStorage.getItem(store.tokenName) !== null
             return {...store, loggedIn: loggedIn} // return store and update loggedIn
+        case 'logout': 
+            localStorage.removeItem(store.tokenName);
+            return {...store, loggedIn: false, user: {}}
         default: return store;
     }
 }
