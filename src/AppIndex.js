@@ -1,38 +1,32 @@
-import React, {useState, useContext, useEffect} from 'react';
+import React, { useContext, useEffect } from 'react';
+import { Routes, Route, useNavigate } from 'react-router-dom';
 import MainNav from './components/MainNav';
-import FieldBlock from './components/elements/FieldBlock';
-import {Form} from './helpers/Form';
-import Button from './components/elements/Button'
-import {AuthContext} from './contexts/AuthContext'
+import { AuthContext } from './contexts/AuthContext'
 
 function AppIndex() {
-    
-    const [fields, setFields] = useState({
-        email: {value: "", isInvalid: false, msg: ""}, 
-        password: {value: "", isInvalid: false, msg: ""}
-    });
-    const data = useContext(AuthContext);
 
-    async function success(resp) {
-        console.log(resp);
+    const navigate = useNavigate();
+    const  [authStore, authDispatch] = useContext(AuthContext);
+
+    useEffect(() => {
+        authCheck();
+        // eslint-disable-next-line react-hooks/exhaustive-deps 
+    }, []); // passing empty [] means, it will only run just one time it is rendered
+
+    async function authCheck() {
+        await authDispatch({type: "isLoggedIn"});
+        if (!authStore.loggedIn) {
+            navigate('/auth/login');
+        }
+        return authStore.loggedIn;
     }
 
-    const form = new Form('auth/login', fields, setFields, success)
-  
     return(
         <main className="app">
             <MainNav />
             <div className="main-content">
                 <h2>Your api domain is: {process.env.REACT_APP_API}</h2>
-               <FieldBlock
-                    id="email" value={fields.email.value} onChange={form.handleInputChanges} 
-                    label="Username:" isInvalid={fields.email.isInvalid} feedback={fields.email.msg}
-               />
-               <FieldBlock
-                    id="password" value={fields.password.value} onChange={form.handleInputChanges}
-                    label="Password:" type="password" isInvalid={fields.password.isInvalid} feedback={fields.password.msg}
-               />
-               <Button variant="primary" onClick={form.submitForm}>Login</Button>
+               
             </div>
             
         </main>
