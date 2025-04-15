@@ -17,4 +17,17 @@ function Signup() {
         pin: {value: "", isInvalid: false, msg: ""},  
         invitationcode: {value: "", isInvalid: false, msg: ""},  
     })
+
+    //
+    async function success(resp) {
+        navigate('/auth/login');
+    }
+
+    // setup form
+    const form = new Form('auth/signup', fields, setFields, success);
+
+    return (
+        <div>
+        </div>
+    );
 }
