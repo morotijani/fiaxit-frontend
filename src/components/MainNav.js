@@ -1,15 +1,20 @@
 import React, { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { AuthContext } from '../contexts/AuthContext'
+import { jsonGet } from '../helpers/Ajax'
 
 function MainNav(props) {
 
     const [authStore, authDispatch] = useContext(AuthContext);
     const navigate = useNavigate();
 
-    function logout() {
-        authDispatch({type: 'logout'});
-        navigate('/auth/login');
+    async function logout() {
+        const resp = await jsonGet('auth/logout');
+        if (resp.success) {
+            authDispatch({type: 'logout'});
+            // dispatch({type: "setUser", payload: resp.data})
+            navigate('/auth/login');
+        }
     }
 
     return (
