@@ -1,5 +1,5 @@
 import React, {createContext, useReducer, useEffect} from 'react';
-import {jsonGet} from '../helpers/Ajax'
+import { jsonGet } from '../helpers/Ajax'
 
 export const AuthContext = createContext();
 

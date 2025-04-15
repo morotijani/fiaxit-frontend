@@ -12,7 +12,6 @@ function MainNav(props) {
         const resp = await jsonGet('auth/logout');
         if (resp.success) {
             authDispatch({type: 'logout'});
-            // dispatch({type: "setUser", payload: resp.data})
             navigate('/auth/login');
         }
     }
