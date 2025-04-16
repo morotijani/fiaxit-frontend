@@ -1,7 +1,7 @@
 import React from 'react'
 import { Routes, Route } from 'react-router-dom';
 import Login from './Login';
-import Signup from './Signup';
+import SignUp from './SignUp';
 
 function AuthIndex() {
     return (
@@ -9,7 +9,7 @@ function AuthIndex() {
             <div className="poster">
                 <Routes>
                     <Route exact path="login" element={<Login />} />
-                    <Route excat paht="signup" element={<Signup />} />
+                    <Route excat path="signup" element={<SignUp />} />
                 </Routes>
             </div>
         </main>

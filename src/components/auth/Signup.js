@@ -4,23 +4,22 @@ import FieldBlock from '../elements/FieldBlock';
 import { Form } from '../../helpers/Form';
 import Button from '../elements/Button';
 
-function Signup() {
+function SignUp() {
     const navigate = useNavigate();
     const [fields, setFields] = useState({
-        fname: {value: "", isInvalid: false, msg: ""}, 
-        mname: {value: "", isInvalid: false, msg: ""}, 
-        lname: {value: "", isInvalid: false, msg: ""}, 
-        email: {value: "", isInvalid: false, msg: ""}, 
-        phone: {value: "", isInvalid: false, msg: ""}, 
-        password: {value: "", isInvalid: false, msg: ""}, 
-        confrim_password: {value: "", isInvalid: false, msg: ""},  
-        pin: {value: "", isInvalid: false, msg: ""},  
-        invitationcode: {value: "", isInvalid: false, msg: ""},  
+        fname: {value:"", isInvalid: false, msg:""}, 
+        mname: {value:"", isInvalid: false, msg:""}, 
+        lname: {value:"", isInvalid: false, msg:""}, 
+        email: {value:"", isInvalid: false, msg:""}, 
+        password: {value:"", isInvalid: false, msg:""},
+        confirm_password: {value:"", isInvalid: false, msg:""}, 
+        pin: {value: "", isInvalid: false, msg: ""}, 
+        invitationcode: {value: "", isInvalid: false, msg: ""} 
     })
 
     //
-    async function success(resp) {
-        navigate('/auth/login');
+    function success(resp) {
+        navigate('auth/login');
     }
 
     // setup form
@@ -44,9 +43,10 @@ function Signup() {
             <FieldBlock
                 id="password" label="Password" type="password" isInvalid={fields.password.isInvalid} value={fields.password.value} onChange={form.handleInputChanges} feedback={fields.password.msg} 
             />
-            <FieldBlock
-                id="confirm" label="Confirm password" type="password" isInvalid={fields.confirm.isInvalid} value={fields.confirm.value} onChange={form.handleInputChanges} feedback={fields.confirm.msg} 
-            />
+            <FieldBlock 
+                id="confirm_password" label="Confirm Password" type="password" isInvalid={fields.confirm_password.isInvalid}
+                value={fields.confirm_password.value} onChange={form.handleInputChanges} feedback={fields.confirm_password.msg}
+           />
             <FieldBlock
                 id="pin" label="PIN" type="password" isInvalid={fields.pin.isInvalid} value={fields.pin.value} onChange={form.handleInputChanges} feedback={fields.pin.msg} 
             />
@@ -62,4 +62,4 @@ function Signup() {
     );
 }
 
-export default Signup;
+export default SignUp;
