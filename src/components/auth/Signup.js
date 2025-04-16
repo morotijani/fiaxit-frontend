@@ -19,7 +19,7 @@ function SignUp() {
 
     //
     function success(resp) {
-        navigate('auth/login');
+        navigate('/auth/login');
     }
 
     // setup form
