@@ -28,6 +28,25 @@ function Signup() {
 
     return (
         <div>
+            <h2>Create An Account To Get Started</h2>
+            <FieldBlock
+                id="fname" lable="First name" isInvalid={fields.fname.isInvalid} value={fields.fname.value} onChange={form.handleInputChanges} feedback={fields.fname.msg} 
+            />
+            <FieldBlock
+                id="mname" lable="Middle name" isInvalid={fields.mname.isInvalid} value={fields.mname.value} onChange={form.handleInputChanges} feedback={fields.mname.msg} 
+            />
+            <FieldBlock
+                id="lname" lable="Last name" isInvalid={fields.lname.isInvalid} value={fields.lname.value} onChange={form.handleInputChanges} feedback={fields.lname.msg} 
+            />
+            <FieldBlock
+                id="email" lable="Email" type="email" isInvalid={fields.email.isInvalid} value={fields.email.value} onChange={form.handleInputChanges} feedback={fields.email.msg} 
+            />
+            <FieldBlock
+                id="password" lable="Password" type="password" isInvalid={fields.password.isInvalid} value={fields.password.value} onChange={form.handleInputChanges} feedback={fields.password.msg} 
+            />
+            <FieldBlock
+                id="confirm" lable="Confirm password" type="confirm" isInvalid={fields.confirm.isInvalid} value={fields.confirm.value} onChange={form.handleInputChanges} feedback={fields.confirm.msg} 
+            />
         </div>
     );
 }
