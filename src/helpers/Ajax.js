@@ -49,7 +49,7 @@ export function runFetch(url, method, data, callback) {
         .then(async resp => {
             if(resp.ok) {
                 return resp.json();
-            } else if(resp.status === 422){
+            } else if (resp.status === 422) {
                 return resp.json().then(errors => {
                     return {status: resp.status, success: false, errors: errors}
                 });

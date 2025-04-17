@@ -149,7 +149,7 @@ nav.main-nav .greeting {
     color: var(--theme-light);
 }
 
-/* Buttons */
+/************* Buttons *****************/
 :is(a, button).btn {
     background-color: var(--gray-medium);
     border: 1px solid #555;
@@ -214,6 +214,11 @@ nav.main-nav .greeting {
 :is(a, button).btn--secondary:hover {
     color: var(--white);
     background-color: var(--gray-dark);
+}
+
+a {
+    color: var(--theme-accent);
+    text-decoration: none;
 }
 
 /* ************************* Form Styles */

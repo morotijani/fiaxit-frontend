@@ -1,4 +1,4 @@
-import {jspnPost, jsonGet, jsonPatch, jsonDelete, jsonPost} from './Ajax'
+import {jsonGet, jsonPatch, jsonDelete, jsonPost} from './Ajax'
 
 export class Form {
     url;
@@ -60,7 +60,7 @@ export class Form {
         } else {
             this.processFormErrors(resp);
         }
-        evt.target.removeAttribute('disabled');
+        evt.target.removeAttribute('led');
     }
 
     prepareForPost = () => {

@@ -9,8 +9,8 @@ import toast from 'react-hot-toast';
 function Login() {
     const navigate = useNavigate();
     const [fields, setFields] = useState({
-        email: {value: "", isInvalid: false, msg: ""},
-        password: {value: "", isInvalid: false, msg: ""}
+        email: {value: "", isInvalid:false, msg: ""},
+        password: {value: "", isInvalid:false, msg: ""}
     });
 
     const [, authDispatch, getUser] = useContext(AuthContext)
@@ -27,17 +27,17 @@ function Login() {
     return(
         <div>
             <h2>Login</h2>
-            <FieldBlock
+             <FieldBlock
                 id="email" value={fields.email.value} onChange={form.handleInputChanges} 
                 label="Username:" isInvalid={fields.email.isInvalid} feedback={fields.email.msg}
             />
             <FieldBlock
                 id="password" value={fields.password.value} onChange={form.handleInputChanges}
-                label="Password:" type="password" isInvalid={fields.password.isInvalid} feedback={fields.password.msg}
+                label="Password:" type="password" feedback={fields.password.msg} isInvalid={fields.password.isInvalid}
             />
             <div className="l_footer_buttons d-flex justify-content-between align-items-center">
                 <Link to="/auth/signup">Register</Link>
-                <Button variant="primary" onClick={form.submitForm}>Log in</Button>
+                <Button variant="primary" onClick={form.submitForm}>Log In</Button>
             </div>
         </div>
     );
