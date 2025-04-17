@@ -4,6 +4,7 @@ import FieldBlock from '../elements/FieldBlock'
 import {Form} from '../../helpers/Form'
 import Button from '../elements/Button'
 import {AuthContext} from "../../contexts/AuthContext"
+import toast from 'react-hot-toast';
 
 function Login() {
     const navigate = useNavigate();
@@ -18,6 +19,7 @@ function Login() {
         authDispatch({type: 'login', payload: resp.token});
         await getUser()
         navigate('/'); // redirect to main page or root directory after loggedin
+        toast.success("You have been logged in successfully", {duration: 6000});
     }
 
     const form = new Form('auth/login', fields, setFields, success);

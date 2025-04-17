@@ -2,6 +2,7 @@ import React, { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { AuthContext } from '../contexts/AuthContext'
 import { jsonGet } from '../helpers/Ajax'
+import toast from 'react-hot-toast';
 
 function MainNav(props) {
 
@@ -13,6 +14,7 @@ function MainNav(props) {
         if (resp.success) {
             authDispatch({type: 'logout'});
             navigate('/auth/login');
+            toast.success("You have been logged out successfully.", {duration: 6000});
         }
     }
 
