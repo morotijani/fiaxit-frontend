@@ -3,8 +3,10 @@ import { useNavigate, Link } from 'react-router-dom';
 import FieldBlock from '../elements/FieldBlock';
 import { Form } from '../../helpers/Form';
 import Button from '../elements/Button';
+import toast from 'react-hot-toast';
 
 function SignUp() {
+
     const navigate = useNavigate();
     const [fields, setFields] = useState({
         fname: {value:"", isInvalid: false, msg:""}, 
@@ -20,6 +22,8 @@ function SignUp() {
     //
     function success(resp) {
         navigate('/auth/login');
+        // send toast of signup
+        toast.success("Account created successfully! Please log in.");
     }
 
     // setup form

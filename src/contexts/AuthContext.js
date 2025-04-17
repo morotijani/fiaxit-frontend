@@ -1,5 +1,6 @@
 import React, {createContext, useReducer, useEffect} from 'react';
 import { jsonGet } from '../helpers/Ajax'
+import toast from 'react-hot-toast';
 
 export const AuthContext = createContext();
 
@@ -15,6 +16,7 @@ function reducer(store, action) {
             return {...store, loggedIn: loggedIn} // return store and update loggedIn
         case 'logout': 
             localStorage.removeItem(store.tokenName);
+            toast.success('You have been successfully logged out !');
             return {...store, loggedIn: false, user: {}}
         default: return store;
     }
