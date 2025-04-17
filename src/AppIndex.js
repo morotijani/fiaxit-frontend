@@ -1,7 +1,8 @@
 import React, { useContext, useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import MainNav from './components/MainNav';
-import { AuthContext } from './contexts/AuthContext'
+import { AuthContext } from './contexts/AuthContext';
+import Todos from './components/todos/Todos'
 
 function AppIndex() {
 
@@ -25,8 +26,9 @@ function AppIndex() {
         <main className="app">
             <MainNav />
             <div className="main-content">
-                <h2>Your api domain is: {process.env.REACT_APP_API}</h2>
-               
+                <Routes>
+                    <Route path="/" element={<Todos />} />
+                </Routes>               
             </div>
             
         </main>
