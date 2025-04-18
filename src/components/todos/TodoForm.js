@@ -3,6 +3,7 @@ import { Form } from '../../helpers/Form'
 import FieldBlock from '../elements/FieldBlock'
 import Button from '../elements/Button'
 import toast from 'react-hot-toast';
+import { TodoContext } from '../../context/TodoContext'
 
 function TodoForm() {
 
@@ -10,11 +11,13 @@ function TodoForm() {
         name: {value: "", isInvalid: false, msg: ""}, 
         completed: {value: 0, isInvalid: false, msg: ""}
     })
+
+    const [todoStore, todoDispatch] = useContext(TodoContext)
     
     // callback from our form submit from our backend
     function success(resp) {
-        toast.success("Todo added successfully !");
-        console.log(resp);
+        todoDispatch({type: 'AddTodo', payload: resp.todo})
+        toast.success("Todo added successfully !", {duration: 6000});
     }
 
     // setup form
