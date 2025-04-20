@@ -3,7 +3,6 @@ import {PropTypes} from 'prop-types'
 
 // function base component
 const Button = (props) => {
-    console.log(props)
     let klass = `btn btn--${props.variant} ${props.hasOwnProperty('className')? props.className : ""}`;
     
     if (props.hasOwnProperty('className')) {
