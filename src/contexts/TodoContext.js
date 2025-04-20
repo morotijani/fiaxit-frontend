@@ -11,6 +11,8 @@ function reducer(store, action) {
             todos = store.todos;
             todos.push(action.payload)
             return {...store, todos: todos, dirty: true}
+        case 'UpdateIncomplete': 
+            return {...store, incomplete: action.payload, dirty: false}
         default: 
             return store;
     }
@@ -19,6 +21,14 @@ function reducer(store, action) {
 export function TodoStore(props) {
 
     const [store, dispatch] = useReducer(reducer, {total: 0, todos: [], incomplete: 0, dirty: false});
+
+    useEffect(() => {
+        let incomplete = 0;
+        store.todos.forEach(todo => {
+            if (!stringToBoolean(todo.completed)) incomplete++;
+        })
+        dispatch({type: 'UpdateIncomplete', payload: incomplete})
+    }, [store.todos, store.dirty])
     
     return (
         <TodoContext.Provider value={[store, dispatch]}>
