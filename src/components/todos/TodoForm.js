@@ -3,7 +3,7 @@ import { Form } from '../../helpers/Form'
 import FieldBlock from '../elements/FieldBlock'
 import Button from '../elements/Button'
 import toast from 'react-hot-toast';
-import { TodoContext } from '../../context/TodoContext'
+import { TodoContext } from '../../contexts/TodoContext'
 
 function TodoForm() {
 
@@ -18,6 +18,10 @@ function TodoForm() {
     function success(resp) {
         todoDispatch({type: 'AddTodo', payload: resp.todo})
         toast.success("Todo added successfully !", {duration: 6000});
+        const newFields = fields;
+        newFields.completed.value = 0;
+        setFields(newFields);
+        console.log(todoStore)
     }
 
     // setup form

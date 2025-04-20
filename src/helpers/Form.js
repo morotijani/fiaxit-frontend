@@ -47,7 +47,7 @@ export class Form {
         evt.preventDefault()
         const disabled = evt.target.getAttribute('disabled');
         if (disabled && (disabled === true || disabled === 'true')) return; // prevent from clicking the submit button over and over and fire off the submit each time
-        evt.target.setAttribute('disabled', true);
+        // evt.target.setAttribute('disabled', true);
         this.clearFormErrors()
 
         const data = this.prepareForPost()
