@@ -21,7 +21,6 @@ function TodoForm() {
         const newFields = fields;
         newFields.completed.value = 0;
         setFields(newFields);
-        console.log(todoStore)
     }
 
     // setup form
