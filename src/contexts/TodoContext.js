@@ -23,12 +23,14 @@ export function TodoStore(props) {
     const [store, dispatch] = useReducer(reducer, {total: 0, todos: [], incomplete: 0, dirty: false});
 
     useEffect(() => {
+        if (!store.dirty) return;
         let incomplete = 0;
+
         store.todos.forEach(todo => {
             if (!stringToBoolean(todo.completed)) incomplete++;
         })
         dispatch({type: 'UpdateIncomplete', payload: incomplete})
-    }, [store.todos, store.dirty])
+    }, [store.todo, store.dirty])
     
     return (
         <TodoContext.Provider value={[store, dispatch]}>
