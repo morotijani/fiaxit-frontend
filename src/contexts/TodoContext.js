@@ -13,6 +13,8 @@ function reducer(store, action) {
             return {...store, todos: todos, dirty: true}
         case 'UpdateIncomplete': 
             return {...store, incomplete: action.payload, dirty: false}
+        case 'setTodos': 
+            return {...store, todos: action.payload.todos, total: action.payload.total}
         default: 
             return store;
     }

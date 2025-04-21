@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import MainNav from './components/MainNav';
 import { AuthContext } from './contexts/AuthContext';
+import { TodoContext } from './contexts/TodoContext';
 import Todos from './components/todos/Todos'
 import { jsonGet } from './helpers/Ajax'
 
@@ -9,6 +10,7 @@ function AppIndex() {
 
     const navigate = useNavigate();
     const  [authStore, authDispatch] = useContext(AuthContext);
+    const [todoStore, todoDispatch] = useContext()
 
     useEffect(() => {
         authCheck();
@@ -27,10 +29,12 @@ function AppIndex() {
 
     async function hydrate() {
         const resp = await jsonGet('todos') // get all todos from db
-        console.log(resp)
+        if (resp.success) {
+            todoDispatch({type: 'setTodos', payload: {todos: resp.data, total: resp.total}})
+        }
     }
 
-    return(
+    return (
         <main className="app">
             <MainNav />
             <div className="main-content">
