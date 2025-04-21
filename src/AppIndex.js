@@ -3,6 +3,7 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import MainNav from './components/MainNav';
 import { AuthContext } from './contexts/AuthContext';
 import Todos from './components/todos/Todos'
+import { jsonGet } from './helpers/Ajax'
 
 function AppIndex() {
 
@@ -18,8 +19,15 @@ function AppIndex() {
         await authDispatch({type: "isLoggedIn"});
         if (!authStore.loggedIn) {
             navigate('/auth/login');
+        } else {
+            hydrate(); // load everything from db into our store
         }
         return authStore.loggedIn;
+    }
+
+    async function hydrate() {
+        const resp = await jsonGet('todos') // get all todos from db
+        console.log(resp)
     }
 
     return(
