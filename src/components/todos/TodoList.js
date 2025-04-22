@@ -19,9 +19,9 @@ function TodoList() {
     const todoList = todoStore.todos.map((todo, index) => {
         return (
             <li key={index}>
-                <input type="checkbox" value={todo.todo_id} checked={stringToBoolean(todo.completed)} onChange={handleUpdateCompleted} />
+                <input type="checkbox" value={todo.id} checked={stringToBoolean(todo.completed)} onChange={handleUpdateCompleted} />
                 {todo.name}
-                <span className="trash-button" onClick={handleDeleteTodo} data-id={todo.todo_id} role="button" aria-label="Trash Can">U+1F50🥫</span>
+                <span className="trash-button" onClick={handleDeleteTodo} data-id={todo.id} role="button" aria-label="Trash Can">🥫</span>
             </li>
         )
     });

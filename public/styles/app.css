@@ -260,3 +260,26 @@ div.form-group.is-invalid :is(.form-feedback) {
 div.form-group.is-invalid :is(.form-control, .form-control:focus) {
     border-color: var(--danger-color);
 }
+
+/* ******************** TODS ***************** */
+.todo-list {
+    padding-left: 0px;
+    list-style-type: none;
+}
+
+.todo-list li {
+    margin-bottom: 12px;
+}
+
+.todo-list input[type="checkbox"] {
+    margin-right: 12px;
+}
+
+.trash-button {
+    display: inline-block;
+    margin-left: 12px;
+}
+
+.trash-button:hover {
+    cursor: pointer
+}
