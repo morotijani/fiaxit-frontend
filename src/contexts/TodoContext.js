@@ -14,7 +14,13 @@ function reducer(store, action) {
         case 'UpdateIncomplete': 
             return {...store, incomplete: action.payload, dirty: false}
         case 'setTodos': 
-            return {...store, todos: action.payload.todos, total: action.payload.total}
+            return {...store, todos: action.payload.todos, total: action.payload.total} 
+        case 'TodoUpdated': 
+            // get the todo back from the api response and find that in the current store and we want to replace it
+            index = store.todos.findIndex(todo => todo.id.toString() === action.payload.id.toString())
+            todos = store.todos;
+            todos.splice(index, 1, action.payload); // index that we found and the number we are gonna delete and the third one is the one we are going to replace
+            return {...store, todos: todos, dirty: true}
         default: 
             return store;
     }
