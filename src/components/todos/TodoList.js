@@ -11,6 +11,10 @@ function TodoList() {
     async function handleUpdateCompleted(evt) {
         console.log(evt);
     }
+
+    async function handleDeleteTodo(evt) {
+        console.log(evt);
+    }
     
     const todoList = todoStore.todos.map((todo, index) => {
         return (
