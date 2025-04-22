@@ -2,11 +2,13 @@ import React, { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { AuthContext } from '../contexts/AuthContext'
 import { jsonGet } from '../helpers/Ajax'
+import { TodoContext } from '../contexts/TodoContext';
 import toast from 'react-hot-toast';
 
 function MainNav(props) {
 
     const [authStore, authDispatch] = useContext(AuthContext);
+    const [todoStore] = useContext(TodoContext)
     const navigate = useNavigate();
 
     async function logout() {
@@ -22,7 +24,7 @@ function MainNav(props) {
         <nav className='main-nav'>
             <section className="left">
                 <h2 className="brand"> Fiaxit</h2>
-                <Link to="/">Dashboard</Link>
+                <Link to="/">Dashboard ({todoStore.incomplete})</Link>
                 <Link to="transactions">Transactions</Link>
                 <Link to="profile">My Profile</Link>
                 <Link to="wallet">Wallet</Link>

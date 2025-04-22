@@ -9,7 +9,7 @@ function TodoList() {
     const [todoStore, todoDispatch] = useContext(TodoContext);
 
     async function handleUpdateCompleted(evt) {
-        const resp = await jsonPatch(`todo/${evt.target.value}`, {completed: evt.target.checked})
+        const resp = await jsonPatch(`todos/${evt.target.value}`, {completed: evt.target.checked})
         if (resp.success) {
             if (stringToBoolean(resp.todo.completed)) {
                 toast.success('Todo completed', {duration: 6000});
