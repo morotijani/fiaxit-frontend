@@ -20,6 +20,11 @@ function reducer(store, action) {
             index = store.todos.findIndex(todo => todo.id.toString() === action.payload.id.toString())
             todos = store.todos;
             todos.splice(index, 1, action.payload); // index that we found and the number we are gonna delete and the third one is the one we are going to replace
+            return {...store, todos: todos, dirty: true} 
+        case 'TodoDeleted': 
+            index = store.todos.findIndex(todo => todo.id.toString() === action.payload.toString())
+            todos = store.todos;
+            todos.splice(index, 1);
             return {...store, todos: todos, dirty: true}
         default: 
             return store;

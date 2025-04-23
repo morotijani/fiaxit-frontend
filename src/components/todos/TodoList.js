@@ -22,7 +22,16 @@ function TodoList() {
     }
 
     async function handleDeleteTodo(evt) {
-        console.log(evt);
+        if (window.confirm("Are you sure you want to delete this Todo; this cannot be undone")) {
+            const id = evt.target.dataset.id;
+            const resp = await jsonDelete(`todos/${id}`);
+            if (resp.success) {
+                toast.success('Todo Deleted', {duration: 6000});
+                todoDispatch({type: 'TodoDeleted', payload: id}) // 
+            } else {
+                toast.failed('Todo was unable to delete', {duration: 6000});
+            }
+        }
     }
     
     const todoList = todoStore.todos.map((todo, index) => {
