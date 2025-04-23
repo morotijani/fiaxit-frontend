@@ -14,7 +14,7 @@ function reducer(store, action) {
         case 'UpdateIncomplete': 
             return {...store, incomplete: action.payload, dirty: false}
         case 'setTodos': 
-            return {...store, todos: action.payload.todos, total: action.payload.total} 
+            return {...store, todos: action.payload.todos, total: action.payload.total, dirty: true} 
         case 'TodoUpdated': 
             // get the todo back from the api response and find that in the current store and we want to replace it
             index = store.todos.findIndex(todo => todo.id.toString() === action.payload.id.toString())
