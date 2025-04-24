@@ -28,7 +28,7 @@ function ContactForm() {
     return (
         <div>
             <h1>Create contact</h1>
-            <div className="d-flex flex-wrap">
+            <div className="d-flex flex-gap-18">
                 <FieldBlock id="fname" label="First name" isInvalid={fields.fname.isInvalid} value={fields.fname.value} onChnage={form.handleInputChanges} feedback={fields.fname.msg} />
                 <FieldBlock id="lname" label="Last name" isInvalid={fields.lname.isInvalid} value={fields.lname.value} onChnage={form.handleInputChanges} feedback={fields.lname.msg} />
                 <FieldBlock id="email" label="Email" isInvalid={fields.email.isInvalid} type="email" value={fields.email.value} onChnage={form.handleInputChanges} feedback={fields.email.msg} />

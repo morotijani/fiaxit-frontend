@@ -89,6 +89,7 @@ a, a:visited {
 .flex-grow-2 {flex-grow: 2;}
 .flex-grow-3 {flex-grow: 3;}
 .flex-grow-4 {flex-grow: 4;}
+.flex-gap-18 {gap: 18px;}
 .flex-gap-32 {gap: 32px;}
 
 
