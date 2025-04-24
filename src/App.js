@@ -10,7 +10,7 @@ function App() {
 			<Router>
 				<Switch>
 					<Route path="/auth/*" element={<AuthIndex />} />
-					<Route path="/" element={<AppIndex />} />
+					<Route path="/*" element={<AppIndex />} />
 				</Switch>
 			</Router>
 		</ContextProvider>
