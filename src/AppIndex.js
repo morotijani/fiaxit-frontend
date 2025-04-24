@@ -5,6 +5,7 @@ import { AuthContext } from './contexts/AuthContext';
 import { TodoContext } from './contexts/TodoContext';
 import Todos from './components/todos/Todos'
 import Contacts from './components/contacts/Contacts'
+import ContactForm from './components/contacts/ContactForm'
 import { jsonGet } from './helpers/Ajax'
 
 function AppIndex() {
@@ -40,6 +41,7 @@ function AppIndex() {
             <MainNav />
             <div className="main-content">
                 <Routes>
+                    <Route path="/contacts/:id" element={<ContactForm />} />
                     <Route path="/contacts" element={<Contacts />} />
                     <Route path="/" element={<Todos />} />
                 </Routes>
