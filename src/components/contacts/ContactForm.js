@@ -25,8 +25,6 @@ function ContactForm() {
         const resp = await jsonGet('contacts')
         if (resp.success) {
             contactDispatch({type: 'setContacts', payload: {contacts: resp.data, total: resp.total}})
-        } else {
-
         }
     }
 
