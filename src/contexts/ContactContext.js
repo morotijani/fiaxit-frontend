@@ -14,7 +14,7 @@ function reducer(store, action) {
     }
 }
 
-export function contactStore(props) {
+export function ContactStore(props) {
     const [store, dispatch] = useReducer(reducer, {total: 0, contacts: []});    
 
     return (
