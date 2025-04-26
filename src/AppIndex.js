@@ -13,8 +13,8 @@ function AppIndex() {
 
     const navigate = useNavigate();
     const  [authStore, authDispatch] = useContext(AuthContext);
-    const [todoStore, todoDispatch] = useContext(TodoContext)
-    const [contactStore, contactDispatch] = useContext(ContactContext)
+    const [, todoDispatch] = useContext(TodoContext)
+    const [, contactDispatch] = useContext(ContactContext)
 
     useEffect(() => {
         authCheck();
