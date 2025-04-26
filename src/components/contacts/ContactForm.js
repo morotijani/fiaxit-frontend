@@ -11,6 +11,7 @@ function ContactForm() {
     
     const [, contactDispatch] = useContext(ContactContext)
     const navigate = useNavigate();
+    let { id } = useParams()
     const [formUrl, setFormUrl] = useState('contacts');
     const [formMethod, setFormMethod] = useState('POST');
     const [fields, setFields] = useState({
@@ -33,6 +34,29 @@ function ContactForm() {
         navigate('/contacts');
         toast.success('Contact saved', {duration: 6000})
     }
+
+    async function fetchContactsById(id) {
+        const resp = await jsonGet(`contacts/${id}`);
+        if (resp.success) {
+            form.populateFormValues(resp)
+        } else {
+            navigate('/contacts');
+            toast.success('Contact not found !', {duration: 6000})
+        }
+    }
+
+    useEffect(() => {
+        if (id === 'new') {
+            form.clearFormValues();
+            setFormMethod('POST');
+            setFormUrl('contacts');
+        } else {
+            fetchContactsById(id);
+            setFormMethod('PATCH');
+            setFormUrl(`contacts/${id}`)
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [id])
 
     const form = new Form(formUrl, fields, setFields, success, formMethod);
 
