@@ -23,7 +23,7 @@ function SignUp() {
     function success(resp) {
         navigate('/auth/login');
         // send toast of signup
-        toast.success("Account created successfully! Please log in.");
+        toast.success("Account created successfully! Please may now log in !");
     }
 
     // setup form

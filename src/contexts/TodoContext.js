@@ -43,6 +43,7 @@ export function TodoStore(props) {
             if (!stringToBoolean(todo.completed)) incomplete++;
         })
         dispatch({type: 'UpdateIncomplete', payload: incomplete})
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [store.todo, store.dirty])
     
     return (

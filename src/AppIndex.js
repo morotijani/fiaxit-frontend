@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import MainNav from './components/MainNav';
 import { AuthContext } from './contexts/AuthContext';
@@ -12,7 +12,7 @@ import { jsonGet } from './helpers/Ajax'
 function AppIndex() {
 
     const navigate = useNavigate();
-    const  [authStore, authDispatch] = useContext(AuthContext);
+    const [authStore, authDispatch] = useContext(AuthContext);
     const [, todoDispatch] = useContext(TodoContext)
     const [, contactDispatch] = useContext(ContactContext)
 

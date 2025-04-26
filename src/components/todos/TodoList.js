@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import { useContext } from 'react'
 import  { TodoContext } from '../../contexts/TodoContext'
 import { stringToBoolean } from '../../helpers/StringHelpers'
 import toast from 'react-hot-toast';
@@ -14,7 +14,7 @@ function TodoList() {
             if (stringToBoolean(resp.todo.completed)) {
                 toast.success('Todo completed', {duration: 6000});
             } else {
-                toast.failed('Todo marked as Incomplete', {duration: 6000});
+                toast.success('Todo marked as Incomplete', {duration: 6000});
             }
             todoDispatch({type: 'TodoUpdated', payload: resp.todo})
         }
@@ -29,7 +29,7 @@ function TodoList() {
                 toast.success('Todo Deleted', {duration: 6000});
                 todoDispatch({type: 'TodoDeleted', payload: id}) // 
             } else {
-                toast.failed('Todo was unable to delete', {duration: 6000});
+                toast.error('Todo was unable to delete', {duration: 6000});
             }
         }
     }

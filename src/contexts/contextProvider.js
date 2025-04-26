@@ -1,4 +1,3 @@
-import React from 'react';
 import {AuthStore} from './AuthContext';
 import { TodoStore } from './TodoContext'
 import { ContactStore } from './ContactContext'
