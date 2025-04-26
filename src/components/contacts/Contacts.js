@@ -1,11 +1,24 @@
-import { useEffect, useContext } from 'react'
+import { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { ContactContext } from '../../contexts/ContactContext'
+import { jsonDelete } from '../../helpers/Ajax'
 import toast from 'react-hot-toast';
 
 function Contacts() {
 
     const [contactStore, contactDispatch] = useContext(ContactContext);
+
+    async function handleContactDelete(id) {
+        if (window.confirm("Are you siure you want to delete this contact?  This cannot be undone !")) {
+            const resp = await jsonDelete(`contact/${id}`)
+            if (resp.success) {
+                contactDispatch({type: 'contactDeleted', payload: id});
+                toast.success("Contacted deleted !", {duration :6000})
+            } else {
+                toast.failed("Something went wrong please try again !", {duration :6000})
+            }
+        }
+    }
 
     const contactList = contactStore.contacts.map((contact, index) => {
         return ( 
@@ -17,11 +30,12 @@ function Contacts() {
                 <td>{contact.message}</td>
                 <td>
                     <Link className="btn btn--xs btn--primary" to={`/contacts/${contact.id}`}>Edit</Link>
+                    <Button variant="danger" size="xs" onClick={() => handleContactDelete(contact.id)}>Delete</Button>
+
                 </td>
             </tr>
         )
     })
-    console.log(contactList)
 
     return (
         <div>
