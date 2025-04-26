@@ -2,6 +2,7 @@ import { useContext } from 'react'
 import { Link } from 'react-router-dom'
 import { ContactContext } from '../../contexts/ContactContext'
 import { jsonDelete } from '../../helpers/Ajax'
+import Button from '../elements/Button'
 import toast from 'react-hot-toast';
 
 function Contacts() {
@@ -10,7 +11,7 @@ function Contacts() {
 
     async function handleContactDelete(id) {
         if (window.confirm("Are you siure you want to delete this contact?  This cannot be undone !")) {
-            const resp = await jsonDelete(`contact/${id}`)
+            const resp = await jsonDelete(`contacts/${id}`)
             if (resp.success) {
                 contactDispatch({type: 'contactDeleted', payload: id});
                 toast.success("Contacted deleted !", {duration :6000})
@@ -30,7 +31,7 @@ function Contacts() {
                 <td>{contact.message}</td>
                 <td>
                     <Link className="btn btn--xs btn--primary" to={`/contacts/${contact.id}`}>Edit</Link>
-                    <Button variant="danger" size="xs" onClick={() => handleContactDelete(contact.id)}>Delete</Button>
+                    <Button variant="danger" size="xs" onClick={() => handleContactDelete(contact.id)} style={{marginLeft:8}}>Delete</Button>
 
                 </td>
             </tr>
