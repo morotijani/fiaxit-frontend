@@ -284,3 +284,21 @@ div.form-group.is-invalid :is(.form-control, .form-control:focus) {
 .trash-button:hover {
     cursor: pointer
 }
+
+/* *************** TABLE STYLE ****************** */
+table {
+    width: 100%;
+    background-color: #fff;
+    border-collapse: collapse;
+}
+
+table tr :is(th, td) {
+    width: auto;
+    text-align: left;
+    border: 1px solid var(--gray-medium);
+    padding: 8px;
+}
+
+table tbody tr:nth-child(odd), table tbody tr:hover {
+    background-color: var(--gray-xlight);
+}

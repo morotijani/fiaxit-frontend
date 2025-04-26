@@ -6,6 +6,7 @@ import { TodoContext } from './contexts/TodoContext';
 import Todos from './components/todos/Todos'
 import Contacts from './components/contacts/Contacts'
 import ContactForm from './components/contacts/ContactForm'
+import { ContactContext } from './contexts/ContactContext'
 import { jsonGet } from './helpers/Ajax'
 
 function AppIndex() {
@@ -13,6 +14,7 @@ function AppIndex() {
     const navigate = useNavigate();
     const  [authStore, authDispatch] = useContext(AuthContext);
     const [todoStore, todoDispatch] = useContext(TodoContext)
+    const [contactStore, contactDispatch] = useContext(ContactContext)
 
     useEffect(() => {
         authCheck();
@@ -30,9 +32,15 @@ function AppIndex() {
     }
 
     async function hydrate() {
-        const resp = await jsonGet('todos') // get all todos from db
+        // get all todos from db
+        const resp = await jsonGet('todos') 
         if (resp.success) {
             todoDispatch({type: 'setTodos', payload: {todos: resp.data, total: resp.total}})
+        }
+        // get all contacts
+        const contactResp = await jsonGet('contacts');
+        if (contactResp.success) {
+            contactDispatch({type: 'setContacts', payload: {contacts: contactResp.data, total: contactResp.total}});
         }
     }
 

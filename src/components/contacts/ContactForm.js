@@ -35,10 +35,10 @@ function ContactForm() {
         toast.success('Contact saved', {duration: 6000})
     }
 
-    async function fetchContactsById(id) {
+    async function fetchContactById(id) {
         const resp = await jsonGet(`contacts/${id}`);
         if (resp.success) {
-            form.populateFormValues(resp)
+            form.populateFormValues(resp.contact)
         } else {
             navigate('/contacts');
             toast.success('Contact not found !', {duration: 6000})
@@ -51,7 +51,7 @@ function ContactForm() {
             setFormMethod('POST');
             setFormUrl('contacts');
         } else {
-            fetchContactsById(id);
+            fetchContactById(id);
             setFormMethod('PATCH');
             setFormUrl(`contacts/${id}`)
         }
