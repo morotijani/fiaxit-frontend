@@ -1,5 +1,7 @@
 import { useContext, useEffect, useState } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js'; // optional for JS features (modal, dropdowns, etc.)
 import MainNav from './components/MainNav';
 import { AuthContext } from './contexts/AuthContext';
 import { TodoContext } from './contexts/TodoContext';
