@@ -69,7 +69,7 @@ a, a:visited {
 }
 
 .l_footer_buttons :is(.btn) {
-    margin-left: 12px;
+    /* margin-left: 12px; */
 }
 
 /* ************** FLEX HELPERS *************** */
@@ -152,7 +152,7 @@ nav.main-nav .greeting {
 
 /************* Buttons *****************/
 :is(a, button).btn {
-    background-color: var(--gray-medium);
+    /* background-color: var(--gray-medium);
     border: 1px solid #555;
     font-size: 16px;
     padding: 8px 16px;
@@ -160,7 +160,7 @@ nav.main-nav .greeting {
     color: var(--black);
     text-decoration: none;
     font-weight: bold;
-    letter-spacing: 1px;
+    letter-spacing: 1px; */
 }
 
 :is(a, button):hover {
@@ -224,28 +224,28 @@ a {
 
 /* ************************* Form Styles */
 div.form-group {
-    width: 100%;
-    margin-bottom: 24px;
+    /* width: 100%;
+    margin-bottom: 24px; */
 }
 
 div.form-group label {
-    display: block;
-    margin-bottom: 8px;
+    /* display: block;
+    margin-bottom: 8px; */
 }
 
 div.form-group .form-control {
-    width: 100%;
+    /* width: 100%;
     border: 1px solid var(--theme-dark);
     margin-bottom: 8px;
     height: 38px;
     border-radius: 6px;
     padding: 6px 12px;
-    font-size: 14px;
+    font-size: 14px; */
 }
 
 div.form-group .form-control:focus {
-    outline: none;
-    border-color: var(--theme-accent);
+    /* outline: none;
+    border-color: var(--theme-accent); */
 }
 
 div.form-group p.form-feedback {

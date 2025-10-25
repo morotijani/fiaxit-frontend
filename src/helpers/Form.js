@@ -74,14 +74,25 @@ export class Form {
 
     processFormErrors = (resp) => {
         const newState = this.fields
-        resp.errors.forEach(error => {
-            const key = error.path;
-            const msg = error.message;
+
+        // check if resp has errors array
+        if (!resp.errors || !Array.isArray(resp.errors)) {
+            const key = resp.errors.path;
+            const msg = resp.errors.message;
             if (newState.hasOwnProperty(key)) {
                 newState[key].isInvalid = true;
-                newState[key].msg = msg;
+                newState[key].msg = msg || "There was an error with this field.";
             }
-        })
+        } else {
+            resp.errors.forEach(error => {
+                const key = error.path;
+                const msg = error.message;
+                if (newState.hasOwnProperty(key)) {
+                    newState[key].isInvalid = true;
+                    newState[key].msg = msg;
+                }
+            })
+        }
         this.setFields({...newState});
     }
 

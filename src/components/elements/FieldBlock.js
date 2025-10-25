@@ -3,15 +3,16 @@ import PropTypes from 'prop-types';
 const FieldBlock = (props) => {
     const invalidClass = props.isInvalid ? 'is-invalid' : '';
     return (
-        <div className={`form-group ${invalidClass}`}>
-            <label htmlFor={props.id}>{props.label}</label>
+        <div className={`form-floating form-group ${invalidClass}`}>
             <input 
                 className="form-control" 
                 id={props.id} 
                 name={props.name || props.id} 
                 value={props.value} 
-                type={props.type} onChange={props.onChange}
+                type={props.type} onChange={props.onChange} 
+                placeholder={props.label}
             />
+            <label htmlFor={props.id}>{props.label}</label>
             <p className="form-feedback">{props.feedback}</p>
         </div>
     )

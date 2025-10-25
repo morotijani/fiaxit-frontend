@@ -53,6 +53,12 @@ export function runFetch(url, method, data, callback) {
                 return resp.json().then(errors => {
                     return {status: resp.status, success: false, errors: errors}
                 });
+            } else if (resp.status === 401) {
+                // unauthorized, token may be expired or invalid
+                // optionally, could trigger a logout event here
+                return resp.json().then(errors => {
+                    return {status: resp.status, success: false, errors: errors}
+                });
             } else {
                 // include status and text for easier debugging
                 const text = await resp.text().catch(()=>resp.statusText);

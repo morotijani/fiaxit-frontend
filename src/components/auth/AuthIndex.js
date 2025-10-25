@@ -5,14 +5,20 @@ import SignUp from './SignUp';
 
 function AuthIndex() {
     return (
-        <main className="auth-layout">
-            <div className="poster">
-                <Routes>
-                    <Route exact path="login" element={<Login />} />
-                    <Route excat path="signup" element={<SignUp />} />
-                </Routes>
-            </div>
-        </main>
+        <div>
+            <Routes>
+                <Route exact path="login" element={<Login />} />
+                <Route excat path="signup" element={<SignUp />} />
+            </Routes>
+        </div>    
+        // <main className="auth-layout">
+        //     <div className="poster">
+        //         <Routes>
+        //             <Route exact path="login" element={<Login />} />
+        //             <Route excat path="signup" element={<SignUp />} />
+        //         </Routes>
+        //     </div>
+        // </main>
     )
 }
 
