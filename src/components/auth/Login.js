@@ -60,7 +60,7 @@ function Login() {
 
                         <div className='text-center'>
                             <div className="mb-2 mt-4">
-                                <Button className="btn-primary border fw-semibold px-4" onClick={form.submitForm}>Log In</Button>
+                                <Button className="btn-warning border fw-semibold px-4" onClick={form.submitForm}>Log In</Button>
                             </div>
                             <div>
                                 <Link to="/auth/signup">Register</Link>
