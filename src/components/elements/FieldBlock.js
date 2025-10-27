@@ -10,7 +10,8 @@ const FieldBlock = (props) => {
                 name={props.name || props.id} 
                 value={props.value} 
                 type={props.type} onChange={props.onChange} 
-                placeholder={props.label}
+                placeholder={props.label} 
+                autoComplete = {props.autocomp || 'off'}
             />
             <label htmlFor={props.id}>{props.label}</label>
             <p className="form-feedback">{props.feedback}</p>

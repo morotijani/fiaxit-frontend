@@ -13,6 +13,7 @@ import Contacts from './components/contacts/Contacts'
 import ContactForm from './components/contacts/ContactForm'
 import { ContactContext } from './contexts/ContactContext'
 import Profile from './components/profile/Profile'
+import SettingsForm from './components/profile/SettingsForm'
 import { jsonGet } from './helpers/Ajax'
 import Preloader from './components/Preloader'
 
@@ -91,6 +92,7 @@ function AppIndex() {
             <div className="card shadow-sm border-0 p-0 d-flex flex-column main-card-container">
                 <div className="flex-grow-1 overflow-auto main-page-scroll">
                     <Routes>
+                        <Route path="/settings" element={<SettingsForm />} />
                         <Route path="/profile" element={<Profile />} />
                         <Route path="/contacts/:id" element={<ContactForm />} />
                         <Route path="/contacts" element={<Contacts />} />

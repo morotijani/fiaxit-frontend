@@ -75,15 +75,15 @@ function Main() {
                         <Link to="/profile" className="d-flex align-items-center">
                             <img src={Avatar} className='img-fluid rounded-pill shadow-sm' alt="ETH" style={{ width: "30px", height: "30px" }} />
                         </Link>
-                        <div className="ps-2">
+                        <div className="ps-2 lh-sm">
                             <Link to="/profile" className="d-flex align-items-center text-decoration-none">
                                 <div className="text-muted mb-0">Hi, {authStore.user?.user_fname.toUpperCase() || 'Stranger'} 🙋‍♂️</div>
                             </Link>
                             <div className='fw-bold mb-0'>Good morning!</div>
                         </div>
                     </div>
-                    <button className="btn btn-light btn-sm rounded-circle shadow-sm">
-                        <i className="bi bi-bell"></i>
+                    <button className="btn btn-sm" onClick={() => navigate('/notifications')}>
+                        <span class="material-symbols-outlined">siren</span>
                     </button>
                 </div>
                 <div className="d-flex justify-content-between align-items-center mb-2 p-3">

@@ -55,12 +55,14 @@ function Login() {
                             />
                         </div>
 
-                        <FieldBlock id="email" value={fields.email.value} onChange={form.handleInputChanges} label="Username:" isInvalid={fields.email.isInvalid} feedback={fields.email.msg} />
+                        <FieldBlock id="email" value={fields.email.value} onChange={form.handleInputChanges} label="Email:" isInvalid={fields.email.isInvalid} feedback={fields.email.msg} />
                         <FieldBlock id="password" value={fields.password.value} onChange={form.handleInputChanges} label="Password:" type="password" feedback={fields.password.msg} isInvalid={fields.password.isInvalid} />
 
                         <div className='text-center'>
                             <div className="mb-2 mt-4">
-                                <Button className="btn-warning border fw-semibold px-4" onClick={form.submitForm}>Log In</Button>
+                                <Button className="btn-warning text-white border fw-semibold px-4" onClick={form.submitForm}>
+                                    Log In
+                                </Button>
                             </div>
                             <div>
                                 <Link to="/auth/signup">Register</Link>

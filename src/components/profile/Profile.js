@@ -23,6 +23,18 @@ function Profile() {
         }
     }
 
+    const settingsLink = () => {
+        navigate('/settings');
+    }
+    
+    const changePasswordLink = () => {
+        navigate('/change-password');
+    }
+    
+    const changePinLink = () => {
+        navigate('/change-pin');
+    }
+
     return (
         <div>
             <div className="d-flex justify-content-between align-items-center p-3" style={{ backgroundColor: "#eaeae6"}}>
@@ -31,32 +43,43 @@ function Profile() {
                     <span className="material-symbols-outlined">keyboard_backspace</span>
                 </button>
                 <h5 className="m-0">Profile & Settings</h5>
-                <button className="btn btn-sm">
+                <button className="btn btn-sm" onClick={() => navigate("/notifications")}>
                     <span class="material-symbols-outlined">siren</span>
                 </button>
             </div> 
 
-             {/* Profile Section */}
+            {/* Profile Section */}
             {/* <div className="p-4" style={{ backgroundColor: "#cfd2c2"}}> */}
             <div className="p-4">
                 <h6 className="text-muted mb-2">Profile</h6>
                 <div className="list-group rounded-4 overflow-hidden">
                     <button className="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                         <span>Name</span>
-                        <span className="text-secondary">{fullName.toUpperCase()} <span class="material-symbols-outlined">arrow_right</span>
-                        </span>
+                        <span className="text-secondary">{ fullName.toUpperCase() }</span>
                     </button>
                     <button className="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                         <span>Email</span>
-                        <span className="text-secondary">{authStore.user.user_email} <span class="material-symbols-outlined">arrow_right</span></span>
+                        <span className="text-secondary">{ authStore.user.user_email }</span>
                     </button>
                     <button className="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                        <span>Bank Details</span>
-                        <span className="text-secondary">GCB Bank <span class="material-symbols-outlined">arrow_right</span></span>
+                        <span>Phone</span>
+                        <span className="text-secondary">{ authStore.user.user_phone || 'N/A' }</span>
+                    </button>
+                    <button className="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        <span>Joined Date</span>
+                        <span className="text-secondary">{ authStore.user.createdAt } </span>
+                    </button>
+                    <button className="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        <span>Invitation Code</span>
+                        <span className="text-secondary"> { authStore.user.user_invitationcode } <span class="material-symbols-outlined">content_copy</span></span>
+                    </button>
+                    <button className="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                        <span>Verification Status</span>
+                        <span className="text-secondary"> { authStore.user.user_verified ? 'Verified' : 'Not verified' }</span>
                     </button>
                     <button className="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                         <span>Transaction History</span>
-                        <span className="text-secondary">View <span class="material-symbols-outlined">arrow_right</span></span>
+                        <span className="text-secondary" onClick={() => navigate('/activity')}>View <span class="material-symbols-outlined">arrow_right</span></span>
                     </button>
                 </div>
 
@@ -64,16 +87,16 @@ function Profile() {
                 <h6 className="text-muted mt-4 mb-2">App</h6>
                 <div className="list-group rounded-4 overflow-hidden">
                     <button className="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                    <span>Launch Screen</span>
-                    <span className="text-secondary">Home <span class="material-symbols-outlined">arrow_right</span></span>
+                        <span>Launch Screen</span>
+                        <span className="text-secondary" onClick={() => navigate('/')}>Home <span class="material-symbols-outlined">arrow_right</span></span>
                     </button>
                     <button className="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                    <span>Language</span>
-                    <span className="text-secondary">English <span class="material-symbols-outlined">arrow_right</span></span>
+                        <span>Language</span>
+                        <span className="text-secondary">English <span class="material-symbols-outlined">arrow_right</span></span>
                     </button>
                     <button className="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
-                    <span>Default Currencies</span>
-                    <span className="text-secondary">USD & BTC <span class="material-symbols-outlined">arrow_right</span></span>
+                        <span>Default Currencies</span>
+                        <span className="text-secondary">USD & BTC <span class="material-symbols-outlined">arrow_right</span></span>
                     </button>
                     <div className="list-group-item d-flex justify-content-between align-items-center">
                         <span>Dark Mode</span>
@@ -88,9 +111,21 @@ function Profile() {
                         <span>Unlock with Biometric</span>
                         <Switch checked={biometric} onChange={setBiometric} />
                     </div>
+                    <button className="list-group-item list-group-item-action d-flex justify-content-between align-items-center" onClick={settingsLink}>
+                        <span>Settings</span>
+                        <span><span class="material-symbols-outlined">edit</span></span>
+                    </button>
+                    <button className="list-group-item list-group-item-action d-flex justify-content-between align-items-center" onClick={changePasswordLink}>
+                        <span>Change password</span>
+                        <span><span class="material-symbols-outlined">arrow_right</span></span>
+                    </button>
+                    <button className="list-group-item list-group-item-action d-flex justify-content-between align-items-center" onClick={changePinLink}>
+                        <span>Change Pin</span>
+                        <span><span class="material-symbols-outlined">arrow_right</span></span>
+                    </button>
                     <button className="list-group-item list-group-item-action d-flex justify-content-between align-items-center text-danger" onClick={logout}>
                         <span>Logout</span>
-                        <span><span class="material-symbols-outlined">arrow_right</span></span>
+                        <span><span class="material-symbols-outlined">chip_extraction</span></span>
                     </button>
                 </div>
 
