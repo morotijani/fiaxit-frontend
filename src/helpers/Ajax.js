@@ -14,7 +14,11 @@ export function runFetch(url, method, data, callback) {
 
     const options = {
         method: method,
-        headers: {'Accept': 'application/json', 'Content-Type': 'application/json'}
+        headers: {
+            'Accept': 'application/json', 
+            'Content-Type': 'application/json', 
+            // 'X-CMC_PRO_API_KEY': process.env.REACT_APP_CMC_API_KEY 
+        }
     }
 
     if (method !== 'GET' && method !== 'DELETE'){
@@ -83,7 +87,7 @@ export function jsonPost(url, data, callback) {
     return runFetch(url, 'POST', data, callback);
 }
 
-export function jsonGet(url, callback){
+export function jsonGet(url, callback) {
     return runFetch(url, 'GET', {}, callback);
 }
 

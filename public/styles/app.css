@@ -1,3 +1,4 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
 :root {
     --danger-color: #B22323;
     --theme-xdark: #272838;
@@ -20,8 +21,89 @@
 }
 
 body {
-    font-family: Georgia, Helvetica, sans-serif
+    font-family: "Ubuntu" !important;
+    font-weight: 300;
+    font-style: normal;
 }
+
+.ubuntu-light {
+  font-family: "Ubuntu", sans-serif;
+  font-weight: 300;
+  font-style: normal;
+}
+
+.ubuntu-regular {
+  font-family: "Ubuntu", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.ubuntu-medium {
+  font-family: "Ubuntu", sans-serif;
+  font-weight: 500;
+  font-style: normal;
+}
+
+.ubuntu-bold {
+  font-family: "Ubuntu", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.ubuntu-light-italic {
+  font-family: "Ubuntu", sans-serif;
+  font-weight: 300;
+  font-style: italic;
+}
+
+.ubuntu-regular-italic {
+  font-family: "Ubuntu", sans-serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.ubuntu-medium-italic {
+  font-family: "Ubuntu", sans-serif;
+  font-weight: 500;
+  font-style: italic;
+}
+
+.ubuntu-bold-italic {
+  font-family: "Ubuntu", sans-serif;
+  font-weight: 700;
+  font-style: italic;
+}
+
+
+/* Hide scrollbar for the entire page */
+body::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for a specific element */
+.main-page-scroll {
+    WebkitOverflowScrolling: "touch"
+}
+
+.main-page-scroll::-webkit-scrollbar {
+  display: none;
+}
+
+
+/* ******************************************************************* */
+div.main-card {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #f7f9fc, #eef1f5);
+}
+
+div.main-card-container {
+    width: 360px;
+    border-radius: 25px;
+    height: 90vh;
+    background-color: white;
+    overflow: hidden;
+}
+/* ******************************************************************* */
 
 h1, h2, h3, h4, h5 {
     margin-bottom: 1em;

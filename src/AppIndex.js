@@ -2,8 +2,10 @@ import { useContext, useEffect, useState } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'; // optional for JS features (modal, dropdowns, etc.)
+import 'bootstrap-icons/font/bootstrap-icons.css'; // bootstrap icons
 import MainNav from './components/MainNav';
 import { AuthContext } from './contexts/AuthContext';
+import Main from './components/main/Main'
 import { TodoContext } from './contexts/TodoContext';
 import Todos from './components/todos/Todos'
 import Contacts from './components/contacts/Contacts'
@@ -83,17 +85,15 @@ function AppIndex() {
     }
 
     return (
-        <main className="app">
-            <MainNav />
-            <div className="main-content">
-                <Routes>
-                    <Route path="/contacts/:id" element={<ContactForm />} />
-                    <Route path="/contacts" element={<Contacts />} />
-                    <Route path="/" element={<Todos />} />
-                </Routes>
-            </div>
-            
+        <main>
+            <Routes>
+                <Route path="/contacts/:id" element={<ContactForm />} />
+                <Route path="/contacts" element={<Contacts />} />
+                <Route path="/todos" element={<Todos />} />
+                <Route path="/" element={<Main />} />
+            </Routes>
         </main>
+            
     );
 }
 
