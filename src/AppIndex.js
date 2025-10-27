@@ -3,7 +3,8 @@ import { Routes, Route, useNavigate } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js'; // optional for JS features (modal, dropdowns, etc.)
 import 'bootstrap-icons/font/bootstrap-icons.css'; // bootstrap icons
-import MainNav from './components/MainNav';
+import 'material-symbols/outlined.css'; // material icons
+import MainFooter from './components/MainFooter';
 import { AuthContext } from './contexts/AuthContext';
 import Main from './components/main/Main'
 import { TodoContext } from './contexts/TodoContext';
@@ -11,6 +12,7 @@ import Todos from './components/todos/Todos'
 import Contacts from './components/contacts/Contacts'
 import ContactForm from './components/contacts/ContactForm'
 import { ContactContext } from './contexts/ContactContext'
+import Profile from './components/profile/Profile'
 import { jsonGet } from './helpers/Ajax'
 import Preloader from './components/Preloader'
 
@@ -85,15 +87,20 @@ function AppIndex() {
     }
 
     return (
-        <main>
-            <Routes>
-                <Route path="/contacts/:id" element={<ContactForm />} />
-                <Route path="/contacts" element={<Contacts />} />
-                <Route path="/todos" element={<Todos />} />
-                <Route path="/" element={<Main />} />
-            </Routes>
-        </main>
-            
+        <div className="d-flex justify-content-center align-items-center bg-light main-card">
+            <div className="card shadow-sm border-0 p-0 d-flex flex-column main-card-container">
+                <div className="flex-grow-1 overflow-auto main-page-scroll">
+                    <Routes>
+                        <Route path="/profile" element={<Profile />} />
+                        <Route path="/contacts/:id" element={<ContactForm />} />
+                        <Route path="/contacts" element={<Contacts />} />
+                        <Route path="/todos" element={<Todos />} />
+                        <Route path="/" element={<Main />} />
+                    </Routes>
+                </div>
+                <MainFooter />
+            </div>
+        </div>    
     );
 }
 

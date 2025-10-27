@@ -74,6 +74,24 @@ body {
   font-style: italic;
 }
 
+.material-icons {
+    font-family: 'Material Icons';
+    font-weight: normal;
+    font-style: normal;
+    font-size: 24px; /* Preferred icon size */
+    display: inline-block;
+    line-height: 1;
+    text-transform: none;
+    letter-spacing: normal;
+    word-wrap: normal;
+    white-space: nowrap;
+    direction: ltr;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    -moz-osx-font-smoothing: grayscale;
+    font-feature-settings: 'liga';
+}
+
 
 /* Hide scrollbar for the entire page */
 body::-webkit-scrollbar {
@@ -97,11 +115,16 @@ div.main-card {
 }
 
 div.main-card-container {
-    width: 360px;
+    width: 460px;
     border-radius: 25px;
     height: 90vh;
     background-color: white;
     overflow: hidden;
+}
+
+div.main-footer {
+    position: sticky;
+    bottom: 0;
 }
 /* ******************************************************************* */
 

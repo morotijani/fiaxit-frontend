@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes as Switch, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes as Switch, Route } from 'react-router-dom';
 import AppIndex from './AppIndex';
 import AuthIndex from './components/auth/AuthIndex'
 import ContextProvider from './contexts/contextProvider';

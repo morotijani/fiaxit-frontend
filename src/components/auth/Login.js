@@ -31,7 +31,7 @@ function Login() {
                 <div
                     className="card shadow-sm border-0 p-4"
                     style={{
-                        width: "360px",
+                        width: "460px",
                         borderRadius: "25px",
                         minHeight: "90vh",
                         display: "flex",
