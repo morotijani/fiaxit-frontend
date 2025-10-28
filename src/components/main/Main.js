@@ -56,7 +56,8 @@ function Main() {
         }
 
         fetchAssets();
-        const interval = setInterval(fetchAssets, 30000);
+        // const interval = setInterval(fetchAssets, 30000); // refresh every 30 seconds
+        const interval = setInterval(fetchAssets, 86400000); // refresh every 24 hours
         return () => { mounted = false; clearInterval(interval); }
     }, []);
 
@@ -88,13 +89,13 @@ function Main() {
                 </div>
                 <div className="d-flex justify-content-between align-items-center mb-2 p-3">
                     <h6 className="mb-0">Account 1 ⌄</h6>
-                    <button className="btn btn-light btn-sm shadow-sm">
-                        Deposit
+                    <button className="btn btn-light btn-sm shadow-sm" onClick={() => navigate('/wallets')}>
+                        Assets
                     </button>
                 </div>
                 <div className="text-center text-muted small mt-2">
                     <span className="badge bg-dark bg-opacity-10 text-dark rounded-pill px-3 py-2">
-                        0x9e59...34c7 <i className="bi bi-back"></i>
+                        0x9e523429...34c7 <i className="bi bi-back"></i>
                     </span>
                 </div>
 

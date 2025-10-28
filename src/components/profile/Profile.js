@@ -79,7 +79,7 @@ function Profile() {
                     </button>
                     <button className="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                         <span>Transaction History</span>
-                        <span className="text-secondary" onClick={() => navigate('/activity')}>View <span class="material-symbols-outlined">arrow_right</span></span>
+                        <span className="text-secondary" onClick={() => navigate('/transactions')}>View <span class="material-symbols-outlined">arrow_right</span></span>
                     </button>
                 </div>
 

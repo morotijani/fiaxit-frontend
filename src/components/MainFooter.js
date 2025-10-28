@@ -12,7 +12,7 @@ function MainFooter(props) {
     }
     
     const handleActivityLinkClick = () => {
-        navigate('/activity');
+        navigate('/transactions');
     }
     
     const handleConverterSettingsClick = () => {
@@ -35,7 +35,7 @@ function MainFooter(props) {
                 <div onClick={handleActivityLinkClick} style={{ cursor: "pointer" }}>
                     <span class="material-symbols-outlined">equalizer</span>
                     <br />
-                    <small>Activity</small>
+                    <small>Transactions</small>
                 </div>
                 <div onClick={handleConverterSettingsClick} style={{ cursor: "pointer" }}>
                     <span class="material-symbols-outlined">rule_settings</span>

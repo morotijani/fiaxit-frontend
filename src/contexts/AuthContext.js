@@ -33,6 +33,7 @@ export function AuthStore(props) {
         if (store.loggedIn && !store.user.hasOwnProperty('id')) {
             getUser();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps 
     }, [store.loggedIn]) // anytime store.loggedIn is changed then we want to call getUser()
 
     //

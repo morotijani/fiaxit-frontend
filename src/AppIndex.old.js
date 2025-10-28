@@ -7,20 +7,13 @@ import 'material-symbols/outlined.css'; // material icons
 import MainFooter from './components/MainFooter';
 import { AuthContext } from './contexts/AuthContext';
 import Main from './components/main/Main'
-
-import Todos from './components/todos/Todos'
-import { TodoContext } from './contexts/TodoContext';
-
+import { TransactionContext } from './contexts/TransactionContext';
 import Transactions from './components/transactions/Transactions'
-import { TransactionContext } from './contexts/TransactionContext'
-
-import Wallets from './components/wallets/Wallets'
-import { WalletContext } from './contexts/WalletContext'
-
+import { TodoContext } from './contexts/TodoContext';
+import Todos from './components/todos/Todos'
 import Contacts from './components/contacts/Contacts'
 import ContactForm from './components/contacts/ContactForm'
 import { ContactContext } from './contexts/ContactContext'
-
 import Profile from './components/profile/Profile'
 import SettingsForm from './components/profile/SettingsForm'
 import { jsonGet } from './helpers/Ajax'
@@ -32,9 +25,8 @@ function AppIndex() {
     const navigate = useNavigate();
     const [authStore, authDispatch] = useContext(AuthContext);
     const [, todoDispatch] = useContext(TodoContext)
-    const [, contactDispatch] = useContext(ContactContext)
     const [, transactionDispatch] = useContext(TransactionContext)
-    const [, walletDispatch] = useContext(WalletContext)
+    const [, contactDispatch] = useContext(ContactContext)
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -87,21 +79,20 @@ function AppIndex() {
         if (resp && resp.success) {
             todoDispatch({type: 'setTodos', payload: {todos: resp.data, total: resp.total}})
         }
+
         // get all contacts
         const contactResp = await jsonGet('contacts');
         if (contactResp && contactResp.success) {
             contactDispatch({type: 'setContacts', payload: {contacts: contactResp.data, total: contactResp.total}});
         }
-        // get all transactions
+
+        // get all transaction
         const transactionResp = await jsonGet('transactions');
+        console.log(transactionResp);
         if (transactionResp && transactionResp.success) {
             transactionDispatch({type: 'setTransactions', payload: {transactions: transactionResp.data, total: transactionResp.total}});
         }
-        // get all wallets
-        const walletResp = await jsonGet('wallets');
-        if (walletResp && walletResp.success) {
-            walletDispatch({type: 'setWallets', payload: {wallets: walletResp.data, total: walletResp.total}});
-        }
+
     }
 
     if (loading) {
@@ -113,7 +104,6 @@ function AppIndex() {
             <div className="card shadow-sm border-0 p-0 d-flex flex-column main-card-container">
                 <div className="flex-grow-1 overflow-auto main-page-scroll">
                     <Routes>
-                        <Route path="/wallets" element={<Wallets />} />
                         <Route path="/transactions" element={<Transactions />} />
                         <Route path="/settings" element={<SettingsForm />} />
                         <Route path="/profile" element={<Profile />} />
