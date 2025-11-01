@@ -3,6 +3,7 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { WalletContext } from '../../contexts/WalletContext'
 import { jsonGet } from '../../helpers/Ajax'
 import { shortenAddress, useCopyToClipboard } from '../../helpers/StringHelpers'
+import { formatDistanceToNow } from 'date-fns';
 import toast from 'react-hot-toast';
 
 function WalletDetails() {
@@ -10,6 +11,13 @@ function WalletDetails() {
     const [isCopied, copyToClipboard] = useCopyToClipboard();
     const [walletInfoStore, walletDispatch] = useContext(WalletContext);
     let { id } = useParams()
+    // on component load, fetch wallet details
+    const [assets, setAssets] = useState([]);
+    const [loadingWallet, setLoadingWallet] = useState(true);
+    const timeAgo = (date) => {
+        // Pass addSuffix: true to add "ago" at the end
+        return formatDistanceToNow(new Date(date), { addSuffix: true });
+    };
 
     // find wallet by id from url param (cached by backend)
     async function fetchWalletById(id) {
@@ -68,10 +76,6 @@ function WalletDetails() {
         }
     }
 
-    // on component load, fetch wallet details
-    const [assets, setAssets] = useState([]);
-    const [loadingWallet, setLoadingWallet] = useState(true);
-
     useEffect(() => {
         let mounted = true;
 
@@ -83,33 +87,6 @@ function WalletDetails() {
                 setLoadingWallet(false);
                 return;
             }
-
-            // first check if we have cached info in context
-            const cachedInfo = walletInfoStore.wallets.find((wallet) => wallet.wallet_id === w.wallet_id)?.rawInfo;
-            console.log('Using cached wallet info', cachedInfo);
-            if (cachedInfo) {
-                // check if cached info is expired
-                const now = Date.now();
-                const expiry =  cachedInfo.expiry || 0;
-                if (now < expiry) {
-                    // use cached info
-                    const asset = {
-                        id: w.wallet_id,
-                        name: w.wallet_name,
-                        symbol: w.wallet_symbol,
-                        address: w.wallet_address,
-                        crypto_name: w.wallet_crypto_name,
-                        rawInfo: cachedInfo,
-                        // balance: cachedInfo.balance,
-                        // transactions: cachedInfo.transactions
-                    };
-                    setAssets([asset]);
-                }
-                setLoadingWallet(false);
-                return;
-            }
-
-            
             
             // fetch wallet info, balance, transactions etc
             try {
@@ -122,14 +99,8 @@ function WalletDetails() {
                 if (localCachedData) {
                     console.log('Using local storage cached data for wallet info', localCachedData);
                     const asset = {
-                        id: w.wallet_id,
-                        name: w.wallet_name,
-                        symbol: w.wallet_symbol,
-                        address: w.wallet_address,
-                        crypto_name: w.wallet_crypto_name,
-                        rawInfo: localCachedData,
-                        // balance: localCachedData.balance,
-                        // transactions: localCachedData.transactions
+                        ...w, 
+                        rawInfo: localCachedData
                     };
                     setAssets([asset]);
                 }
@@ -242,7 +213,6 @@ function WalletDetails() {
                     ) : (
                         
                         (assets.length ? assets : []).map((t) => {
-                            const changeClass = (t.change >= 0) ? 'text-success' : 'text-danger';
                             return (
                                 <div key={t.wallet_id} >
                                     <div className="text-center text-muted small mt-2">
@@ -330,16 +300,51 @@ function WalletDetails() {
                                     </div>
 
                                     {txs.length ? (
-                                        txs.map((tx, index) => (
-                                            <div key={index} className="border-bottom py-2">
-                                                <div className="small text-muted">Transaction ID</div>
-                                                <div className="fw-semibold">{tx.id || tx.txid || tx.hash}</div>
-                                                <div className="small text-muted">Amount</div>
-                                                <div>{tx.amount ?? tx.value ?? '-'}</div>
-                                                <div className="small text-muted">Status</div>
-                                                <div>{tx.status ?? tx.confirmations ? 'Confirmed' : 'Pending'}</div>
+                                        txs.map((tx, index) => {
+                                            // create a variable to check if tx amount or value starts with '-', it's a sent transaction, else received
+                                            const amountString = String(tx.amount) || String(tx.value) || '';
+                                            const isSent = amountString.startsWith('-') || amountString.startsWith('-');
+                                            const changeClass = (tx.amount >= 0 || tx.value >= 0) ? 'text-success' : 'text-danger';
+                                            // receiving transaction address is in inputs, sending address is in outputs
+                                            const to_address = isSent ? tx.outputs[0].addresses : tx.inputs[0].addresses;
+                                            const to_address_quoted = `${to_address}`; // put double quotes around the to_address
+
+                                            // conver amount to  money format
+                                            const amountValue = parseFloat(tx.amount || tx.value || 0);
+                                            const formattedAmount = isSent ? `- ${Math.abs(amountValue)}` : `+ ${Math.abs(amountValue)}`;
+                                        
+                                        return (
+                                            <div key={index} className="d-flex justify-content-between align-items-center border-bottom py-3">
+                                                <div className="d-flex align-items-center">
+                                                    <div className={`rounded-circle d-flex align-items-center justify-content-center me-3 ${
+                                                        isSent ? "bg-danger-subtle" : "bg-success-subtle"}`}
+                                                    style={{ width: 40, height: 40 }}
+                                                    >
+                                                    {isSent ? (
+                                                        <span className="material-symbols-outlined text-success">arrow_downward</span>
+                                                    ) : (
+                                                        <span className="material-symbols-outlined text-danger">arrow_upward</span>
+                                                    )}
+                                                    </div>
+                                                    <div>
+                                                        <div className="fw-semibold">{shortenAddress(to_address_quoted)}</div>
+                                                        <div className="text-muted small">{timeAgo(tx.timestamp)}</div>
+                                                    </div>
+                                                </div>
+                                                <div className="text-end">
+                                                    <div className={`fw-semibold ${
+                                                        isSent ? "text-danger" : "text-success"
+                                                    }`}
+                                                    >
+                                                        {formattedAmount}
+                                                    </div>
+                                                    <div className={`small ${changeClass}`}>
+                                                        {tx.status ?? tx.confirmations ? 'Confirmed' : 'Pending'}
+                                                    </div>
+                                                </div>
                                             </div>
-                                        ))
+                                        )}
+                                    )
                                     ) : (
                                         <div className="text-center text-muted py-3">
                                             No transactions found.
