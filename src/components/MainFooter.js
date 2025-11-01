@@ -23,22 +23,22 @@ function MainFooter(props) {
         <div className="border-top py-2 bg-white main-footer">
             <div className="d-flex justify-content-around text-center">
                 <div onClick={handleHomeLinkClick} style={{ cursor: "pointer" }}>
-                    <span class="material-symbols-outlined">cottage</span>
+                    <span className="material-symbols-outlined">cottage</span>
                     <br />
                     <small>Home</small>
                 </div>
                 <div onClick={handleConverterLinkClick} style={{ cursor: "pointer" }}>
-                    <span class="material-symbols-outlined">currency_exchange</span>
+                    <span className="material-symbols-outlined">currency_exchange</span>
                     <br />
                     <small>Converter</small>
                 </div>
                 <div onClick={handleActivityLinkClick} style={{ cursor: "pointer" }}>
-                    <span class="material-symbols-outlined">equalizer</span>
+                    <span className="material-symbols-outlined">equalizer</span>
                     <br />
                     <small>Transactions</small>
                 </div>
                 <div onClick={handleConverterSettingsClick} style={{ cursor: "pointer" }}>
-                    <span class="material-symbols-outlined">rule_settings</span>
+                    <span className="material-symbols-outlined">rule_settings</span>
                     <br />
                     <small>Settings</small>
                 </div>

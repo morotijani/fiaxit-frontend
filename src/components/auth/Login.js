@@ -39,7 +39,7 @@ function Login() {
                     }}
                 >
                     {/* Heading */}
-                    <img class="img-fluid" src={Logo} alt="" width="72" height="35"></img>
+                    <img className="img-fluid" src={Logo} alt="" width="72" height="35"></img>
                     <div className="mt-4">
                         <h4 className="fw-bold">Your borderless account awaits, finally in sync.</h4>
                         <p className="text-muted mb-4">Login in to your account</p>

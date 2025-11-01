@@ -43,8 +43,9 @@ function Wallets() {
                 }
 
                 const jobs = storeWallets.map(async (w) => {
-                    const symbol = (w.wallet_crypto || '').toUpperCase();
+                    const symbol = (w.wallet_symbol || '').toUpperCase();
                     const address = w.wallet_address || '';
+                    const wallet_id = w.wallet_id || 111;
 
                     // fetch crypto info and balance in parallel
                     const infoPromise = jsonGet(`convert/coinmarketcap/latest/${symbol.toLowerCase()}`);
@@ -107,7 +108,8 @@ function Wallets() {
                         // value: valueStr,
                         rawInfo: infoData,
                         // rawBalance: balanceResp?.data ?? null,
-                        address
+                        address, 
+                        wallet_id
                     };
                 });
 
@@ -135,13 +137,16 @@ function Wallets() {
                 </button>
                 <h5 className="m-0">Manage & add wallets</h5>
                 <button className="btn btn-sm" onClick={() => navigate("/notifications")}>
-                    <span class="material-symbols-outlined">siren</span>
+                    <span className="material-symbols-outlined">siren</span>
                 </button>
             </div>
             <div className="p-4">
                 {/* Header */}
                 <div className="text-center mb-2">
-                    <h6 className="">My asstes</h6>
+                    <h6 className="">
+                        My asstes &nbsp;
+                        <span className="badge rounded-pill bg-dark">{walletStore.total}</span>
+                    </h6>
                     <p className="text-muted small mb-0">View and manage your wallets</p>
                 </div>
 
@@ -156,11 +161,7 @@ function Wallets() {
                         (assets.length ? assets : []).map((w) => {
                             const changeClass = (Number(w.change) >= 0) ? 'text-success' : 'text-danger';
                             return (
-                                <div
-                                    key={w.id}
-                                    className="d-flex justify-content-between align-items-center border-bottom py-3"
-                                    style={{ cursor: "pointer" }}
-                                >
+                                <div key={w.id} className="d-flex justify-content-between align-items-center border-bottom py-3" style={{ cursor: "pointer" }} onClick={() => navigate('/wallet/'+w.wallet_id)}>
                                     <div className="d-flex align-items-center">
                                         <div
                                             className="rounded-circle bg-light d-flex align-items-center justify-content-center me-3"
@@ -198,22 +199,21 @@ function Wallets() {
                         })
                     )}
 
-          {/* Add New Wallet Button */}
-          <div className="text-center py-4">
-            <button
-              className="btn btn-outline-primary d-flex align-items-center justify-content-center w-100"
-              style={{
-                borderRadius: "15px",
-                fontWeight: "500",
-                padding: "10px 0",
-              }}
-            >
-              <span className="material-symbols-outlined me-2">add_circle</span>
-              Add Wallet
-            </button>
-          </div>
-        </div>
-              
+                    {/* Add New Wallet Button */}
+                    <div className="text-center py-4">
+                        <button
+                            className="btn btn-outline-secondary d-flex align-items-center justify-content-center w-100"
+                            style={{
+                                borderRadius: "15px",
+                                fontWeight: "500",
+                                padding: "10px 0",
+                            }}
+                        >
+                            <span className="material-symbols-outlined me-2">add_circle</span>
+                            Add Wallet
+                        </button>
+                    </div>
+                </div>
             </div>
         </div>
     )

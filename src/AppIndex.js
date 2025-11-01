@@ -15,6 +15,7 @@ import Transactions from './components/transactions/Transactions'
 import { TransactionContext } from './contexts/TransactionContext'
 
 import Wallets from './components/wallets/Wallets'
+import WalletDetails from './components/wallets/WalletDetails'
 import { WalletContext } from './contexts/WalletContext'
 
 import Contacts from './components/contacts/Contacts'
@@ -62,41 +63,25 @@ function AppIndex() {
         // eslint-disable-next-line react-hooks/exhaustive-deps 
     }, []); // passing empty [] means, it will only run just one time it is rendered
 
-
-
-    // useEffect(() => {
-    //     authCheck();
-    //     // eslint-disable-next-line react-hooks/exhaustive-deps 
-    // }, []); // passing empty [] means, it will only run just one time it is rendered
-
-
-
-    // async function authCheck() {
-    //     await authDispatch({type: "isLoggedIn"});
-    //     if (!authStore.loggedIn) {
-    //         navigate('/auth/login');
-    //     } else {
-    //         hydrate(); // load everything from db into our store
-    //     }
-    //     return authStore.loggedIn;
-    // }
-
     async function hydrate() {
         // get all todos from db
         const resp = await jsonGet('todos') 
         if (resp && resp.success) {
             todoDispatch({type: 'setTodos', payload: {todos: resp.data, total: resp.total}})
         }
+
         // get all contacts
         const contactResp = await jsonGet('contacts');
         if (contactResp && contactResp.success) {
             contactDispatch({type: 'setContacts', payload: {contacts: contactResp.data, total: contactResp.total}});
         }
+
         // get all transactions
         const transactionResp = await jsonGet('transactions');
         if (transactionResp && transactionResp.success) {
             transactionDispatch({type: 'setTransactions', payload: {transactions: transactionResp.data, total: transactionResp.total}});
         }
+
         // get all wallets
         const walletResp = await jsonGet('wallets');
         if (walletResp && walletResp.success) {
@@ -113,6 +98,7 @@ function AppIndex() {
             <div className="card shadow-sm border-0 p-0 d-flex flex-column main-card-container">
                 <div className="flex-grow-1 overflow-auto main-page-scroll">
                     <Routes>
+                        <Route path="/wallet/:id" element={<WalletDetails />} />
                         <Route path="/wallets" element={<Wallets />} />
                         <Route path="/transactions" element={<Transactions />} />
                         <Route path="/settings" element={<SettingsForm />} />
@@ -125,7 +111,7 @@ function AppIndex() {
                 </div>
                 <MainFooter />
             </div>
-        </div>    
+        </div>
     );
 }
 

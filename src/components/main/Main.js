@@ -72,7 +72,7 @@ function Main() {
             <div className="bg-light rounded-5 rounded-top-0 mb-4">
                 {/* Header */}
                 <div className="d-flex justify-content-between align-items-center p-3">
-                    <div class="d-flex align-items-center">
+                    <div className="d-flex align-items-center">
                         <Link to="/profile" className="d-flex align-items-center">
                             <img src={Avatar} className='img-fluid rounded-pill shadow-sm' alt="ETH" style={{ width: "30px", height: "30px" }} />
                         </Link>
@@ -84,7 +84,7 @@ function Main() {
                         </div>
                     </div>
                     <button className="btn btn-sm" onClick={() => navigate('/notifications')}>
-                        <span class="material-symbols-outlined">siren</span>
+                        <span className="material-symbols-outlined">siren</span>
                     </button>
                 </div>
                 <div className="d-flex justify-content-between align-items-center mb-2 p-3">

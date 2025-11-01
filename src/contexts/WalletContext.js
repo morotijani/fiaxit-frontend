@@ -8,7 +8,12 @@ function reducer(store, action) {
 
     switch (action.type) {
         case 'AddTransaction': 
-            return {...store, wallets: [...store.wallets, action.payload]};
+            return {...store, wallets: [...store.wallets, action.payload]}; 
+        case 'walletInfoViewed': 
+            index = store.wallets.findIndex((w) => w.wallet_id === action.payload.wallet_id);
+            wallets = [...store.wallets];
+            wallets[index] = {...wallets[index], rawInfo: action.payload.info};
+            return {...store, wallets: wallets};
         case 'TransactionUpdated': 
             index = store.wallets.findIndex((w) => w.id === action.payload.id);
             wallets = [...store.wallets];
