@@ -25,6 +25,37 @@ function WalletDetails() {
         return null;
     }
 
+    // set cached data
+    const setCachedData = (key, data, ttlInMinutes = 60) => {
+        const ttlInMilliseconds = ttlInMinutes * 60 * 1000;
+        const expiresAt = new Date().getTime() + ttlInMilliseconds;
+
+        try {
+            localStorage.setItem(key, JSON.stringify({ data, expiresAt }));
+        } catch (err) {
+            console.error('Error setting cached data:', err);
+        }
+    };
+
+    // fucntion to get cached data
+    const getCachedData = (key) => {
+        try {
+            const cachedItem = localStorage.getItem(key);
+            if (!cachedItem) return null;
+
+            const { data, expiresAt } = JSON.parse(cachedItem);
+            if (Date.now() > expiresAt) {
+                // If cached data is expired, remove it
+                localStorage.removeItem(key);
+                return null;
+            }
+            return data;
+        } catch (err) {
+            console.error('Error getting cached data:', err);
+            return null;
+        }
+    };
+
     // create a function to convert balance
     async function convertCryptoToFiat(amount, fromCurrency, toCurrency) {
         try {
@@ -78,12 +109,41 @@ function WalletDetails() {
                 return;
             }
 
-            const crypto_symbol = (w.wallet_symbol || '').toLowerCase();
-            const address = w.wallet_address || '';
-            const crypto_name = (w.wallet_crypto_name || '').toLowerCase();
-
+            
+            
             // fetch wallet info, balance, transactions etc
             try {
+                const crypto_symbol = (w.wallet_symbol || '').toLowerCase();
+                const address = w.wallet_address || '';
+                const crypto_name = (w.wallet_crypto_name || '').toLowerCase();
+
+                // check if there is local storage cached data
+                const localCachedData = getCachedData(`wallet_info_${w.wallet_id}`);
+                if (localCachedData) {
+                    console.log('Using local storage cached data for wallet info', localCachedData);
+                    const asset = {
+                        id: w.wallet_id,
+                        name: w.wallet_name,
+                        symbol: w.wallet_symbol,
+                        address: w.wallet_address,
+                        crypto_name: w.wallet_crypto_name,
+                        rawInfo: localCachedData,
+                        // balance: localCachedData.balance,
+                        // transactions: localCachedData.transactions
+                    };
+                    setAssets([asset]);
+                }
+                setLoadingWallet(false);
+                if (localCachedData) {
+                    // If we have local cached data, we can use it and skip fetching
+                    if (mounted) {
+                        // setAssets([asset]);
+                        setLoadingWallet(false);
+                    }
+                    return;
+                }
+                
+            
                 const infoPromise = jsonGet(`wallets/${crypto_symbol}/mhxwNC4yW82KdcwsAPi81d8dcMSvmWoTSc/info`);
                 // const infoPromise = jsonGet(`wallets/${crypto_symbol}/${address}/info`);
                 const infoResp = await infoPromise;
@@ -132,16 +192,8 @@ function WalletDetails() {
                     // format totalSent
                     infoData.totalSentFormatted = `$${(infoData.totalSent || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
-                    // cache info in context
-                    walletDispatch(
-                        {
-                            type: 'walletInfoViewed', 
-                            payload: {
-                                wallet_id: w.wallet_id,
-                                info: infoData, 
-                                expiry: Date.now() + (5 * 60 * 1000) // cache for 5 minutes
-                            }
-                        });
+                    // cache data into local storage
+                    setCachedData(`wallet_info_${w.wallet_id}`, infoData, 5); // cache for 5 minutes
 
                     const asset = {
                         ...w, 
