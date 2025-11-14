@@ -309,9 +309,7 @@ function WalletDetails() {
                                             const to_address = isSent ? tx.outputs[0].addresses : tx.inputs[0].addresses;
                                             const to_address_quoted = `${to_address}`; // put double quotes around the to_address
 
-                                            // conver amount to  money format
-                                            const amountValue = parseFloat(tx.amount || tx.value || 0);
-                                            const formattedAmount = isSent ? `- ${Math.abs(amountValue)}` : `+ ${Math.abs(amountValue)}`;
+                                            // conver amount to  money format   
                                         
                                         return (
                                             <div key={index} className="d-flex justify-content-between align-items-center border-bottom py-3">
@@ -336,7 +334,7 @@ function WalletDetails() {
                                                         isSent ? "text-danger" : "text-success"
                                                     }`}
                                                     >
-                                                        {formattedAmount}
+                                                        {tx.amount}
                                                     </div>
                                                     <div className={`small ${changeClass}`}>
                                                         {tx.status ?? tx.confirmations ? 'Confirmed' : 'Pending'}

@@ -40,7 +40,7 @@ function AppIndex() {
 
     useEffect(() => {
         // run startup sequence
-        (async function startup(){
+        (async function startup() {
             try {
                 // trigger auth check in store
                 await authDispatch({type: "isLoggedIn"});
@@ -65,7 +65,7 @@ function AppIndex() {
 
     async function hydrate() {
         // get all todos from db
-        const resp = await jsonGet('todos') 
+        const resp = await jsonGet('todos')
         if (resp && resp.success) {
             todoDispatch({type: 'setTodos', payload: {todos: resp.data, total: resp.total}})
         }

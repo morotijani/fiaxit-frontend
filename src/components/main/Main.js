@@ -78,7 +78,7 @@ function Main() {
                         </Link>
                         <div className="ps-2 lh-sm">
                             <Link to="/profile" className="d-flex align-items-center text-decoration-none">
-                                <div className="text-muted mb-0">Hi, {authStore.user?.user_fname.toUpperCase() || 'Stranger'} 🙋‍♂️</div>
+                                <div className="text-muted mb-0">Hi, {(authStore.user?.user_fname || 'Stranger').toUpperCase()} 🙋‍♂️</div>
                             </Link>
                             <div className='fw-bold mb-0'>Good morning!</div>
                         </div>
@@ -167,7 +167,7 @@ function Main() {
                         (assets.length ? assets : []).map((t) => {
                             const changeClass = (t.change >= 0) ? 'text-success' : 'text-danger';
                             return (
-                                <div key={t.id} className="d-flex justify-content-between align-items-center py-2 border-bottom">
+                                <div key={t.id} className="d-flex justify-content-between align-items-center py-2 border-bottom" onClick={() => navigate(`/crypto/${(t.name).toLowerCase()}`)} style={{ cursor: 'pointer' }}>
                                     <div className="d-flex align-items-center">
                                         <div
                                             className="rounded-circle bg-light d-flex justify-content-center align-items-center me-2"
