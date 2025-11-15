@@ -1,6 +1,5 @@
 const ranges = [
     // { label: "1H", value: "1h" },
-    { label: "ALL", value: "all" },
     { label: "24H", value: "24h" },
     { label: "1W", value: "1w" },
     { label: "1M", value: "1m" },

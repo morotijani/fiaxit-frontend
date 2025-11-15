@@ -1,15 +1,13 @@
-import { useContext, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import Chart from "react-apexcharts";
 import { jsonGet } from '../../helpers/Ajax'
-import { useCopyToClipboard } from '../../helpers/StringHelpers'
 import toast from 'react-hot-toast';
 import TimeRangeSelector from "../TimeRangeSelector";
 import Skeleton from "../Skeleton";
 
 function CryptoDetails() {
     const navigate = useNavigate();
-    const [isCopied, copyToClipboard] = useCopyToClipboard();
     let { id, symbol } = useParams()
     symbol = 'bitcoin';
     symbol = String(symbol.toLowerCase());
@@ -30,6 +28,10 @@ function CryptoDetails() {
                         setCoin(coinData.data);
                         setLoading(false);
                     }
+                } else {
+                    toast.error('Crypto not found !', {duration: 6000});
+                    navigate('/');
+                    setLoading(false);
                 }
             });
         } catch (err) {
@@ -39,6 +41,7 @@ function CryptoDetails() {
         return () => {
             mounted = false;
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id]);
 
     // Fetch chart data based on time range
@@ -71,6 +74,10 @@ function CryptoDetails() {
                     <div className="spinner-border spinner-border-sm text-secondary" role="status" />
                     <small className="text-muted ms-2">Loading crypto details</small>
                 </div>
+                // <>
+                // <Skeleton height={40} width="60%" />
+                // <Skeleton height={30} width="30%" />
+                // </>
             ) : (
                     <div>
                         {!coin ? (
@@ -83,7 +90,7 @@ function CryptoDetails() {
                                     <button className="btn btn-sm" onClick={() => navigate(-1)}>
                                         <span className="material-symbols-outlined">keyboard_backspace</span>
                                     </button>
-                                    <h6 className="mb-0">{id || 'Crypto'}</h6>
+                                    <h6 className="mb-0">Coin Details</h6>
                                     <button className="btn btn-light btn-sm" onClick={() => navigate('/deposit')}>
                                         <span className="material-symbols-outlined">share</span>
                                     </button>
@@ -144,9 +151,37 @@ function CryptoDetails() {
                                 }}
                             />
                         )}
+                        
+                        <div className="p-4">
+                            {/* stats */}
+                            {loading ? (
+                                <div className="stats-container">
+                                    <Skeleton height={60} radius={12} />
+                                    <Skeleton height={60} radius={12} />
+                                </div>
+                            ) : (
+                                <div className="card border-0 bg-warning bg-opacity-10 mb-3">
+                                    <div className="card-body">
+                                        <div className="text-primary fs-xl fw-bold mb-3">Stats</div>
+                                        <div className="row">
+                                            <div className="col-sm-6">
+                                                <span className="stats-label mb-5">Market Cap</span>
+                                                <p className="font-monospace fw-bold fs-sm">
+                                                    ${coin.quote.USD.market_cap.toLocaleString()}
+                                                </p>
+                                            </div>
+                                            <div className="col-sm-6">
+                                                <span className="stats-label mb-5">Volume (24h)</span>
+                                                <p className="font-monospace fw-bold fs-sm">
+                                                    ${coin.quote.USD.volume_24h.toLocaleString()}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
 
-                        {/* About */}
-                        <div className="about-card">
+                            {/* About */}
                             {loading ? (
                                 <>
                                     <Skeleton height={25} width="40%" />
@@ -156,9 +191,9 @@ function CryptoDetails() {
                                 </>
                             ) : (
                                 <>
-                                    <div className="p-4">
-                                        <h3>About {coin.name}</h3>
-                                        <p>{coin.slug} is a cryptocurrency listed on CoinMarketCap...</p>
+                                    <div className="">
+                                        <h4 className="fs-5">About {coin.name}</h4>
+                                        <p className="fs-sm">{coin.slug} is a cryptocurrency listed on CoinMarketCap...</p>
                                     </div>
                                 </>
                             )}
