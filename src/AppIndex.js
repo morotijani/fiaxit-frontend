@@ -11,6 +11,8 @@ import Main from './components/main/Main'
 import Todos from './components/todos/Todos'
 import { TodoContext } from './contexts/TodoContext';
 
+import Crypto from './components/crypto/Crypto'
+
 import Transactions from './components/transactions/Transactions'
 import { TransactionContext } from './contexts/TransactionContext'
 
@@ -98,6 +100,7 @@ function AppIndex() {
             <div className="card shadow-sm border-0 p-0 d-flex flex-column main-card-container">
                 <div className="flex-grow-1 overflow-auto main-page-scroll">
                     <Routes>
+                        <Route path="/crypto/:id" element={<Crypto />} />
                         <Route path="/wallet/:id" element={<WalletDetails />} />
                         <Route path="/wallets" element={<Wallets />} />
                         <Route path="/transactions" element={<Transactions />} />

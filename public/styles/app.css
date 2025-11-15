@@ -108,6 +108,43 @@ body::-webkit-scrollbar {
 }
 
 
+/* ***************************** TIME RANGE CSS  ****************************/
+.time-range {
+    display: flex;
+    gap: 8px;
+    margin: 15px 0;
+    overflow-x: auto;
+    padding-bottom: 5px;
+}
+
+.range-btn {
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: none;
+    background: #1c1c1c;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.range-btn.active {
+    background: white;
+    color: black;
+    font-weight: 600;
+}
+
+/* SKELETON */
+.skeleton {
+    background: linear-gradient(90deg, #1c1c1c 0%, #2e2e2e 50%, #1c1c1c 100%);
+    background-size: 300% 100%;
+    animation: shimmer 1.3s infinite;
+}
+
+@keyframes shimmer {
+    0% { background-position: 300% 0; }
+    100% { background-position: -300% 0; }
+}
+
 /* ******************************************************************* */
 div.main-card {
     min-height: 100vh;

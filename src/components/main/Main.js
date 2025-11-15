@@ -167,7 +167,7 @@ function Main() {
                         (assets.length ? assets : []).map((t) => {
                             const changeClass = (t.change >= 0) ? 'text-success' : 'text-danger';
                             return (
-                                <div key={t.id} className="d-flex justify-content-between align-items-center py-2 border-bottom" onClick={() => navigate(`/crypto/${(t.name).toLowerCase()}`)} style={{ cursor: 'pointer' }}>
+                                <div key={t.id} className="d-flex justify-content-between align-items-center py-2 border-bottom" onClick={() => navigate(`/crypto/${t.id}`)} style={{ cursor: 'pointer' }}>
                                     <div className="d-flex align-items-center">
                                         <div
                                             className="rounded-circle bg-light d-flex justify-content-center align-items-center me-2"
