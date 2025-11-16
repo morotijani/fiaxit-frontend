@@ -1,6 +1,5 @@
-import { useContext, useState, useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
-import { WalletContext } from '../../contexts/WalletContext'
 import { jsonGet } from '../../helpers/Ajax'
 import { shortenAddress, useCopyToClipboard } from '../../helpers/StringHelpers'
 import { formatDistanceToNow } from 'date-fns';
@@ -9,7 +8,6 @@ import toast from 'react-hot-toast';
 function WalletDetails() {
     const navigate = useNavigate();
     const [isCopied, copyToClipboard] = useCopyToClipboard();
-    const [walletInfoStore, walletDispatch] = useContext(WalletContext);
     let { id } = useParams()
     // on component load, fetch wallet details
     const [assets, setAssets] = useState([]);
@@ -108,61 +106,47 @@ function WalletDetails() {
                 if (localCachedData) {
                     // If we have local cached data, we can use it and skip fetching
                     if (mounted) {
-                        // setAssets([asset]);
                         setLoadingWallet(false);
                     }
                     return;
                 }
+
+                // check crypto symbol
+                // crypto_symbol = crypto_symbol.toLowerCase();
                 
-            
-                const infoPromise = jsonGet(`wallets/${crypto_symbol}/mhxwNC4yW82KdcwsAPi81d8dcMSvmWoTSc/info`);
-                // const infoPromise = jsonGet(`wallets/${crypto_symbol}/${address}/info`);
+                // const infoPromise = jsonGet(`wallets/${crypto_symbol}/mhxwNC4yW82KdcwsAPi81d8dcMSvmWoTSc/info`);
+                const infoPromise = jsonGet(`wallets/${crypto_symbol}/${address}/info`);
                 const infoResp = await infoPromise;
                 const infoData = infoResp?.data ?? null;
 
                 if (infoData) {
                     // process infoData as needed
-                    let balance = infoData.balance.total || 0;
-                    if (typeof infoData.balance === 'object' && infoData.balance !== null) {
-                        balance = parseFloat(infoData.balance.total) || 0;
-                    } else {
-                        balance = parseFloat(infoData.balance) || 0;
+
+                    if (crypto_symbol === 'usdt') {
+                        infoData.balance.fiatFormatted = `$${infoData.usdt.balance || '0.00'}`;
+                    } else if (crypto_symbol === 'usdc') {
+                        infoData.balance.fiatFormatted = `$${infoData.usdc.balance || '0.00'}`;
+                    } else if (crypto_symbol === 'btc') {
+
+                        let balance = infoData.balance.total || 0;
+                        if (typeof infoData.balance === 'object' && infoData.balance !== null) {
+                            balance = parseFloat(infoData.balance.total) || 0;
+                        } else {
+                            balance = parseFloat(infoData.balance) || 0;
+                        }
+                        infoData.balance.total = balance;
+
+                        // convert balance to fiat (USD)
+                        try {
+                            infoData.balance.fiat = await convertCryptoToFiat(balance, crypto_name, 'usd');
+                        } catch (err) {
+                            console.warn('Balance conversion failed', err);
+                            infoData.balance.fiat = 0;
+                        }
+
+                        // formatted balance
+                        infoData.balance.fiatFormatted = `$${infoData.balance.fiat.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
                     }
-                    infoData.balance.total = balance;
-
-                    // convert balance to fiat (USD)
-                    try {
-                        infoData.balance.fiat = await convertCryptoToFiat(balance, crypto_name, 'usd');
-                    } catch (err) {
-                        console.warn('Balance conversion failed', err);
-                        infoData.balance.fiat = 0;
-                    }
-
-                    // convert totalReceived and totalSent to fiat (USD)
-                    try {
-                        infoData.totalReceived = await convertCryptoToFiat(infoData.totalReceived || 0, crypto_name, 'usd');
-                    } catch (err) {
-                        console.warn('Total received conversion failed', err);
-                        infoData.totalReceived = 0;
-                    }
-
-                    // convert totalSent to fiat (USD)
-                    try {
-                        infoData.totalSent = await convertCryptoToFiat(infoData.totalSent || 0, crypto_name, 'usd');
-                    } catch (err) {
-                        console.warn('Total sent conversion failed', err);
-                        infoData.totalSent = 0;
-                    }
-
-                    // formatted balance
-                    infoData.balance.fiatFormatted = `$${infoData.balance.fiat.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-
-                    // format totalReceived
-                    infoData.totalReceivedFormatted = `$${(infoData.totalReceived || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-
-                    // format totalSent
-                    infoData.totalSentFormatted = `$${(infoData.totalSent || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-
                     // cache data into local storage
                     setCachedData(`wallet_info_${w.wallet_id}`, infoData, 5); // cache for 5 minutes
 
@@ -214,20 +198,17 @@ function WalletDetails() {
                         
                         (assets.length ? assets : []).map((t) => {
                             return (
-                                <div key={t.wallet_id} >
+                                <div key={t.wallet_id}>
                                     <div className="text-center text-muted small mt-2">
-                                        <span className={`badge bg-${isCopied ? 'info' : 'dark'} bg-opacity-10 text-dark rounded-pill px-3 py-2`} onClick={handleCopy} style={{cursor: 'pointer'}}>{shortenAddress(t.wallet_address)}&nbsp;&nbsp;<i className="bi bi-back"></i>
+                                        <span className={`badge bg-${isCopied ? 'info' : 'dark'} bg-opacity-10 text-dark rounded-pill px-3 py-2 fw-normal fs-6`} onClick={handleCopy} style={{cursor: 'pointer'}}>{shortenAddress(t.wallet_address)}&nbsp;&nbsp;<i className="bi bi-back"></i>
                                         </span>
                                     </div>
                                     {/* Balance */}
                                     <div className="text-center my-3">
-                                        <h3 className="fw-bold">{t.rawInfo.balance.fiatFormatted}</h3>
-                                        <div className="text-success small fw-semibold">
-                                            + {t.rawInfo.totalSentFormatted}(+{t.rawInfo.totalReceivedFormatted}%)
-                                            <div className="small text-muted">
-                                                <div>Total Sent: {t.rawInfo.totalSentFormatted}</div>
-                                                <div>Total Received: {t.rawInfo.totalReceivedFormatted}</div>
-                                            </div>
+                                        <h3 className="fw-bold fs-2">{t.rawInfo.balance.fiatFormatted}</h3>
+                                        <div className="small text-muted d-flex justify-content-between fw-semibold p-3">
+                                            <div className="p-1">Total Sent: <span className="text-warning">{t.rawInfo.totalSent} {assets[0]?.wallet_symbol}</span></div>
+                                            <div className="p-1">Total Received: <span className="text-success">{t.rawInfo.totalReceived} {assets[0]?.wallet_symbol}</span></div>
                                         </div>
                                         <div className="small text-muted">Bal: {Number(t.rawInfo.balance.total || 0)}</div>
                                     </div>

@@ -5,22 +5,36 @@ import { jsonDelete, jsonGet } from '../../helpers/Ajax'
 import { shortenAddress } from '../../helpers/StringHelpers'
 import toast from 'react-hot-toast';
 
+/* Module-level cache */
+const LS_PREFIX = 'wallets_cache_v1_'
+const TTL_MS = 5 * 60 * 1000 // 5 minutes
+
+function getCachedData(key) {
+    try {
+        const raw = localStorage.getItem(LS_PREFIX + key);
+        if (!raw) return null;
+        const { ts, data } = JSON.parse(raw);
+        if (Date.now() - ts > TTL_MS) {
+            localStorage.removeItem(LS_PREFIX + key);
+            return null;
+        }
+        return data;
+    } catch (e) {
+        return null;
+    }
+}
+
+function setCachedData(key, data) {
+    try {
+        localStorage.setItem(LS_PREFIX + key, JSON.stringify({ ts: Date.now(), data }));
+    } catch (e) {
+        // ignore
+    }
+}
+
 function Wallets() {
     const navigate = useNavigate();
     const [walletStore, walletDispatch] = useContext(WalletContext);
-
-    async function handleContactDelete(id) {
-        if (window.confirm("Are you siure you want to delete this contact?  This cannot be undone !")) {
-            const resp = await jsonDelete(`contacts/${id}`)
-            if (resp.success) {
-                walletDispatch({type: 'contactDeleted', payload: id});
-                toast.success("Contacted deleted !", {duration :6000})
-            } else {
-                toast.failed("Something went wrong please try again !", {duration :6000})
-            }
-        }
-    }
-
 
    // state for enriched wallets (info + balance)
     const [assets, setAssets] = useState([]);
@@ -47,77 +61,104 @@ function Wallets() {
                     const address = w.wallet_address || '';
                     const wallet_id = w.wallet_id || 111;
 
-                    // fetch crypto info and balance in parallel
-                    const infoPromise = jsonGet(`convert/coinmarketcap/latest/${symbol.toLowerCase()}`);
-                   // const balancePromise = jsonGet(`wallets/${symbol}/${address}/balance`);
+                    try {
+                        // check cache first
+                        const cacheKey = `coin_info_${symbol.toLowerCase()}`;
+                        let infoData = getCachedData(cacheKey);
 
-                    //const [infoResp, balanceResp] = await Promise.all([infoPromise, balancePromise]).catch(e => [null, null]);
-                    const infoResp = await Promise.all([infoPromise]).catch(e => [null, null]);
+                        if (!infoData) {
+                            // fetch if not cached
+                            const infoResp = await jsonGet(`convert/coinmarketcap/latest/${symbol.toLowerCase()}`);
 
-                    // normalize infoResp.data
-                    let infoData = null;
-                    if (infoResp && infoResp.success && infoResp.data) {
-                        // API might return an object keyed by symbol or an array
-                        const d = infoResp.data;
-                        if (Array.isArray(d)) infoData = d[0];
-                        else if (typeof d === 'object') {
-                            const keys = Object.keys(d);
-                            if (keys.length === 1 && d[keys[0]]) infoData = d[keys[0]];
-                            else infoData = d;
-                        } else {
-                            infoData = d;
+                            if (infoResp && infoResp.success && infoResp.data) {
+                                const d = infoResp.data;
+                                if (Array.isArray(d)) {
+                                    infoData = d[0];
+                                } else if (typeof d === 'object') {
+                                    const keys = Object.keys(d);
+                                    if (keys.length === 1 && d[keys[0]]) {
+                                        infoData = d[keys[0]];
+                                    } else {
+                                        infoData = d;
+                                    }
+                                } else {
+                                    infoData = d;
+                                }
+
+                                if (infoData) setCachedData(cacheKey, infoData);
+                            }
                         }
+
+                        if (!infoData) {
+                            console.warn(`No info data for symbol ${symbol}`);
+                            infoData = {};
+                        }
+                        console.log('Wallet info data for', symbol, address, infoData);
+                        
+                        // extract fields with fallbacks
+                        const name = infoData?.name || symbol;
+                        const logo = infoData?.logo || infoData?.logo_url || infoData?.icon || 
+                                   (infoData?.id ? `https://s2.coinmarketcap.com/static/img/coins/64x64/${infoData.id}.png` : null);
+                        const price = Number(
+                            infoData?.price ||
+                            infoData?.quote?.USD?.price ||
+                            infoData?.last_price ||
+                            0
+                        );
+                        const change = Number(
+                            infoData?.quote?.USD?.percent_change_24h ||
+                            infoData?.percent_change_24h ||
+                            infoData?.change_percent_24h ||
+                            0
+                        );
+
+                        // format price as currency
+                        const priceFormatted = `$${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+                        return {
+                            id: `${symbol}_${address}`,
+                            symbol,
+                            name,
+                            logo,
+                            price,
+                            priceFormatted,
+                            change,
+                            rawInfo: infoData,
+                            address,
+                            wallet_id
+                        };
+                    } catch (err) {
+                        console.error(`Error fetching wallet info for ${symbol}`, err);
+                        // return minimal wallet info on error
+                        return {
+                            id: `${symbol}_${address}`,
+                            symbol,
+                            name: symbol,
+                            logo: null,
+                            price: 0,
+                            priceFormatted: '$0.00',
+                            change: 0,
+                            rawInfo: {},
+                            address,
+                            wallet_id,
+                            error: true
+                        };
                     }
-                    console.log('Wallet info data for', symbol, address, infoData);
-
-                    // pick sensible fields with fallbacks
-                    const name = infoData?.name || symbol;
-                    const logo = infoData?.logo || infoData?.logo_url || infoData?.icon || (infoData?.id ? `https://s2.coinmarketcap.com/static/img/coins/64x64/${infoData.id}.png` : null);
-                    const price = Number(
-                        infoData?.price ||
-                        infoData?.quote?.USD?.price ||
-                        infoData?.last_price ||
-                        0
-                    );
-                    const change = Number(
-                        infoData?.quote?.USD?.percent_change_24h ||
-                        infoData?.percent_change_24h ||
-                        infoData?.change_percent_24h ||
-                        0
-                    );
-
-                    // balance response normalization
-                    // let balance = 0;
-                    // if (balanceResp && balanceResp.success && balanceResp.data != null) {
-                    //     // balance may be number or object with 'balance' key
-                    //     if (typeof balanceResp.data === 'number') balance = balanceResp.data;
-                    //     else if (typeof balanceResp.data === 'object') balance = Number(balanceResp.data.balance ?? balanceResp.data.amount ?? 0);
-                    // }
-
-                    //const valueNum = (Number(price) || 0) * (Number(balance) || 0);
-                    //const valueStr = `$${valueNum.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-
-                    return {
-                        id: `${symbol}_${address}`,
-                        symbol,
-                        name,
-                        logo,
-                        price,
-                        change,
-                        // balance,
-                        // value: valueStr,
-                        rawInfo: infoData,
-                        // rawBalance: balanceResp?.data ?? null,
-                        address, 
-                        wallet_id
-                    };
                 });
 
                 const results = await Promise.all(jobs);
-                if (mounted) setAssets(results);
+                // if (mounted) setAssets(results);
+                if (mounted) {
+                    // filter out nulls and set
+                    setAssets(results.filter(r => r != null));
+                }
             } catch (err) {
                 console.error('Failed to load wallets info', err);
-                if (mounted) setAssets([]);
+                // if (mounted) setAssets([]);
+                if (mounted) {
+                    toast.error('Failed to load wallets', { duration: 6000 });
+                    setAssets([]);
+                }
             } finally {
                 if (mounted) setLoadingAssets(false);
             }
@@ -125,11 +166,11 @@ function Wallets() {
 
         fetchWallets();
         return () => { mounted = false; }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [walletStore && walletStore.wallets]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [walletStore?.wallets?.length]); // depend on length, not object reference
 
     return (
-         <div>
+        <div>
             <div className="d-flex justify-content-between align-items-center p-3" style={{ backgroundColor: "#eaeae6"}}>
                 {/* back button */}
                 <button className="btn btn-sm" onClick={() => navigate(-1)}>
@@ -157,11 +198,15 @@ function Wallets() {
                             <div className="spinner-border spinner-border-sm text-secondary" role="status" />
                             <small className="text-muted ms-2">Loading wallets...</small>
                         </div>
+                    ) : assets.length === 0 ? (
+                        <div className="text-center py-3">
+                            <small className="text-muted">No wallets found</small>
+                        </div>
                     ) : (
-                        (assets.length ? assets : []).map((w) => {
+                        assets.map((w) => {
                             const changeClass = (Number(w.change) >= 0) ? 'text-success' : 'text-danger';
                             return (
-                                <div key={w.id} className="d-flex justify-content-between align-items-center border-bottom py-3" style={{ cursor: "pointer" }} onClick={() => navigate('/wallet/'+w.wallet_id)}>
+                                <div key={w.id} className="d-flex justify-content-between align-items-center border-bottom py-3" style={{ cursor: "pointer" }} onClick={() => navigate('/wallet/' + w.wallet_id)}>
                                     <div className="d-flex align-items-center">
                                         <div
                                             className="rounded-circle bg-light d-flex align-items-center justify-content-center me-3"
@@ -185,12 +230,15 @@ function Wallets() {
                                         </div>
                                         <div>
                                             <div className="fw-semibold">{w.name}</div>
-                                            <div className="text-muted small">{w.symbol} • {shortenAddress(w.address)}</div>
+                                            <div className="text-muted small">
+                                                {w.symbol} • {shortenAddress(w.address)}
+                                                {w.error && <span className="text-danger ms-2">(error)</span>}
+                                            </div>
                                         </div>
                                     </div>
 
                                     <div className="text-end">
-                                        <div className="fw-semibold">{w.price}</div>
+                                        <div className="fw-semibold">{w.priceFormatted}</div>
                                         <div className={`small ${changeClass}`}>{(w.change || 0).toFixed(2)}%</div>
                                         {/* <div className="small text-muted">Bal: {Number(w.balance || 0)}</div> */}
                                     </div>
