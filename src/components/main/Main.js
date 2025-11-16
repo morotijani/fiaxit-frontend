@@ -27,8 +27,8 @@ function Main() {
         async function fetchAssets() {
             try {
                 setLoadingAssets(true);
-                const url = 'convert/coinmarketcap/listings/latest?start=1&limit=10&convert=USD';
-
+                
+                const url = 'convert/coinmarketcap/listings/latest?start=1&limit=20&convert=USD';
                 const res = await jsonGet(url);
                 if (res.success) {
                     const mapped = (res.data || []).map(a => {
