@@ -129,11 +129,11 @@ function WalletDetails() {
                         infoData.balance.fiatFormatted = `$${infoData.usdc.balance || '0.00'}`;
                     } else if (crypto_symbol === 'eth') {
 
-                        let balance = infoData.balanceEth || 0;
-                        if (typeof infoData.balanceEth === 'object' && infoData.balanceEth !== null) {
-                            balance = parseFloat(infoData.balanceEth) || 0;
+                        let balance = infoData.balance.ether || 0;
+                        if (typeof infoData.balance.ether === 'object' && infoData.balance.ether !== null) {
+                            balance = parseFloat(infoData.balance.ether) || 0;
                         } else {
-                            balance = parseFloat(infoData.balanceEth) || 0;
+                            balance = parseFloat(infoData.balance.ether) || 0;
                         }
                         infoData.balance.total = balance;
 
@@ -149,7 +149,10 @@ function WalletDetails() {
 
                         // get total sent and received from infoData
                         infoData.totalSent = infoData.totalSentEth || 0;
-                        infoData.totalReceived = infoData.totalReceivedEth || 0;
+                        infoData.totalReceived = infoData.totalReceivedEth || 0; 
+
+                        // transaction count
+                        infoData.txCount = infoData.transactionCount || (infoData.transactions ? infoData.transactions.length : 0);
 
                     } else if (crypto_symbol === 'btc') {
 
@@ -171,6 +174,10 @@ function WalletDetails() {
 
                         // formatted balance
                         infoData.balance.fiatFormatted = `$${infoData.balance.fiat.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+                        // transaction count
+                        infoData.txCount = infoData.txCount || (infoData.transactions ? infoData.transactions.length : 0);
+
                     }
 
                     // cache data into local storage
@@ -230,6 +237,7 @@ function WalletDetails() {
                                         <span className={`badge bg-${isCopied ? 'info' : 'dark'} bg-opacity-10 text-dark rounded-pill px-3 py-2 fw-normal fs-6`} onClick={handleCopy} style={{cursor: 'pointer'}}>{shortenAddress(t.wallet_address)}&nbsp;&nbsp;<i className="bi bi-back"></i>
                                         </span>
                                     </div>
+
                                     {/* Balance */}
                                     <div className="text-center my-3">
                                         <h3 className="fw-bold fs-2">{t.rawInfo.balance.fiatFormatted}</h3>
@@ -237,9 +245,8 @@ function WalletDetails() {
                                             <div className="p-1">Total Sent: <span className="text-warning">{t.rawInfo.totalSent} {assets[0]?.wallet_symbol}</span></div>
                                             <div className="p-1">Total Received: <span className="text-success">{t.rawInfo.totalReceived} {assets[0]?.wallet_symbol}</span></div>
                                         </div>
-                                        <div className="small text-muted">Bal: {Number(t.rawInfo.balance.total || 0)}</div>
+                                        <div className="small text-muted">Bal: {Number(t.rawInfo.balance.total || 0)} {assets[0]?.wallet_symbol}</div>
                                     </div>
-
                                     
                                     {/* Action Buttons */}
                                     <div className="d-flex justify-content-around my-3 pb-3">
