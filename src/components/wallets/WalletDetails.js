@@ -123,9 +123,34 @@ function WalletDetails() {
                     // process infoData as needed
 
                     if (crypto_symbol === 'usdt') {
+                        console.log(infoData);
                         infoData.balance.fiatFormatted = `$${infoData.usdt.balance || '0.00'}`;
                     } else if (crypto_symbol === 'usdc') {
                         infoData.balance.fiatFormatted = `$${infoData.usdc.balance || '0.00'}`;
+                    } else if (crypto_symbol === 'eth') {
+
+                        let balance = infoData.balanceEth || 0;
+                        if (typeof infoData.balanceEth === 'object' && infoData.balanceEth !== null) {
+                            balance = parseFloat(infoData.balanceEth) || 0;
+                        } else {
+                            balance = parseFloat(infoData.balanceEth) || 0;
+                        }
+                        infoData.balance.total = balance;
+
+                        // convert balance to fiat (USD)
+                        try {
+                            infoData.balance.fiat = await convertCryptoToFiat(balance, crypto_name, 'usd');
+                        } catch (err) {
+                            console.warn('Balance conversion failed', err);
+                            infoData.balance.fiat = 0;
+                        }
+                        // formatted balance
+                        infoData.balance.fiatFormatted = `$${infoData.balance.fiat.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+                        // get total sent and received from infoData
+                        infoData.totalSent = infoData.totalSentEth || 0;
+                        infoData.totalReceived = infoData.totalReceivedEth || 0;
+
                     } else if (crypto_symbol === 'btc') {
 
                         let balance = infoData.balance.total || 0;
@@ -147,9 +172,11 @@ function WalletDetails() {
                         // formatted balance
                         infoData.balance.fiatFormatted = `$${infoData.balance.fiat.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
                     }
+
                     // cache data into local storage
                     setCachedData(`wallet_info_${w.wallet_id}`, infoData, 5); // cache for 5 minutes
 
+                    // 
                     const asset = {
                         ...w, 
                         rawInfo: infoData,
