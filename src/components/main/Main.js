@@ -17,6 +17,14 @@ function Main() {
     //     }
     // }
 
+    // create greeting function based on time of day
+    function getGreeting() {
+        const hour = new Date().getHours();
+        if (hour < 12) return "Good morning!";
+        if (hour < 18) return "Good afternoon!";
+        return "Good evening!";
+    }
+
     // live assets state (from CoinMarketCap Pro)
     const [assets, setAssets] = useState([]);
     const [loadingAssets, setLoadingAssets] = useState(true);
@@ -80,7 +88,7 @@ function Main() {
                             <Link to="/profile" className="d-flex align-items-center text-decoration-none">
                                 <div className="text-muted mb-0">Hi, {(authStore.user?.user_fname || 'Stranger').toUpperCase()} 🙋‍♂️</div>
                             </Link>
-                            <div className='fw-bold mb-0'>Good morning!</div>
+                            <div className='fw-bold mb-0'>{getGreeting()}</div>
                         </div>
                     </div>
                     <button className="btn btn-sm" onClick={() => navigate('/notifications')}>
@@ -93,11 +101,11 @@ function Main() {
                         Assets
                     </button>
                 </div>
-                <div className="text-center text-muted small mt-2">
+                {/* <div className="text-center text-muted small mt-2">
                     <span className="badge bg-dark bg-opacity-10 text-dark rounded-pill px-3 py-2">
                         0x9e523429...34c7 <i className="bi bi-back"></i>
                     </span>
-                </div>
+                </div> */}
 
                 {/* Balance */}
                 <div className="text-center my-3">

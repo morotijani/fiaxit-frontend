@@ -262,7 +262,7 @@ function CryptoDetails() {
                                         fill: { opacity: 0.2 },
                                         xaxis: { labels: { show: false } },
                                         yaxis: { labels: { show: false } },
-                                        theme: { mode: "dark" },
+                                        // theme: { mode: "dark" },
                                     }}
                                 />
                             )

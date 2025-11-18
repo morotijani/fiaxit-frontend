@@ -6,19 +6,7 @@ import { shortenAddress, useCopyToClipboard } from '../../helpers/StringHelpers'
 import { formatDistanceToNow } from 'date-fns';
 import toast from 'react-hot-toast';
 
-/*
-  Fixes / improvements:
-  - Proper effect cleanup (no stale setState after unmount)
-  - Safer optional chaining around nested fields (avoids runtime TypeError)
-  - Check API responses (resp.success) before using resp.data
-  - Cache wallet info in localStorage with TTL (already present in file) and do a background refresh
-  - Graceful fallback to cached data on errors / 429 rate-limit responses
-  - Robust transaction parsing (guard inputs/outputs, time field, amount detection)
-  - Fixed conditional precedence for tx status
-  - Copy-to-clipboard now shows toast
-*/
-
-const DEFAULT_CACHE_TTL_MIN = 5;
+const DEFAULT_CACHE_TTL_MIN = 5; // minutes
 
 function setCachedData(key, data, ttlInMinutes = DEFAULT_CACHE_TTL_MIN) {
     const ttlInMilliseconds = ttlInMinutes * 60 * 1000;
@@ -387,4 +375,3 @@ function WalletDetails() {
 }
 
 export default WalletDetails;
-// ...existing code...
