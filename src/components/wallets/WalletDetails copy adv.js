@@ -6,31 +6,104 @@ import { shortenAddress, useCopyToClipboard } from '../../helpers/StringHelpers'
 import { formatDistanceToNow } from 'date-fns';
 import toast from 'react-hot-toast';
 
-const DEFAULT_CACHE_TTL_MIN = 5; // minutes
+/*
+  Changes:
+  - Added module-level inflight request deduplication (INFLIGHT map)
+  - Tuned TTLs: INFO_TTL_MIN = 10, TX_TTL_MIN = 5
+  - fetchWithCache utility returns cached/stale data on 429/network errors
+  - Uses fetchWithCache for wallet info refreshes to avoid duplicated calls during navigation/page refresh
+*/
 
-function setCachedData(key, data, ttlInMinutes = DEFAULT_CACHE_TTL_MIN) {
-    const ttlInMilliseconds = ttlInMinutes * 60 * 1000;
-    const expiresAt = Date.now() + ttlInMilliseconds;
+const INFO_TTL_MIN = 10; // minutes for wallet info
+const TX_TTL_MIN = 5;    // minutes for transactions/quick data
+const CACHE_PREFIX = 'wallet_info_cache_v2_';
+
+const INFLIGHT = new Map(); // key -> Promise
+
+function makeKey(key) {
+    return `${CACHE_PREFIX}${key}`;
+}
+
+function setLocalCache(key, data, ttlInMinutes = INFO_TTL_MIN) {
     try {
-        localStorage.setItem(key, JSON.stringify({ data, expiresAt }));
+        const expiresAt = Date.now() + ttlInMinutes * 60 * 1000;
+        localStorage.setItem(makeKey(key), JSON.stringify({ data, expiresAt }));
     } catch (err) {
-        console.error('Error setting cached data:', err);
+        console.error('setLocalCache error', err);
     }
 }
-function getCachedData(key) {
+
+function getLocalCache(key) {
     try {
-        const cachedItem = localStorage.getItem(key);
-        if (!cachedItem) return null;
-        const { data, expiresAt } = JSON.parse(cachedItem);
+        const raw = localStorage.getItem(makeKey(key));
+        if (!raw) return null;
+        const { data, expiresAt } = JSON.parse(raw);
         if (!expiresAt || Date.now() > expiresAt) {
-            localStorage.removeItem(key);
+            localStorage.removeItem(makeKey(key));
             return null;
         }
         return data;
     } catch (err) {
-        console.error('Error getting cached data:', err);
+        console.error('getLocalCache error', err);
         return null;
     }
+}
+
+/**
+ * fetchWithCache(key, ttlMinutes, fetcher)
+ * - returns cached data if fresh
+ * - deduplicates inflight requests per key
+ * - on error (429/network) returns stale cache if available
+ */
+async function fetchWithCache(key, ttlMinutes, fetcher) {
+    const cacheKey = makeKey(key);
+    // if cached and fresh, return
+    const cached = getLocalCache(key);
+    if (cached) return cached;
+
+    // return inflight promise if exists
+    const inflight = INFLIGHT.get(key);
+    if (inflight) return inflight;
+
+    const p = (async () => {
+        try {
+            const respData = await fetcher();
+            if (respData != null) {
+                setLocalCache(key, respData, ttlMinutes);
+                return respData;
+            }
+            // if fetcher returned null, try returning stale cache (rare here)
+            const stale = localStorage.getItem(cacheKey);
+            if (stale) {
+                try {
+                    return JSON.parse(stale).data;
+                } catch (e) {
+                    return null;
+                }
+            }
+            return null;
+        } catch (err) {
+            // if rate limited or network error, return stale if present
+            const msg = String(err?.message || '').toLowerCase();
+            if (msg.includes('429') || msg.includes('rate') || msg.includes('network') || msg.includes('failed to fetch')) {
+                const staleRaw = localStorage.getItem(cacheKey);
+                if (staleRaw) {
+                    try {
+                        return JSON.parse(staleRaw).data;
+                    } catch (e) {
+                        // fallthrough
+                    }
+                }
+            }
+            throw err;
+        } finally {
+            // cleanup inflight
+            INFLIGHT.delete(key);
+        }
+    })();
+
+    INFLIGHT.set(key, p);
+    return p;
 }
 
 function timeAgo(date) {
@@ -86,95 +159,87 @@ function WalletDetails() {
 
                 const symbol = (w.wallet_symbol || '').toLowerCase();
                 const address = w.wallet_address || '';
-                const cacheKey = `wallet_info_${w.wallet_id}`;
+                const cacheKey = `wallet_${w.wallet_id}_info`;
 
-                // try cached data first
-                const cached = getCachedData(cacheKey);
+                // try cached data first (fast)
+                const cached = getLocalCache(cacheKey);
                 if (cached && mounted) {
                     setAssets([{ ...w, rawInfo: cached }]);
                     setLoadingWallet(false);
-                    // continue to refresh in background (non-blocking)
-                    // (async () => {
-                    //     try {
-                    //         const resp = await jsonGet(`wallets/${symbol}/${address}/info`);
-                    //         if (resp && resp.success && resp.data) {
-                    //             // fiat and fiat formatted normalization
-                    //             resp.data.balance = resp.data.balance || {};
-                    //             if (resp.data.balance.total != null) {
-                    //                 resp.data.balance.fiat = await convertCryptoToFiat(resp.data.balance.total, w.wallet_crypto_name || symbol, 'usd');
-                    //                 resp.data.balance.fiatFormatted = `$${(Number(resp.data.balance.fiat) || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-                    //             }
 
-                    //             setCachedData(cacheKey, resp.data, DEFAULT_CACHE_TTL_MIN);
-                    //             if (mounted) setAssets([{ ...w, rawInfo: resp.data }]);
-                    //         }
-                    //     } catch (err) {
-                    //         // ignore background refresh errors
-                    //         console.warn('Background wallet info refresh failed', err);
-                    //     }
-                    // })();
-                    return; // early return: UI served from cache
+                    // schedule background refresh using fetchWithCache to dedupe if multiple tabs/navigations occur
+                    fetchWithCache(cacheKey, INFO_TTL_MIN, async () => {
+                        const resp = await jsonGet(`wallets/${symbol}/${address}/info`);
+                        if (resp && resp.success) return resp.data;
+                        throw new Error(resp?.message || 'info fetch failed');
+                    }).then((fresh) => {
+                        if (mounted && fresh) {
+                            setAssets([{ ...w, rawInfo: fresh }]);
+                        }
+                    }).catch((err) => {
+                        // don't surface background errors
+                        console.warn('background wallet refresh failed', err?.message ?? err);
+                    });
+
+                    return; // UI served from cache while background refresh runs
                 }
 
-                // no cache: fetch and process
+                // no fresh cache: fetch with dedupe
                 try {
-                    const infoResp = await jsonGet(`wallets/${symbol}/${address}/info`);
-                    if (!infoResp || !infoResp.success) {
-                        throw new Error(infoResp?.message || 'info endpoint failed');
-                    }
-                    const infoData = infoResp.data || {};
+                    const infoData = await fetchWithCache(cacheKey, INFO_TTL_MIN, async () => {
+                        const resp = await jsonGet(`wallets/${symbol}/${address}/info`);
+                        if (resp && resp.success) return resp.data;
+                        throw new Error(resp?.message || 'info endpoint failed');
+                    });
 
-                    // normalize balance fields safely
-                    if (!infoData.balance) infoData.balance = {};
+                    // infoData might be stale-from-cache or fresh; normalize
+                    const info = infoData || {};
+                    if (!info.balance) info.balance = {};
 
-                    // handle common coins robustly (guard objects)
                     if (symbol === 'eth') {
                         let balance = 0;
-                        if (infoData.balance && infoData.balance.ether != null) {
-                            balance = Number(infoData.balance.ether) || 0;
-                        } else if (infoData.balance && infoData.balance.total != null) {
-                            balance = Number(infoData.balance.total) || 0;
+                        if (info.balance && info.balance.ether != null) {
+                            balance = Number(info.balance.ether) || 0;
+                        } else if (info.balance && info.balance.total != null) {
+                            balance = Number(info.balance.total) || 0;
                         }
-                        infoData.balance.total = balance;
-                        infoData.balance.fiat = await convertCryptoToFiat(balance, w.wallet_crypto_name || 'ethereum', 'usd');
-                        infoData.balance.fiatFormatted = `$${(Number(infoData.balance.fiat) || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-                        infoData.txCount = infoData.transactionCount || (Array.isArray(infoData.transactions) ? infoData.transactions.length : infoData.txCount || 0);
-                        infoData.totalSent = infoData.totalSentEth ?? infoData.totalSent ?? 0;
-                        infoData.totalReceived = infoData.totalReceivedEth ?? infoData.totalReceived ?? 0;
+                        info.balance.total = balance;
+                        info.balance.fiat = await convertCryptoToFiat(balance, w.wallet_crypto_name || 'ethereum', 'usd');
+                        info.balance.fiatFormatted = `$${(Number(info.balance.fiat) || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                        info.txCount = info.transactionCount || (Array.isArray(info.transactions) ? info.transactions.length : info.txCount || 0);
+                        info.totalSent = info.totalSentEth ?? info.totalSent ?? 0;
+                        info.totalReceived = info.totalReceivedEth ?? info.totalReceived ?? 0;
                     } else if (symbol === 'btc') {
                         let balance = 0;
-                        if (infoData.balance && infoData.balance.total != null) {
-                            balance = Number(infoData.balance.total) || 0;
-                        } else if (infoData.balance != null && typeof infoData.balance === 'number') {
-                            balance = Number(infoData.balance) || 0;
+                        if (info.balance && info.balance.total != null) {
+                            balance = Number(info.balance.total) || 0;
+                        } else if (info.balance != null && typeof info.balance === 'number') {
+                            balance = Number(info.balance) || 0;
                         }
-                        infoData.balance.total = balance;
-                        infoData.balance.fiat = await convertCryptoToFiat(balance, w.wallet_crypto_name || 'bitcoin', 'usd');
-                        infoData.balance.fiatFormatted = `$${(Number(infoData.balance.fiat) || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-                        infoData.txCount = infoData.txCount || (Array.isArray(infoData.transactions) ? infoData.transactions.length : 0);
+                        info.balance.total = balance;
+                        info.balance.fiat = await convertCryptoToFiat(balance, w.wallet_crypto_name || 'bitcoin', 'usd');
+                        info.balance.fiatFormatted = `$${(Number(info.balance.fiat) || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                        info.txCount = info.txCount || (Array.isArray(info.transactions) ? info.transactions.length : 0);
                     } else {
-                        // generic: try to pull first numeric balance field
-                        const b = infoData.balance ?? infoData;
+                        const b = info.balance ?? info;
                         const potential = Number(b?.total ?? b?.amount ?? b?.balance ?? 0) || 0;
-                        infoData.balance = infoData.balance || {};
-                        infoData.balance.total = potential;
-                        infoData.balance.fiat = await convertCryptoToFiat(potential, w.wallet_crypto_name || symbol, 'usd');
-                        infoData.balance.fiatFormatted = `$${(Number(infoData.balance.fiat) || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-                        infoData.txCount = infoData.txCount || (Array.isArray(infoData.transactions) ? infoData.transactions.length : 0);
+                        info.balance = info.balance || {};
+                        info.balance.total = potential;
+                        info.balance.fiat = await convertCryptoToFiat(potential, w.wallet_crypto_name || symbol, 'usd');
+                        info.balance.fiatFormatted = `$${(Number(info.balance.fiat) || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                        info.txCount = info.txCount || (Array.isArray(info.transactions) ? info.transactions.length : 0);
                     }
 
-                    // store cache
-                    setCachedData(cacheKey, infoData, DEFAULT_CACHE_TTL_MIN);
-
                     if (mounted) {
-                        setAssets([{ ...w, rawInfo: infoData }]);
+                        setAssets([{ ...w, rawInfo: info }]);
                         setLoadingWallet(false);
                     }
                 } catch (err) {
-                    // network or API error: try to use cached fallback (if any) else show error
                     console.error('Error fetching wallet info:', err);
-                    if (cached && mounted) {
-                        setAssets([{ ...w, rawInfo: cached }]);
+                    // attempt to recover from any stale local cache
+                    const stale = getLocalCache(cacheKey);
+                    if (stale && mounted) {
+                        setAssets([{ ...w, rawInfo: stale }]);
                         toast('Using cached wallet data due to API error', { icon: '⚠️' });
                     } else {
                         toast.error('Failed to load wallet info', { duration: 6000 });

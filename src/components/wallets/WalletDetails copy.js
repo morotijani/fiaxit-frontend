@@ -94,25 +94,18 @@ function WalletDetails() {
                     setAssets([{ ...w, rawInfo: cached }]);
                     setLoadingWallet(false);
                     // continue to refresh in background (non-blocking)
-                    // (async () => {
-                    //     try {
-                    //         const resp = await jsonGet(`wallets/${symbol}/${address}/info`);
-                    //         if (resp && resp.success && resp.data) {
-                    //             // fiat and fiat formatted normalization
-                    //             resp.data.balance = resp.data.balance || {};
-                    //             if (resp.data.balance.total != null) {
-                    //                 resp.data.balance.fiat = await convertCryptoToFiat(resp.data.balance.total, w.wallet_crypto_name || symbol, 'usd');
-                    //                 resp.data.balance.fiatFormatted = `$${(Number(resp.data.balance.fiat) || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-                    //             }
-
-                    //             setCachedData(cacheKey, resp.data, DEFAULT_CACHE_TTL_MIN);
-                    //             if (mounted) setAssets([{ ...w, rawInfo: resp.data }]);
-                    //         }
-                    //     } catch (err) {
-                    //         // ignore background refresh errors
-                    //         console.warn('Background wallet info refresh failed', err);
-                    //     }
-                    // })();
+                    (async () => {
+                        try {
+                            const resp = await jsonGet(`wallets/${symbol}/${address}/info`);
+                            if (resp && resp.success && resp.data) {
+                                setCachedData(cacheKey, resp.data, DEFAULT_CACHE_TTL_MIN);
+                                if (mounted) setAssets([{ ...w, rawInfo: resp.data }]);
+                            }
+                        } catch (err) {
+                            // ignore background refresh errors
+                            console.warn('Background wallet info refresh failed', err);
+                        }
+                    })();
                     return; // early return: UI served from cache
                 }
 
