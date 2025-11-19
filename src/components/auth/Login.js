@@ -38,6 +38,9 @@ function Login() {
                         justifyContent: "space-between",
                     }}
                 >
+                    {/* top bar */}
+                    <div className="mb-3 mx-auto" style={{ width: "50%", height: "4px", backgroundColor: "#f0f0f0", borderRadius: "2px" }}></div>
+
                     {/* Heading */}
                     <img className="img-fluid" src={Logo} alt="" width="72" height="35"></img>
                     <div className="mt-4">
@@ -49,9 +52,9 @@ function Login() {
                         {/* Illustration */}
                         <div className="d-flex justify-content-center mt-3">
                             <img
-                            src="https://blush.design/api/download?shareUri=6vo50rA9MKAQYjhg&c=Hair_0%7E8b542f_Skin_0%7E4b3425&w=800&h=800&fm=png"
+                            src="https://blush.design/api/download?shareUri=gToALQCf3sSkwAY2&c=Hair_0%7E8b542f_Skin_0%7E4b3425&w=800&h=800&fm=png"
                             alt="Meditation Illustration" className="img-fluid"
-                            style={{ width: "250px", height: "250px" }}
+                            style={{ width: "300px", height: "auto" }}
                             />
                         </div>
 
@@ -60,7 +63,7 @@ function Login() {
 
                         <div className='text-center'>
                             <div className="mb-2 mt-4">
-                                <Button className="btn-warning text-white border fw-semibold px-4" onClick={form.submitForm}>
+                                <Button className="btn-warning px-4" onClick={form.submitForm}>
                                     Log In
                                 </Button>
                             </div>
@@ -89,7 +92,7 @@ function Login() {
 
                     {/* Footer */}
                     <div className="text-muted small mt-4 px-3 pb-2">We care about your data. By logging in, you agree to our{" "}
-                        <a href="#" className="text-decoration-none fw-semibold">Terms</a>{" "} and{" "}<a href="#" className="text-decoration-none fw-semibold"> Privacy Policy</a>.
+                        <Link to="#" className="text-decoration-none fw-semibold">Terms</Link>{" "} and{" "}<Link to="#" className="text-decoration-none fw-semibold"> Privacy Policy</Link>.
                     </div>
                 </div>
             </div>

@@ -13,16 +13,6 @@ function Profile() {
     const [authStore, authDispatch] = useContext(AuthContext);
     const fullName = authStore.user ? authStore.user.user_fname + ' ' + authStore.user.user_mname  + ' ' + authStore.user.user_lname : 'Stranger';
 
-
-    async function logout() {
-        const resp = await jsonGet('auth/logout');
-        if (resp.success) {
-            authDispatch({type: 'logout'});
-            navigate('/auth/login');
-            toast.success("You have been logged out successfully.", {duration: 6000});
-        }
-    }
-
     const settingsLink = () => {
         navigate('/settings');
     }
@@ -123,7 +113,7 @@ function Profile() {
                         <span>Change Pin</span>
                         <span><span class="material-symbols-outlined">arrow_right</span></span>
                     </button>
-                    <button className="list-group-item list-group-item-action d-flex justify-content-between align-items-center text-danger" onClick={logout}>
+                    <button className="list-group-item list-group-item-action d-flex justify-content-between align-items-center text-danger" onClick={() => navigate('/auth/logout')}>
                         <span>Logout</span>
                         <span><span class="material-symbols-outlined">chip_extraction</span></span>
                     </button>
