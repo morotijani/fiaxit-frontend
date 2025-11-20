@@ -63,7 +63,7 @@ function Login() {
 
                         <div className='text-center'>
                             <div className="mb-2 mt-4">
-                                <Button className="btn-warning px-4" onClick={form.submitForm}>
+                                <Button className="btn-warning" onClick={form.submitForm}>
                                     Log In
                                 </Button>
                             </div>

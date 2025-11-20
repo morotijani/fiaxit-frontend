@@ -1,14 +1,11 @@
 import { useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../contexts/AuthContext'
-import { jsonGet } from '../../helpers/Ajax'
 import { Switch } from 'antd'
 import ThemeToggle from '../ThemeToggle';
-import toast from 'react-hot-toast';
 
 function Profile() {
     const navigate = useNavigate();
-    const [darkMode, setDarkMode] = useState(true);
     const [biometric, setBiometric] = useState(false);
     const [authStore, authDispatch] = useContext(AuthContext);
     const fullName = authStore.user ? authStore.user.user_fname + ' ' + authStore.user.user_mname  + ' ' + authStore.user.user_lname : 'Stranger';

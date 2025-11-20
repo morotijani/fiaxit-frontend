@@ -56,7 +56,7 @@ function Logout() {
                             <Button className="btn btn-light flex-grow-1 me-3" onClick={logout}>
                                 Yes Please
                             </Button>
-                            <Button className="btn btn-dark flex-grow-1">
+                            <Button className="btn btn-dark flex-grow-1" onClick={() => navigate("/")}>
                                 Not Now
                             </Button>
                         </div>

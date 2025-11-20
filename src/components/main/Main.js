@@ -5,24 +5,83 @@ import Avatar from '../../assets/avatar.jpeg'
 import {jsonGet} from '../../helpers/Ajax'
 
 function Main() {
-    const [authStore, authDispatch] = useContext(AuthContext);
+    const [authStore, authDispatch, getUser, getUserBalance] = useContext(AuthContext);
     const navigate = useNavigate();
-    // get user account balance
-    // getBalance();
-    // async function getBalance() {
-    //     const url = "wallets/BTC/mhxwNC4yW82KdcwsAPi81d8dcMSvmWoTSc/balance";
-    //     const resp = await jsonGet(url);
-    //     if (resp.success) {
-    //         console.log(resp);
-    //     }
-    // }
 
+    
     // create greeting function based on time of day
     function getGreeting() {
         const hour = new Date().getHours();
         if (hour < 12) return "Good morning!";
         if (hour < 18) return "Good afternoon!";
         return "Good evening!";
+    }
+
+    // local balance state
+    const [userBalance, setUserBalance] = useState(0);
+    const [loadingBalance, setLoadingBalance] = useState(false);
+    useEffect(() => {
+        let mounted = true;
+        async function loadBalance() {
+            if (!authStore?.loggedIn) {
+                if (mounted) setUserBalance(0);
+                return;
+            }
+            try {
+                setLoadingBalance(true);
+                // getUserBalance may accept optional user param; call without to use server-side aggregation
+                const bal = await (getUserBalance ? getUserBalance() : null);
+                // normalize possible shapes: { total }, { balance }, number, etc.
+
+                // the responce i get from the getUserbalnce 
+                // "data": {
+                //     "BTC": {
+                //         "amount": 0.00002,
+                //         "name": "Bitcoin"
+                //     },
+                //     "ETH": {
+                //         "amount": 0.028949857411953002,
+                //         "name": "Ethereum"
+                //     }
+                // }
+                // i want to convert each amount into fiat by using their amount and name and sum them together and add dollar sign to the total amount
+                let convertCryptoToFiat = async (crypto, amount) => {
+                    try {
+                        const url = `convert/${crypto}/usd/${amount}/crypto-to-fiat`;
+                        const res = await jsonGet(url);
+                        if (res.success) {
+                            return Number(res.data?.to?.amount || 0);
+                        }
+                    } catch (err) {
+                        console.warn('Failed to convert crypto to fiat', err);
+                    }
+                    return 0;
+                };
+
+                let total = 0;
+                if (bal && typeof bal === 'object') {
+                    for (const key in bal) {
+                        const cryptoName = key.toLowerCase();
+                        const cryptoAmount = bal[key]?.amount || 0;
+                        const fiatValue = await convertCryptoToFiat(cryptoName, cryptoAmount);
+                        total += fiatValue;
+                    }
+                }
+                if (mounted) setUserBalance(total);
+            } catch (err) {
+                console.warn('Failed to load user balance', err);
+                if (mounted) setUserBalance(0);
+            } finally {
+                if (mounted) setLoadingBalance(false);
+            }
+        }
+        loadBalance();
+        return () => { mounted = false; };
+    }, [authStore?.loggedIn, authStore?.user?.id, getUserBalance]);
+
+    function formatFiat(p) {
+        if (!Number.isFinite(p)) return '-';
+        return `$${p.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`;
     }
 
     // live assets state (from CoinMarketCap Pro)
@@ -78,6 +137,9 @@ function Main() {
     return (
         <div>
             <div className="bg-light rounded-5 rounded-top-0 mb-4">
+                {/* top bar */}
+                <div className="mb-3 mx-auto" style={{ width: "50%", height: "4px", backgroundColor: "#f0f0f0", borderRadius: "2px" }}></div>
+
                 {/* Header */}
                 <div className="d-flex justify-content-between align-items-center p-3">
                     <div className="d-flex align-items-center">
@@ -109,7 +171,13 @@ function Main() {
 
                 {/* Balance */}
                 <div className="text-center my-3">
-                    <h3 className="fw-bold">$76,297.32</h3>
+                    <h3 className="fw-bold">
+                        {loadingBalance ? (
+                            <span className="spinner-border spinner-border-sm text-secondary" role="status" />
+                        ) : (
+                            formatFiat(userBalance)
+                        )}
+                    </h3>
                     <div className="text-success small fw-semibold">+ $56.17 (+0.67%)</div>
                 </div>
 

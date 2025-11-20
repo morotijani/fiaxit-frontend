@@ -15,6 +15,8 @@ function reducer(store, action) {
             return {...store, loggedIn: loggedIn} // return store and update loggedIn
         case 'updateUser':
             return {...store, user: {...store.user, ...action.payload}}
+        case 'updateUserBalance':
+            return {...store, user: {...store.user, ...action.payload}}
         case 'logout': 
             localStorage.removeItem(store.tokenName);
             return {...store, loggedIn: false, user: {}}
@@ -26,7 +28,8 @@ export function AuthStore(props) {
     const [store, dispatch] = useReducer(reducer, {
         tokenName: "userJWTToken", 
         loggedIn: (localStorage.getItem('userJWTToken') !== null), 
-        user: {}
+        user: {}, 
+        balance: {}
     });
 
     useEffect(() => {
@@ -37,20 +40,48 @@ export function AuthStore(props) {
     }, [store.loggedIn]) // anytime store.loggedIn is changed then we want to call getUser()
 
     //
-    async function getUser() {
+     async function getUser() {
         // check if isloggedin and make sure we don't already have it to save some api calls
         if (store.loggedIn && !store.user.hasOwnProperty('id')) {
-            const resp = await jsonGet('auth/loggedInUser');
-            if (resp.success) {
-                dispatch({type: "setUser", payload: resp.data})
+            try {
+                const resp = await jsonGet('auth/loggedInUser');
+                if (resp && resp.success) {
+                    dispatch({type: "setUser", payload: resp.data})
+                    // pass fetched user into getUserBalance to avoid reading stale store
+                    const balance = await getUserBalance(resp.data);
+                    if (balance) {
+                        dispatch({type: "updateUserBalance", payload: {balance: balance}});
+                    }
+                }
+            } catch (err) {
+                console.error('getUser error', err);
             }
         }
         return store.user;
     }
 
+    // get user balance from all wallet address
+    // accepts optional user param to avoid relying on stale store after dispatch
+    async function getUserBalance(user = null) {
+        try {
+            if (!store.loggedIn) return null;
+            // if a specific user object provided, prefer it for any validations (not strictly required here)
+            // call API to retrieve balances for logged in user
+            const resp = await jsonGet('wallets/balance');
+            if (resp && resp.success) {
+                return resp.data;
+            }
+            return null;
+        } catch (err) {
+            console.error('getUserBalance error', err);
+            return null;
+        }
+    }
+
     return (
         // provide information down to our children
-        <AuthContext.Provider  value={[store, dispatch, getUser]}>
+        // expose getUser and getUserBalance so consumers can refresh when needed
+        <AuthContext.Provider  value={[store, dispatch, getUser, getUserBalance]}>
             {props.children}
         </AuthContext.Provider>
     )
