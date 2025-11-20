@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../contexts/AuthContext'
 import Avatar from '../../assets/avatar.jpeg'
-import {jsonGet} from '../../helpers/Ajax'
+import { jsonGet } from '../../helpers/Ajax'
 
 function Main() {
     const [authStore, authDispatch, getUser, getUserBalance] = useContext(AuthContext);
@@ -33,18 +33,6 @@ function Main() {
                 const bal = await (getUserBalance ? getUserBalance() : null);
                 // normalize possible shapes: { total }, { balance }, number, etc.
 
-                // the responce i get from the getUserbalnce 
-                // "data": {
-                //     "BTC": {
-                //         "amount": 0.00002,
-                //         "name": "Bitcoin"
-                //     },
-                //     "ETH": {
-                //         "amount": 0.028949857411953002,
-                //         "name": "Ethereum"
-                //     }
-                // }
-                // i want to convert each amount into fiat by using their amount and name and sum them together and add dollar sign to the total amount
                 let convertCryptoToFiat = async (crypto, amount) => {
                     try {
                         const url = `convert/${crypto}/usd/${amount}/crypto-to-fiat`;
@@ -165,11 +153,6 @@ function Main() {
                         Assets
                     </button>
                 </div>
-                {/* <div className="text-center text-muted small mt-2">
-                    <span className="badge bg-dark bg-opacity-10 text-dark rounded-pill px-3 py-2">
-                        0x9e523429...34c7 <i className="bi bi-back"></i>
-                    </span>
-                </div> */}
 
                 {/* Balance */}
                 <div className="text-center my-3">
