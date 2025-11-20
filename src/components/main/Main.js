@@ -51,6 +51,8 @@ function Main() {
                         const res = await jsonGet(url);
                         if (res.success) {
                             return Number(res.data?.to?.amount || 0);
+                        } else {
+                            console.warn('Failed to convert crypto to fiat', res.message);
                         }
                     } catch (err) {
                         console.warn('Failed to convert crypto to fiat', err);
@@ -61,7 +63,7 @@ function Main() {
                 let total = 0;
                 if (bal && typeof bal === 'object') {
                     for (const key in bal) {
-                        const cryptoName = key.toLowerCase();
+                        const cryptoName = bal[key]['name'].toLowerCase();
                         const cryptoAmount = bal[key]?.amount || 0;
                         const fiatValue = await convertCryptoToFiat(cryptoName, cryptoAmount);
                         total += fiatValue;
