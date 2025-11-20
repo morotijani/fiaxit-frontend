@@ -83,12 +83,14 @@ function AppIndex() {
         const transactionResp = await jsonGet('transactions');
         if (transactionResp && transactionResp.success) {
             transactionDispatch({type: 'setTransactions', payload: {transactions: transactionResp.data, total: transactionResp.total}});
+            console.log('Transactions loaded:', transactionResp.data);
         }
 
         // get all wallets
         const walletResp = await jsonGet('wallets');
         if (walletResp && walletResp.success) {
             walletDispatch({type: 'setWallets', payload: {wallets: walletResp.data, total: walletResp.total}});
+            console.log('Wallets loaded:', walletResp.data);
         }
     }
 
