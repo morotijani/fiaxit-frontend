@@ -41,7 +41,7 @@ function timeAgo(date) {
     }
 }
 
-function WalletDetails() {
+function Receive() {
     const navigate = useNavigate();
 
     return (
@@ -65,4 +65,4 @@ function WalletDetails() {
     )
 }
 
-export default WalletDetails;
+export default Receive;
