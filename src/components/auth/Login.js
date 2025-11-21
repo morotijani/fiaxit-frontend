@@ -1,7 +1,7 @@
 import {useState, useContext} from 'react';
 import {Link, useNavigate} from 'react-router-dom';
 import FieldBlock from '../elements/FieldBlock'
-import {Form} from '../../helpers/Form'
+import { Form } from '../../helpers/Form'
 import Button from '../elements/Button'
 import {AuthContext} from "../../contexts/AuthContext"
 import toast from 'react-hot-toast';

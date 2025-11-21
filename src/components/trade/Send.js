@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 import { QRCodeSVG } from 'qrcode.react';
 import FieldBlock from '../elements/FieldBlock'
 import { Form } from '../../helpers/Form'
+import SelectAsset from './SelectAsset';
 
 
 const CACHE_PREFIX = 'receive_asset_cache_v1_';
@@ -39,34 +40,20 @@ function getCachedData(key) {
 
 function SendCrypto() {
     const navigate = useNavigate();
-    // Dummy assets data - replace with real data from your wallet context or API
-    const assets = [
-  {
-    id: "ethereum",
-    name: "Ethereum",
-    icon: "/icons/eth.svg",
-    balance: 1.245,
-    price: 3273.7
-  },
-  {
-    id: "bitcoin",
-    name: "Bitcoin",
-    icon: "/icons/btc.svg",
-    balance: 0.138,
-    price: 67350
-  },
-  {
-    id: "solana",
-    name: "Solana",
-    icon: "/icons/sol.svg",
-    balance: 24.33,
-    price: 98.54
-  }
-];
-    const [selectedAsset, setSelectedAsset] = useState(assets[0]);
+
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedAsset, setSelectedAsset] = useState('Select Asset');
     const [address, setAddress] = useState("");
     const [amount, setAmount] = useState("");
     const [showReview, setShowReview] = useState(false);
+
+    const handleOpenModal = () => setIsModalOpen(true);
+    const handleCloseModal = () => setIsModalOpen(false);
+
+    const handleAssetSelection = (assetSymbol) => {
+        setSelectedAsset(assetSymbol);
+        handleCloseModal(); // Close the modal after selection
+    };
 
     const usdValue = amount ? (amount * selectedAsset.price).toFixed(2) : "0.00";
     const networkFee = 3.12; // you can fetch this dynamically later
@@ -111,8 +98,9 @@ function SendCrypto() {
                 {/* Select Asset */}
                 <div
                     className="bg-[#1A1C20] p-4 rounded-xl flex items-center justify-between mb-6 cursor-pointer"
-                    onClick={() => alert("You can replace this with an asset-select modal")}
+                    onClick={handleOpenModal}
                 >
+                    {selectedAsset}
                     <div className="flex items-center gap-3">
                         <img src={selectedAsset.icon} className="w-8 h-8" />
                         <div>
@@ -128,44 +116,25 @@ function SendCrypto() {
                 {/* Address Input */}
                 <FieldBlock id="recipientAddress" value={fields.recipientAddress.value} onChange={form.handleInputChanges} label="Recipient Address:" isInvalid={fields.recipientAddress.isInvalid} feedback={fields.recipientAddress.msg} />
 
-
-                {/* <div className="mb-5">
-                    <label className="block mb-2 text-gray-300">Recipient Address</label>
-                    <input
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                    className="w-full bg-[#1A1C20] p-4 rounded-xl outline-none"
-                    placeholder="Enter wallet address"
-                    />
-                </div> */}
-
-                {/* Amount Input */}
-                {/* <div className="mb-5">
-                    <label className="block mb-2 text-gray-300">Amount</label>
-                    <input
-                    value={amount}
-                    onChange={(e) => setAmount(e.target.value)}
-                    className="w-full bg-[#1A1C20] p-4 rounded-xl outline-none"
-                    type="number"
-                    placeholder="0.00"
-                    />
-                    
-                </div> */}
-
-                <FieldBlock id="amount" value={fields.amount.value} onChange={form.handleInputChanges} label="Amount:" isInvalid={fields.amount.isInvalid} feedback={fields.amount.msg} />
+                <FieldBlock id="amount" type="number" value={fields.amount.value} onChange={form.handleInputChanges} label="Amount:" isInvalid={fields.amount.isInvalid} feedback={fields.amount.msg} />
                 <p className="text-gray-400 text-sm mt-1">≈ ${usdValue} USD</p>
 
 
                 {/* Send Button */}
                 <div className="d-grid">
                     <Button varaint=""
-                        disabled={!address || !amount}
+                        disabled={!address || !amount || selectedAsset === 'Select Asset'}
                         onClick={() => setShowReview(true)}
                         className="btn-dark mt-6 w-full"
                     >
                         Review Send
                     </Button>
                 </div>
+                <SelectAsset 
+                    isOpen={isModalOpen} 
+                    onClose={handleCloseModal} 
+                    onSelectAsset={handleAssetSelection} 
+                />
 
                 {/* Review Modal */}
                 {showReview && (
@@ -174,45 +143,45 @@ function SendCrypto() {
                             <h2 className="text-lg font-semibold mb-4">Review Transaction</h2>
 
                             <div className="mb-4">
-                            <p className="text-gray-400 text-sm">Asset</p>
-                            <p className="font-medium">{selectedAsset.name}</p>
+                                <p className="text-gray-400 text-sm">Asset</p>
+                                <p className="font-medium">{selectedAsset.name}</p>
                             </div>
 
                             <div className="mb-4">
-                            <p className="text-gray-400 text-sm">Recipient</p>
-                            <p className="font-medium break-all">{address}</p>
+                                <p className="text-gray-400 text-sm">Recipient</p>
+                                <p className="font-medium break-all">{address}</p>
                             </div>
 
                             <div className="mb-4">
-                            <p className="text-gray-400 text-sm">Amount</p>
-                            <p className="font-medium">
-                                {amount} {selectedAsset.name} (${usdValue})
-                            </p>
+                                <p className="text-gray-400 text-sm">Amount</p>
+                                <p className="font-medium">
+                                    {amount} {selectedAsset.name} (${usdValue})
+                                </p>
                             </div>
 
                             <div className="mb-4">
-                            <p className="text-gray-400 text-sm">Network Fee</p>
-                            <p className="font-medium">${networkFee}</p>
+                                <p className="text-gray-400 text-sm">Network Fee</p>
+                                <p className="font-medium">${networkFee}</p>
+                            </div>
+
+                            {/* Confirm */}
+                            <button
+                                onClick={handleSend}
+                                className="w-full bg-blue-600 py-3 rounded-xl mt-2 font-semibold"
+                            >
+                                Confirm Send
+                            </button>
+
+                            {/* Cancel */}
+                            <button
+                                onClick={() => setShowReview(false)}
+                                className="w-full py-3 rounded-xl mt-3 text-gray-400"
+                            >
+                                Cancel
+                            </button>
                         </div>
-
-                        {/* Confirm */}
-                        <button
-                            onClick={handleSend}
-                            className="w-full bg-blue-600 py-3 rounded-xl mt-2 font-semibold"
-                        >
-                            Confirm Send
-                        </button>
-
-                        {/* Cancel */}
-                        <button
-                            onClick={() => setShowReview(false)}
-                            className="w-full py-3 rounded-xl mt-3 text-gray-400"
-                        >
-                            Cancel
-                        </button>
                     </div>
-                </div>
-            )}
+                )}
             </div>
         </div>
     )
