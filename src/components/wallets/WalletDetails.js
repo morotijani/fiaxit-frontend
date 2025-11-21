@@ -16,6 +16,7 @@ function setCachedData(key, data, ttlInMinutes = DEFAULT_CACHE_TTL_MIN) {
         console.error('Error setting cached data:', err);
     }
 }
+
 function getCachedData(key) {
     try {
         const cachedItem = localStorage.getItem(key);
@@ -84,7 +85,7 @@ function WalletDetails() {
                 }
 
                 const symbol = (w.wallet_symbol || '').toLowerCase();
-                const address = w.wallet_address || '';
+                const address = w.wallet_address ?? '';
                 const cacheKey = `wallet_info_${w.wallet_id}`;
 
                 // try cached data first
@@ -261,7 +262,8 @@ function WalletDetails() {
                                     <div className="text-center">
                                         <div
                                             className="rounded-circle d-flex justify-content-center align-items-center mb-1"
-                                            style={{ width: "45px", height: "45px", backgroundColor: "#E6F9E6" }}
+                                            style={{ width: "45px", height: "45px", backgroundColor: "#E6F9E6", cursor: 'pointer' }}
+                                            onClick={() => navigate(`/trade/receive/${t.wallet_id}`)}
                                         >
                                             <i className="bi bi-arrow-down-left"></i>
                                         </div>

@@ -53,10 +53,10 @@ function Logout() {
                         </div>
 
                         <div className="d-flex justify-content-between">
-                            <Button className="btn btn-light flex-grow-1 me-3" onClick={logout}>
+                            <Button className="btn-light flex-grow-1 me-3" onClick={logout}>
                                 Yes Please
                             </Button>
-                            <Button className="btn btn-dark flex-grow-1" onClick={() => navigate("/")}>
+                            <Button className="btn-dark flex-grow-1" onClick={() => navigate("/")}>
                                 Not Now
                             </Button>
                         </div>

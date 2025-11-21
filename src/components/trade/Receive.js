@@ -220,7 +220,7 @@ function Receive() {
                                 <div
                                     key={outerKey}
                                     className="bg-[#16181D] rounded-xl border border-[#26282D] p-4 cursor-pointer hover:bg-[#1C1E24] mb-3 rounded-3"
-                                    onClick={() => navigate(`/receive/${asset.wallet_id ?? asset.id}`)}
+                                    onClick={() => navigate(`/trade/receive/${asset.wallet_id ?? asset.id}`)}
                                 >
                                     <div className="d-flex justify-content-between align-items-center">
                                         <div>
@@ -250,7 +250,7 @@ function Receive() {
                                                 className="btn-light rounded-circle"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
-                                                    navigate(`/receive/${asset.wallet_id ?? asset.id}`);
+                                                    navigate(`/trade/receive/${asset.wallet_id ?? asset.id}`);
                                                 }}
                                                 title="Show QR"
                                             >
