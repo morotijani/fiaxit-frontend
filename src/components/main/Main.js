@@ -182,7 +182,7 @@ function Main() {
                         <div
                             className="rounded-circle d-flex justify-content-center align-items-center mb-1"
                             style={{ width: "45px", height: "45px", backgroundColor: "#E6F9E6", cursor: 'pointer' }}
-                            onClick={() => navigate("/trade/request")}
+                            onClick={() => navigate("/trade/receive")}
                         >
                             <i className="bi bi-arrow-down-left"></i>
                         </div>
