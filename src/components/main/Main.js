@@ -171,7 +171,8 @@ function Main() {
                     <div className="text-center">
                         <div
                             className="rounded-circle d-flex justify-content-center align-items-center mb-1"
-                            style={{ width: "45px", height: "45px", backgroundColor: "#E6F9E6" }}
+                            style={{ width: "45px", height: "45px", backgroundColor: "#E6F9E6", cursor: 'pointer' }} 
+                            onClick={() => navigate("/trade/send")}
                         >
                             <i className="bi bi-arrow-up-left"></i>
                         </div>
@@ -180,7 +181,8 @@ function Main() {
                     <div className="text-center">
                         <div
                             className="rounded-circle d-flex justify-content-center align-items-center mb-1"
-                            style={{ width: "45px", height: "45px", backgroundColor: "#E6F9E6" }}
+                            style={{ width: "45px", height: "45px", backgroundColor: "#E6F9E6", cursor: 'pointer' }}
+                            onClick={() => navigate("/trade/request")}
                         >
                             <i className="bi bi-arrow-down-left"></i>
                         </div>
@@ -189,7 +191,8 @@ function Main() {
                     <div className="text-center">
                         <div
                             className="rounded-circle d-flex justify-content-center align-items-center mb-1"
-                            style={{ width: "45px", height: "45px", backgroundColor: "#E6F9E6" }}
+                            style={{ width: "45px", height: "45px", backgroundColor: "#E6F9E6", cursor: 'pointer' }}
+                            onClick={() => navigate("/trade/swap")}
                         >
                             <i className="bi bi-arrow-left-right"></i>
                         </div>

@@ -22,7 +22,7 @@ function Transactions() {
         }
     }
 
-     const statusColor = (status) => {
+    const statusColor = (status) => {
         if (!status) return "text-muted";
         const s = String(status).toLowerCase();
         switch (s) {
