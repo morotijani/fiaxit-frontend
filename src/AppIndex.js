@@ -14,6 +14,7 @@ import { TodoContext } from './contexts/TodoContext';
 import Crypto from './components/crypto/Crypto'
 
 import Receive from './components/trade/Receive'
+import SendCrypto  from './components/trade/Send'
 import ReceiveAsset from './components/trade/ReceiveAsset'
 
 import Transactions from './components/transactions/Transactions'
@@ -107,6 +108,7 @@ function AppIndex() {
                 <div className="flex-grow-1 overflow-auto main-page-scroll">
                     <Routes>
                         <Route path="/trade/receive/:id" element={<ReceiveAsset />} />
+                        <Route path="/trade/send" element={<SendCrypto />} />
                         <Route path="/trade/receive" element={<Receive />} />
                         <Route path="/crypto/:id" element={<Crypto />} />
                         <Route path="/wallet/:id" element={<WalletDetails />} />
