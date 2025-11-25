@@ -2,16 +2,25 @@ import PropTypes from 'prop-types';
 
 const FieldBlock = (props) => {
     const invalidClass = props.isInvalid ? 'is-invalid' : '';
+    let klass = `form-control ${props.hasOwnProperty('className')? props.className : ""}`;
+    
+    if (props.hasOwnProperty('className')) {
+        klass += " " +props.className;
+    }
+
     return (
         <div className={`form-floating form-group ${invalidClass}`}>
             <input 
-                className="form-control" 
+                className={klass} 
                 id={props.id} 
                 name={props.name || props.id} 
                 value={props.value} 
-                type={props.type} onChange={props.onChange} 
+                type={props.type} 
+                onChange={props.onChange} 
                 placeholder={props.label} 
-                autoComplete = {props.autocomp || 'off'}
+                autoComplete = {props.autocomp || 'off'} 
+                autoFocus={props.autoFocus || false}
+                style={props.style || {}}
             />
             <label htmlFor={props.id}>{props.label}</label>
             <p className="form-feedback">{props.feedback}</p>
@@ -22,7 +31,7 @@ const FieldBlock = (props) => {
 FieldBlock.defaultProps = {
     type: "text", 
     value: "",
-    isInvalid: false
+    isInvalid: false, 
 }
 
 FieldBlock.propTypes = {
@@ -32,6 +41,10 @@ FieldBlock.propTypes = {
     type: PropTypes.string.isRequired, 
     feedback: PropTypes.string, 
     onChange: PropTypes.func.isRequired, 
-    isInvalid: PropTypes.bool.isRequired
+    autoFocus: PropTypes.bool, 
+    autocomp: PropTypes.string, 
+    isInvalid: PropTypes.bool.isRequired, 
+    style: PropTypes.object,
 }
+
 export default FieldBlock

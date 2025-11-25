@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useContext } from 'react'
+import React, { useState, useEffect, useContext, useMemo } from 'react'
 import { WalletContext } from '../../contexts/WalletContext'
 import { jsonGet } from '../../helpers/Ajax'
 import './SelectAsset.css';
 import toast from 'react-hot-toast';
 
-const CACHE_PREFIX = 'receive_wallet_cache_v1_';
+const CACHE_PREFIX = 'select_asset_cache_v1_';
 const DEFAULT_CACHE_TTL_MIN = 5; // minutes
 
 function setCachedData(key, data, ttlInMinutes = DEFAULT_CACHE_TTL_MIN) {
@@ -33,9 +33,6 @@ function getCachedData(key) {
     }
 }
 
-// get wallet balance helper
-
-
 /**
     * SelectAsset Modal Component
     * @param {object} props
@@ -44,17 +41,17 @@ function getCachedData(key) {
     * @param {function} props.onSelectAsset - Function to handle asset selection
 */
 const SelectAsset = ({ isOpen, onClose, onSelectAsset }) => {
-    if (!isOpen) return null;
-
     const [walletStore] = useContext(WalletContext);
   
     // state for enriched wallets (info + balance)
     const [assets, setAssets] = useState([]);
     const [loadingAssets, setLoadingAssets] = useState(true);
+    const [search, setSearch] = useState('');
 
     useEffect(() => {
-        let mounted = true;
+        if (!isOpen) return; // only fetch when modal open (safe because hooks already ran)
 
+        let mounted = true;
         async function fetchWallets() {
             try {
                 if (mounted) setLoadingAssets(true);
@@ -62,144 +59,94 @@ const SelectAsset = ({ isOpen, onClose, onSelectAsset }) => {
                 const storeWallets = Array.isArray(walletStore?.wallets) ? walletStore.wallets : [];
                 if (!storeWallets.length) {
                     if (mounted) {
-                        setAssets([]); // no wallets in DB
+                        setAssets([]);
                         setLoadingAssets(false);
                     }
                     return;
                 }
-    
-                const jobs = storeWallets.map(async (w) => {
-                    const symbol = (w.wallet_symbol || '').toUpperCase();
-                    const address = w.wallet_address || '';
-                    const wallet_id = w.wallet_id ?? '';
 
+                const jobs = storeWallets.map(async (w) => {
+                    const symbolRaw = (w.wallet_symbol || '');
+                    const symbol = symbolRaw.toUpperCase();
+                    const symLower = symbolRaw.toLowerCase();
+                    const address = w.wallet_address || '';
+                    const wallet_id = w.wallet_id ?? w.id ?? '';
+
+                    let infoData = null;
                     try {
-                        // check cache first
-                        const cacheKey = `receive_coin_info_${symbol.toLowerCase()}`;
-                        let infoData = getCachedData(cacheKey);
+                        const cacheKey = `receive_coin_info_${symLower}`;
+                        infoData = getCachedData(cacheKey);
 
                         if (!infoData) {
-                            // fetch if not cached
-                            const infoResp = await jsonGet(`convert/coinmarketcap/latest/${symbol.toLowerCase()}`);
-
+                            const infoResp = await jsonGet(`convert/coinmarketcap/latest/${symLower}`);
                             if (infoResp && infoResp.success && infoResp.data) {
                                 const d = infoResp.data;
-                                if (Array.isArray(d)) {
-                                    infoData = d[0];
-                                } else if (d && typeof d === 'object') {
+                                if (Array.isArray(d)) infoData = d[0];
+                                else if (d && typeof d === 'object') {
                                     const keys = Object.keys(d);
-                                    if (keys.length === 1 && d[keys[0]]) {
-                                        infoData = d[keys[0]];
-                                    } else {
-                                        infoData = d;
-                                    }
-                                } else {
-                                    infoData = d;
-                                }
-
+                                    infoData = (keys.length === 1 && d[keys[0]]) ? d[keys[0]] : d;
+                                } else infoData = d;
                                 if (infoData) setCachedData(cacheKey, infoData);
                             }
                         }
-    
-                        if (!infoData) {
-                            // fallback empty object
-                            infoData = {};
-                        }
-
-                        // extract fields with fallbacks
-                        const name = infoData?.name || symbol;
-                        const logo = infoData?.logo || infoData?.logo_url || infoData?.icon ||
-                            (infoData?.id ? `https://s2.coinmarketcap.com/static/img/coins/64x64/${infoData.id}.png` : null);
-                        const price = Number(
-                            infoData?.price ||
-                            infoData?.quote?.USD?.price ||
-                            infoData?.last_price ||
-                            0
-                        );
-                        const change = Number(
-                            infoData?.quote?.USD?.percent_change_24h ||
-                            infoData?.percent_change_24h ||
-                            infoData?.change_percent_24h ||
-                            0
-                        );
-
-                        const priceFormatted = `$${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-                        
-                        // get wallet balance
-                        try {
-                            const balanceResp = await jsonGet(`wallets/${symbol}/${address}/balance`);
-                            if (!balanceResp || !balanceResp.success) {
-                                throw new Error(balanceResp?.message || 'info endpoint failed');
-                            }
-                            const balanceData = balanceResp.data || {};
-                            
-                            // normalize balance fields safely
-                            if (!balanceData.balance) balanceData.balance = {};
-
-                            // handle common coins robustly (guard objects)
-                            if (symbol === 'eth') {
-                                let balance = 0;
-                                if (balanceData.balance && balanceData.balance.ether != null) {
-                                    balance = Number(balanceData.balance.ether) || 0;
-                                } else if (balanceData.balance && balanceData.balance.total != null) {
-                                    balance = Number(balanceData.balance.total) || 0;
-                                }
-                                balanceData.balance.total = balance;
-                            } else if (symbol === 'btc') {
-                                let balance = 0;
-                                if (balanceData.balance && balanceData.balance.total != null) {
-                                    balance = Number(balanceData.balance.total) || 0;
-                                } else if (balanceData.balance != null && typeof balanceData.balance === 'number') {
-                                    balance = Number(balanceData.balance) || 0;
-                                }
-                                balanceData.balance.total = balance;
-                            } else {
-                                // generic: try to pull first numeric balance field
-                                const b = balanceData.balance ?? balanceData;
-                                const potential = Number(b?.total ?? b?.amount ?? b?.balance ?? 0) || 0;
-                                balanceData.balance = balanceData.balance || {};
-                                balanceData.balance.total = potential;
-                            }
-                        } catch (err) {
-                            console.error(`Error fetching balance for ${symbol}`, err);
-                        }
-
-                        return {
-                            id: `${symbol}_${address}`,
-                            symbol,
-                            name,
-                            logo,
-                            price,
-                            priceFormatted,
-                            change,
-                            rawInfo: infoData,
-                            address,
-                            wallet_id, 
-                            balance: balanceData.balance.total || 0
-                        };
                     } catch (err) {
-                        console.error(`Error fetching wallet info for ${symbol}`, err);
-                        // return minimal wallet info on error
-                        return {
-                            id: `${symbol}_${address}`,
-                            symbol,
-                            name: symbol,
-                            logo: null,
-                            price: 0,
-                            priceFormatted: '$0.00',
-                            change: 0,
-                            rawInfo: {},
-                            address,
-                            wallet_id,
-                            error: true
-                        };
+                        console.warn(`coin info fetch failed for ${symbol}`, err);
+                        infoData = infoData || {};
                     }
+
+                    // price/extras with safe defaults
+                    const name = infoData?.name || symbol;
+                    const logo = infoData?.logo || infoData?.logo_url || infoData?.icon ||
+                        (infoData?.id ? `https://s2.coinmarketcap.com/static/img/coins/64x64/${infoData.id}.png` : null);
+                    const price = Number(infoData?.price ?? infoData?.quote?.USD?.price ?? 0) || 0;
+                    const priceFormatted = `$${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+
+                    // fetch balance safely and normalize
+                    let balance = 0;
+                    let balanceFiatFormatted = 0;
+                    try {
+                        const balanceResp = await jsonGet(`wallets/${symLower}/${address}/balance`);
+                        if (balanceResp && balanceResp.success) {
+                            const balanceData = balanceResp.data ?? {};
+                            const b = balanceData.balance ?? balanceData;
+                            if (symLower === 'eth') {
+                                if (b?.balanceEth != null) balance = Number(b.balanceEth) || 0;
+                                else if (b?.balanceEth != null) balance = Number(b.balanceEth) || 0;
+                            } else if (symLower === 'btc') {
+                                if (b?.btc != null) balance = Number(b.btc) || 0;
+                                else if (typeof b.btc === 'number') balance = Number(b.btc) || 0;
+                            } else {
+                                balance = Number(b?.total ?? b?.amount ?? b?.balance ?? 0) || 0;
+                            }
+                            // convert balance to fiat
+                            balanceFiatFormatted = parseFloat(balance) * price;
+                            balanceFiatFormatted = `$${balanceFiatFormatted.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                        } else {
+                            // quietly ignore; balanceFiatFormatted remains 0
+                        }
+                    } catch (err) {
+                        console.warn(`Error fetching balance for ${symbol}`, err);
+                    }
+
+                    return {
+                        auto_id: w.id,
+                        id: `${symbol}_${address}`,
+                        wallet_id,
+                        symbol,
+                        name,
+                        logo,
+                        price,
+                        priceFormatted,
+                        rawInfo: infoData || {},
+                        address,
+                        balance: balance, 
+                        balanceFiatFormatted, 
+                        wallet_privatekey: w.wallet_privatekey || null,
+                    };
                 });
 
                 const results = await Promise.all(jobs);
-                if (mounted) {
-                    setAssets(results.filter(r => r != null));
-                }
+                if (mounted) setAssets(results.filter(Boolean));
             } catch (err) {
                 console.error('Failed to load wallets info', err);
                 if (mounted) {
@@ -212,48 +159,83 @@ const SelectAsset = ({ isOpen, onClose, onSelectAsset }) => {
         }
 
         fetchWallets();
-        return () => { mounted = false; }
+
+        // close on Escape key
+        const onKey = (e) => { if (e.key === 'Escape') onClose?.(); };
+        window.addEventListener('keydown', onKey);
+
+        return () => {
+            window.removeEventListener('keydown', onKey);
+        };
         // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [walletStore?.wallets?.length]);
+    }, [isOpen, walletStore?.wallets?.length]);
+
+    // filtered list (memoized)
+    const filtered = useMemo(() => {
+        const q = (search || '').trim().toLowerCase();
+        if (!q) return assets;
+        return assets.filter(a =>
+            (a.symbol || '').toLowerCase().includes(q) ||
+            (a.name || '').toLowerCase().includes(q) ||
+            (a.address || '').toLowerCase().includes(q)
+        );
+    }, [assets, search]);
+
+    // Close if modal not open
+    if (!isOpen) return null;
+
+    const handleSelect = (asset) => {
+        try {
+            onSelectAsset?.(asset);
+        } catch (e) {
+            console.warn('onSelectAsset handler threw', e);
+        } finally {
+            onClose?.();
+        }
+    };
 
     return (
         <div className="modal-overlay">
-            <div className="modal-container">
+            <div className="modal-container" onMouseDown={(e) => e.stopPropagation()}>
                 
                 {/* Header Section */}
                 <div className="modal-header-section">
                     <h2 className="modal-title">Select asset</h2>
-                    <button onClick={onClose} className="close-button">×</button>
+                    <button onClick={() => onClose?.()} className="close-button" aria-label="Close">×</button>
                 </div>
 
-                {/* Search Bar Section */}
+                   {/* Search Bar Section */}
                 <div className="search-bar-container">
-                    <input 
-                        type="text" 
-                        placeholder="Search assets" 
-                        className="search-input" 
+                    <input
+                        type="text"
+                        placeholder="Search assets"
+                        className="search-input"
+                        value={search}
+                        onChange={(e) => setSearch(e.target.value)}
+                        aria-label="Search assets"
                     />
                 </div>
 
                 {/* Assets List */}
-                <div className="assets-list">
+                <div className="assets-list" role="list">
                     {loadingAssets ? (
                         <div className="text-center py-3">
                             <div className="spinner-border spinner-border-sm text-secondary" role="status" />
                             <small className="text-muted ms-2">Loading assets...</small>
                         </div>
-                    ) : assets.length === 0 ? (
+                    ) : filtered.length === 0 ? (
                         <div className="text-center py-3">
                             <small className="text-muted">No assets found</small>
                         </div>
                     ) : (
-                        assets.map((asset) => {
+                        filtered.map((asset) => {
                             const outerKey = asset.wallet_id || asset.id || `${asset.symbol}_${asset.address}`;
                             return (
-                                <div 
-                                    key={outerKey} 
-                                    className="asset-item" 
-                                    onClick={() => onSelectAsset(asset.symbol)}
+                                <div
+                                    key={outerKey}
+                                    className="asset-item d-flex align-items-center justify-content-between px-1"
+                                    onClick={() => handleSelect(asset)}
+                                    role="listitem"
                                 >
                                     <div className="asset-icon">
                                         {asset.logo ? (
@@ -261,19 +243,17 @@ const SelectAsset = ({ isOpen, onClose, onSelectAsset }) => {
                                                 src={asset.logo}
                                                 alt={asset.symbol || asset.name}
                                                 style={{ width: 36, height: 36, objectFit: 'contain' }}
-                                                onError={(e) => {
-                                                    e.currentTarget.onerror = null;
-                                                    e.currentTarget.style.display = 'none';
-                                                }}
+                                                onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.style.display = 'none'; }}
                                             />
                                         ) : (
-                                            <div className="fw-bold">{asset.symbol?.charAt(0) ?? '•'}</div>
+                                            <div className="fw-bold">{(asset.symbol || '•').charAt(0)}</div>
                                         )}
                                     </div>
                                     <div className="asset-details">
-                                        <div className="asset-symbol">{asset.symbol}</div>
-                                        <div className="asset-balance">{asset.balance ?? 0}</div>
+                                        <div className="asset-symbol">{asset.name} . {asset.symbol} ({asset.auto_id})</div>
+                                        <div className="asset-balance">{typeof asset.balance === 'number' ? asset.balance : (asset.balance ?? 0)} available</div>
                                     </div>
+                                    <div className="asset-price">{asset.balanceFiatFormatted || '$0.00'}</div>
                                 </div>
                             )
                         })
