@@ -1,7 +1,7 @@
 import { useContext, useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { WalletContext } from '../../contexts/WalletContext'
-import { jsonDelete, jsonGet } from '../../helpers/Ajax'
+import { jsonGet } from '../../helpers/Ajax'
 import { shortenAddress } from '../../helpers/StringHelpers'
 import toast from 'react-hot-toast';
 
@@ -59,7 +59,7 @@ function Wallets() {
                 const jobs = storeWallets.map(async (w) => {
                     const symbol = (w.wallet_symbol || '').toUpperCase();
                     const address = w.wallet_address || '';
-                    const wallet_id = w.wallet_id || 111;
+                    const wallet_id = w.wallet_id || '';
 
                     try {
                         // check cache first
