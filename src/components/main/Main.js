@@ -1,11 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { AuthContext } from '../../contexts/AuthContext'
+import { WalletContext } from '../../contexts/WalletContext'
 import Avatar from '../../assets/avatar.jpeg'
 import { jsonGet } from '../../helpers/Ajax'
 
 function Main() {
-    const [authStore, authDispatch, getUser, getUserBalance] = useContext(AuthContext);
+    const [authStore, authDispatch] = useContext(AuthContext);
+    const [walletStore, walletDispatch] = useContext(WalletContext);
     const navigate = useNavigate();
 
     
@@ -17,46 +19,43 @@ function Main() {
         return "Good evening!";
     }
 
-    // local balance state
     const [userBalance, setUserBalance] = useState(0);
     const [loadingBalance, setLoadingBalance] = useState(false);
     useEffect(() => {
         let mounted = true;
         async function loadBalance() {
-            if (!authStore?.loggedIn) {
-                if (mounted) setUserBalance(0);
-                return;
-            }
             try {
                 setLoadingBalance(true);
-                // getUserBalance may accept optional user param; call without to use server-side aggregation
-                const bal = await (getUserBalance ? getUserBalance() : null);
-                // normalize possible shapes: { total }, { balance }, number, etc.
-
-                let convertCryptoToFiat = async (crypto, amount) => {
-                    try {
-                        const url = `convert/${crypto}/usd/${amount}/crypto-to-fiat`;
-                        const res = await jsonGet(url);
-                        if (res.success) {
-                            return Number(res.data?.to?.amount || 0);
-                        } else {
-                            console.warn('Failed to convert crypto to fiat', res.message);
-                        }
-                    } catch (err) {
-                        console.warn('Failed to convert crypto to fiat', err);
-                    }
-                    return 0;
-                };
-
-                let total = 0;
-                if (bal && typeof bal === 'object') {
-                    for (const key in bal) {
-                        const cryptoName = bal[key]['name'].toLowerCase();
-                        const cryptoAmount = bal[key]?.amount || 0;
-                        const fiatValue = await convertCryptoToFiat(cryptoName, cryptoAmount);
-                        total += fiatValue;
-                    }
+                const storeWallets = Array.isArray(walletStore?.wallets) ? walletStore.wallets : [];
+                if (!storeWallets.length) {
+                    if (mounted) setUserBalance(0);
+                    return;
                 }
+
+                // compute per-wallet fiat equivalents and sum
+                const jobs = storeWallets.map(async (w) => {
+                    const walletSymbol = (w.wallet_symbol || '').toUpperCase();
+                    const walletBalance = Number(w.wallet_balance) || 0;
+
+                    // try both upper and lower keyed rates (tolerant lookup)
+                    const rates = walletStore.rates || {};
+                    console.log('Rates:', rates);
+                    let rateEntry = rates[walletSymbol];
+                    if (rateEntry == null) rateEntry = rates[walletSymbol.toLowerCase()];
+
+                    // rateEntry might be { usd: number } or a number
+                    const rateUsd = (rateEntry && typeof rateEntry === 'object' && typeof rateEntry.usd === 'number')
+                        ? rateEntry.usd
+                        : (typeof rateEntry === 'number' ? rateEntry : 0);
+
+                    return walletBalance * rateUsd;
+                });
+
+                const results = await Promise.all(jobs);
+                const total = results.reduce((acc, v) => acc + (Number(v) || 0), 0);
+
+                console.log('Fetched user balance:', storeWallets, total);
+
                 if (mounted) setUserBalance(total);
             } catch (err) {
                 console.warn('Failed to load user balance', err);
@@ -67,7 +66,8 @@ function Main() {
         }
         loadBalance();
         return () => { mounted = false; };
-    }, [authStore?.loggedIn, authStore?.user?.id, getUserBalance]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [authStore?.loggedIn, walletStore?.wallets?.length, JSON.stringify(walletStore?.rates)]);
 
     function formatFiat(p) {
         if (!Number.isFinite(p)) return '-';

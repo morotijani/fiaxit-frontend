@@ -23,14 +23,14 @@ function reducer(store, action) {
             wallets = store.wallets.filter((w) => w.id !== action.payload);
             return {...store, wallets: wallets};
         case 'setWallets': 
-            return {...store, wallets: action.payload.wallets, total: action.payload.total}
+            return {...store, wallets: action.payload.wallets, total: action.payload.total, rates: action.payload.rates}
         default: 
             return store;
     }
 }
 
 export function WalletStore(props) {
-    const [store, dispatch] = useReducer(reducer, {total: 0, wallets: []});    
+    const [store, dispatch] = useReducer(reducer, {total: 0, wallets: [], rates: {}});    
 
     return (
         <WalletContext.Provider value={[store, dispatch]}>

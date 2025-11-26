@@ -48,10 +48,10 @@ export function AuthStore(props) {
                 if (resp && resp.success) {
                     dispatch({type: "setUser", payload: resp.data})
                     // pass fetched user into getUserBalance to avoid reading stale store
-                    const balance = await getUserBalance(resp.data);
-                    if (balance) {
-                        dispatch({type: "updateUserBalance", payload: {balance: balance}});
-                    }
+                    // const balance = await getUserBalance(resp.data);
+                    // if (balance) {
+                    //     dispatch({type: "updateUserBalance", payload: {balance: balance}});
+                    // }
                 }
             } catch (err) {
                 console.error('getUser error', err);
@@ -62,26 +62,27 @@ export function AuthStore(props) {
 
     // get user balance from all wallet address
     // accepts optional user param to avoid relying on stale store after dispatch
-    async function getUserBalance(user = null) {
-        try {
-            if (!store.loggedIn) return null;
-            // if a specific user object provided, prefer it for any validations (not strictly required here)
-            // call API to retrieve balances for logged in user
-            const resp = await jsonGet('wallets/balance');
-            if (resp && resp.success) {
-                return resp.data;
-            }
-            return null;
-        } catch (err) {
-            console.error('getUserBalance error', err);
-            return null;
-        }
-    }
+    // async function getUserBalance(user = null) {
+    //     try {
+    //         if (!store.loggedIn) return null;
+    //         // if a specific user object provided, prefer it for any validations (not strictly required here)
+    //         // call API to retrieve balances for logged in user
+    //         const resp = await jsonGet('wallets/balance');
+    //         if (resp && resp.success) {
+    //             return resp.data;
+    //         }
+    //         return null;
+    //     } catch (err) {
+    //         console.error('getUserBalance error', err);
+    //         return null;
+    //     }
+    // }
 
     return (
         // provide information down to our children
         // expose getUser and getUserBalance so consumers can refresh when needed
-        <AuthContext.Provider  value={[store, dispatch, getUser, getUserBalance]}>
+        // <AuthContext.Provider  value={[store, dispatch, getUser, getUserBalance]}>
+        <AuthContext.Provider  value={[store, dispatch, getUser]}>
             {props.children}
         </AuthContext.Provider>
     )
