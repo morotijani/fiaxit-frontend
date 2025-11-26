@@ -63,15 +63,6 @@ function WalletDetails() {
         return null;
     }
 
-    async function convertCryptoToFiat(amount, fromCurrency, toCurrency) {
-        try {
-            const resp = await jsonGet(`convert/${fromCurrency}/${toCurrency}/${amount}/crypto-to-fiat`);
-            return resp?.data?.to?.amount || 0;
-        } catch (err) {
-            console.warn('convertCryptoToFiat failed', err);
-            return 0;
-        }
-    }
 
     useEffect(() => {
         let mounted = true;
@@ -104,6 +95,15 @@ function WalletDetails() {
                                 console.log('response wallet details next cache', resp)
                                 // fiat and fiat formatted normalization
                                 resp.data.balance = resp.data.balance || {};
+
+                                if (symbol === 'eth' && resp.data.balance.ether != null) {
+                                    resp.data.balance.total = Number(resp.data.balance.ether) || 0;
+                                } 
+                                
+                                // else if (symbol === 'btc' && resp.data.balance != null && typeof resp.data.balance === 'number') {
+                                //     resp.data.balance.total = Number(resp.data.balance.total) || 0;
+                                // }
+
                                 if (resp.data.balance.total != null) {
                                     let rateEntry = rates[symbol.toUpperCase()];
                                     const rateUsd = (rateEntry && typeof rateEntry === 'object' && typeof rateEntry.usd === 'number')
