@@ -39,7 +39,6 @@ function Main() {
 
                     // try both upper and lower keyed rates (tolerant lookup)
                     const rates = walletStore.rates || {};
-                    console.log('Rates:', rates);
                     let rateEntry = rates[walletSymbol];
                     if (rateEntry == null) rateEntry = rates[walletSymbol.toLowerCase()];
 
@@ -54,8 +53,6 @@ function Main() {
                 const results = await Promise.all(jobs);
                 const total = results.reduce((acc, v) => acc + (Number(v) || 0), 0);
 
-                console.log('Fetched user balance:', storeWallets, total);
-
                 if (mounted) setUserBalance(total);
             } catch (err) {
                 console.warn('Failed to load user balance', err);
@@ -67,7 +64,7 @@ function Main() {
         loadBalance();
         return () => { mounted = false; };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [authStore?.loggedIn, walletStore?.wallets?.length, JSON.stringify(walletStore?.rates)]);
+    }, [walletStore?.wallets?.length, JSON.stringify(walletStore?.rates)]);
 
     function formatFiat(p) {
         if (!Number.isFinite(p)) return '-';

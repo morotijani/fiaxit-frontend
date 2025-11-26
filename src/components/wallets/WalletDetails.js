@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
+import { WalletContext } from '../../contexts/WalletContext'
 import { jsonGet } from '../../helpers/Ajax'
 import { shortenAddress, useCopyToClipboard } from '../../helpers/StringHelpers'
 import { formatDistanceToNow } from 'date-fns';
@@ -43,6 +44,8 @@ function timeAgo(date) {
 }
 
 function WalletDetails() {
+    const [walletStore, walletDispatch] = useContext(WalletContext);
+    const rates = walletStore.rates || {}; // get current rates from store
     const navigate = useNavigate();
     const [isCopied, copyToClipboard] = useCopyToClipboard();
     let { id } = useParams();
@@ -94,25 +97,31 @@ function WalletDetails() {
                     setAssets([{ ...w, rawInfo: cached }]);
                     setLoadingWallet(false);
                     // continue to refresh in background (non-blocking)
-                    // (async () => {
-                    //     try {
-                    //         const resp = await jsonGet(`wallets/${symbol}/${address}/info`);
-                    //         if (resp && resp.success && resp.data) {
-                    //             // fiat and fiat formatted normalization
-                    //             resp.data.balance = resp.data.balance || {};
-                    //             if (resp.data.balance.total != null) {
-                    //                 resp.data.balance.fiat = await convertCryptoToFiat(resp.data.balance.total, w.wallet_crypto_name || symbol, 'usd');
-                    //                 resp.data.balance.fiatFormatted = `$${(Number(resp.data.balance.fiat) || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-                    //             }
+                    (async () => {
+                        try {
+                            const resp = await jsonGet(`wallets/${symbol}/${address}/info`);
+                            if (resp && resp.success && resp.data) {
+                                console.log('response wallet details next cache', resp)
+                                // fiat and fiat formatted normalization
+                                resp.data.balance = resp.data.balance || {};
+                                if (resp.data.balance.total != null) {
+                                    let rateEntry = rates[symbol.toUpperCase()];
+                                    const rateUsd = (rateEntry && typeof rateEntry === 'object' && typeof rateEntry.usd === 'number')
+                                    ? rateEntry.usd
+                                    : (typeof rateEntry === 'number' ? rateEntry : 0);
+                                    resp.data.balance.fiat = resp.data.balance.total * rateUsd;
 
-                    //             setCachedData(cacheKey, resp.data, DEFAULT_CACHE_TTL_MIN);
-                    //             if (mounted) setAssets([{ ...w, rawInfo: resp.data }]);
-                    //         }
-                    //     } catch (err) {
-                    //         // ignore background refresh errors
-                    //         console.warn('Background wallet info refresh failed', err);
-                    //     }
-                    // })();
+                                    resp.data.balance.fiatFormatted = `$${(Number(resp.data.balance.fiat) || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+                                }
+
+                                setCachedData(cacheKey, resp.data, DEFAULT_CACHE_TTL_MIN);
+                                if (mounted) setAssets([{ ...w, rawInfo: resp.data }]);
+                            }
+                        } catch (err) {
+                            // ignore background refresh errors
+                            console.warn('Background wallet info refresh failed', err);
+                        }
+                    })();
                     return; // early return: UI served from cache
                 }
 
@@ -136,7 +145,13 @@ function WalletDetails() {
                             balance = Number(infoData.balance.total) || 0;
                         }
                         infoData.balance.total = balance;
-                        infoData.balance.fiat = await convertCryptoToFiat(balance, w.wallet_crypto_name || 'ethereum', 'usd');
+
+                        let rateEntry = rates['ETH'];
+                        const rateUsd = (rateEntry && typeof rateEntry === 'object' && typeof rateEntry.usd === 'number')
+                        ? rateEntry.usd
+                        : (typeof rateEntry === 'number' ? rateEntry : 0);
+                        infoData.balance.fiat = balance * rateUsd;
+
                         infoData.balance.fiatFormatted = `$${(Number(infoData.balance.fiat) || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
                         infoData.txCount = infoData.transactionCount || (Array.isArray(infoData.transactions) ? infoData.transactions.length : infoData.txCount || 0);
                         infoData.totalSent = infoData.totalSentEth ?? infoData.totalSent ?? 0;
@@ -149,7 +164,14 @@ function WalletDetails() {
                             balance = Number(infoData.balance) || 0;
                         }
                         infoData.balance.total = balance;
-                        infoData.balance.fiat = await convertCryptoToFiat(balance, w.wallet_crypto_name || 'bitcoin', 'usd');
+
+                        let rateEntry = rates['BTC'];
+                        const rateUsd = (rateEntry && typeof rateEntry === 'object' && typeof rateEntry.usd === 'number')
+                        ? rateEntry.usd
+                        : (typeof rateEntry === 'number' ? rateEntry : 0);
+                        infoData.balance.fiat = balance * rateUsd;
+
+
                         infoData.balance.fiatFormatted = `$${(Number(infoData.balance.fiat) || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
                         infoData.txCount = infoData.txCount || (Array.isArray(infoData.transactions) ? infoData.transactions.length : 0);
                     } else {
@@ -158,7 +180,13 @@ function WalletDetails() {
                         const potential = Number(b?.total ?? b?.amount ?? b?.balance ?? 0) || 0;
                         infoData.balance = infoData.balance || {};
                         infoData.balance.total = potential;
-                        infoData.balance.fiat = await convertCryptoToFiat(potential, w.wallet_crypto_name || symbol, 'usd');
+
+                        let rateEntry = rates['ETH'];
+                        const rateUsd = (rateEntry && typeof rateEntry === 'object' && typeof rateEntry.usd === 'number')
+                        ? rateEntry.usd
+                        : (typeof rateEntry === 'number' ? rateEntry : 0);
+                        infoData.balance.fiat = potential * rateUsd;
+
                         infoData.balance.fiatFormatted = `$${(Number(infoData.balance.fiat) || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
                         infoData.txCount = infoData.txCount || (Array.isArray(infoData.transactions) ? infoData.transactions.length : 0);
                     }
