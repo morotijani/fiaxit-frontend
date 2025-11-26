@@ -136,7 +136,7 @@ function SendCrypto() {
                 toast.success('Transaction initiated successfully', { duration: 6000 });
                 navigate(-1);
             } else {
-                const msg = resp?.message || 'Send failed';
+                const msg = resp?.errors?.details || 'Send failed';
                 // process field errors if present
                 if (resp?.errors && Array.isArray(resp.errors)) {
                     // mark first field error if any
@@ -223,7 +223,7 @@ function SendCrypto() {
 
                 <div className="bg-light rounded-3 p-3 mb-3" style={{ fontSize: "13px" }}>
                     <div className="d-flex justify-content-between text-xs text-muted">
-                        <span className="fw-semibold">Amount in Crypto</span>
+                        <span className="fw-semibold">Amount in crypto</span>
                         <span>
                             {selectedAsset?.name ?? '—'}:&nbsp;
                             <strong id="amount-in-crypto-amount">{cryptoAmount ? cryptoAmount.toFixed(8) : '0.00000000'} {selectedAsset?.symbol ?? ''}</strong>

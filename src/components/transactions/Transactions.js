@@ -1,6 +1,7 @@
 import { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { TransactionContext } from '../../contexts/TransactionContext'
+import { AuthContext } from '../../contexts/AuthContext'
 import { jsonDelete } from '../../helpers/Ajax'
 import Button from '../elements/Button'
 import toast from 'react-hot-toast';
@@ -8,6 +9,7 @@ import { formatDistanceToNow } from 'date-fns';
 
 function Transactions() {
     const navigate = useNavigate();
+    const [authStore, authDispatch] = useContext(AuthContext);
     const [transactionStore, transactionDispatch] = useContext(TransactionContext);
 
     async function handleContactDelete(id) {
@@ -87,9 +89,9 @@ function Transactions() {
                 )
             }
 
-            const fromAddr = tx.transaction_from_wallet_address ?? tx.from ?? '';
-            const toAddr = tx.transaction_to_wallet_address ?? tx.to ?? tx.to_address ?? '';
-            const type = fromAddr === toAddr ? "Self" : (tx.transaction_type ?? tx.type ?? 'Unknown');
+            const tFrom = tx.transaction_by ?? '';
+            const tTo = tx.transaction_to ?? '';
+            const type = tTo === authStore?.user_id ? "Receive" : tFrom === authStore?.user_id ? "Send" : tx.transaction_type ?? 'Unknown';
 
             const amountNum = Number(tx.transaction_amount ?? tx.amount ?? tx.value ?? 0) || 0;
             const amountSign = type === "Send" ? "-" : type === "Receive" ? "+" : "";
