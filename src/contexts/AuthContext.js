@@ -47,6 +47,9 @@ export function AuthStore(props) {
                 const resp = await jsonGet('auth/loggedInUser');
                 if (resp && resp.success) {
                     dispatch({type: "setUser", payload: resp.data})
+                } else {
+                    console.error('getUser failed:', resp.errors.message);
+                    dispatch({type: "logout"});
                 }
             } catch (err) {
                 console.error('getUser error', err);
@@ -59,7 +62,7 @@ export function AuthStore(props) {
     return (
         // provide information down to our children
         // expose getUser and getUserBalance so consumers can refresh when needed
-        <AuthContext.Provider  value={[store, dispatch]}>
+        <AuthContext.Provider  value={[store, dispatch, getUser]}>
             {props.children}
         </AuthContext.Provider>
     )

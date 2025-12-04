@@ -16,6 +16,9 @@ function Logout() {
             authDispatch({type: 'logout'});
             navigate('/auth/login');
             toast.success("You have been logged out successfully.", {duration: 6000});
+        } else {
+            console.error('Logout failed:', resp.errors.message)
+            toast.error(`An error occurred while logging out. Please try again.`, {duration: 6000});
         }
     }
 
