@@ -22,9 +22,10 @@ function SignUp() {
 
     //
     function success(resp) {
-        navigate('/auth/login');
+        // navigate('/auth/login');
+        navigate(`/auth/registered/${resp.data.user_id}`);
         // send toast of signup
-        toast.success("Account created successfully! Please may now log in !");
+        toast.success("Account created successfully! Please verify your email before logging in.");
     }
 
     // setup form
@@ -92,7 +93,7 @@ function SignUp() {
                     }}
                 >
                     {/* Heading */}
-                    <img class="img-fluid" src={Logo} alt="" width="72" height="35"></img>
+                    <img className="img-fluid" src={Logo} alt="" width="72" height="35"></img>
                     <div className="mt-4">
                         <h4 className="fw-bold">Your borderless account awaits</h4>
                         <p className="text-muted mb-4">Create An Account To Get Started</p>
