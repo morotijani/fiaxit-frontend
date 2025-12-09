@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { jsonGet } from '../../helpers/Ajax'
-import toast from 'react-hot-toast';
+import { toast } from 'react-hot-toast'; 
 import Logo from '../../assets/fiaxit-light-logo.png';
 
 function VerifyEmail() {
@@ -128,8 +128,8 @@ function VerifyEmail() {
                         case 'expired':
                             toast.error('Verification code has expired. Please request a new one.', { duration: 6000 });
                             break;
-                        case 'is_verified':
-                            toast.info('Your email is already verified. Please log in.', { duration: 6000 });
+                        case 'is_verified': 
+                            toast.success('Your email is already verified. Please log in.', { duration: 6000 });
                             break;
                         case 'network_error':
                             toast.error('Network error. Please check your connection and try again.', { duration: 6000 });
@@ -187,10 +187,10 @@ function VerifyEmail() {
                         {/* Illustration */}
                         <div className="d-flex justify-content-center mt-3 mb-4">
                             <img
-                                src="https://blush.design/api/download?shareUri=wZtuExI3XDrwZaPO&c=Bottom_0%7E2b44ff_Hair_0%7Ee8e1e1_Skin_0%7Ed4a181_Top_0%7Ef2f2f2&w=800&h=800&fm=png"
+                                src="https://blush.design/api/download?shareUri=fzIOhjyIryimFdlW&c=Bottom_0%7E393f82_Hair_0%7Eb58143_Skin_0%7E57331f_Top_0%7Ef2f2f2&w=800&h=800&fm=png"
                                 alt="Verification Illustration"
                                 className="img-fluid"
-                                style={{ width: "300px", height: "auto" }}
+                                style={{ width: "auto", height: "400px" }}
                             />
                         </div>
 
@@ -221,7 +221,7 @@ function VerifyEmail() {
                             // Error state: show conditional message based on status
                             <div className="text-center my-4">
                                 <div className="mb-3">
-                                    <span className="badge bg-danger fs-5">✗ Verification Failed</span>
+                                    <span className="badge bg-danger-subtle text-danger-emphasis">✗ Verification Failed</span>
                                 </div>
                                 <p className="text-danger small fw-semibold">{verifyError.status}</p>
                                 <p className="text-muted small mt-2">{verifyError.message}</p>
@@ -230,32 +230,32 @@ function VerifyEmail() {
                                 <div className="mt-4 d-flex flex-column gap-2">
                                     {verifyError.status === 'expired' || verifyError.status === 'invalid_code' ? (
                                         <>
-                                            <Link to="/auth/resend-verification-code" className="btn btn-primary btn-sm">
-                                                Request New Verification Code
+                                            <Link to="/auth/resend-verification-code" className="btn btn-warning btn-sm">
+                                                Request new verification code
                                             </Link>
                                             <Link to="/auth/signup" className="btn btn-light btn-sm">
-                                                Sign Up Again
+                                                Sign up again
                                             </Link>
                                         </>
                                     ) : verifyError.status === 'invalid_user' || verifyError.status === 'network_error' ? (
                                         <>
-                                            <Link to="/auth/signup" className="btn btn-primary btn-sm">
+                                            <Link to="/auth/signup" className="btn btn-warning btn-sm">
                                                 Sign Up
                                             </Link>
                                         </>
                                     ) : verifyError.status === 'already_verified' ? (
                                         <>
-                                            <Link to="/auth/login" className="btn btn-primary btn-sm">
+                                            <Link to="/auth/login" className="btn btn-warning btn-sm">
                                                 Go to Login
                                             </Link>
                                         </>
                                     ) : (
                                         <>
-                                            <button onClick={() => window.location.reload()} className="btn btn-primary btn-sm">
-                                                Try Again
+                                            <button onClick={() => window.location.reload()} className="btn btn-warning btn-sm">
+                                                Try again
                                             </button>
                                             <Link to="/auth/signup" className="btn btn-light btn-sm">
-                                                Sign Up
+                                                Sign up
                                             </Link>
                                         </>
                                     )}

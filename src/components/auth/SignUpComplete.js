@@ -112,10 +112,10 @@ function SignUpComplete() {
                         {/* Illustration */}
                         <div className="d-flex justify-content-center mt-3 mb-4">
                             <img
-                                src="https://blush.design/api/download?shareUri=vZjFcf89A4Xcg4_f&c=Hair_0%7E7590ff_Skin_0%7Ea97979&w=800&h=800&fm=png"
+                                src="https://blush.design/api/download?shareUri=8PM0lK-V7hK0Fdjx&c=Hair_0%7Ef5bbee_Skin_0%7E715b4c&w=800&h=800&fm=png"
                                 alt="Verification Illustration"
                                 className="img-fluid"
-                                style={{ width: "300px", height: "auto" }}
+                                style={{ width: "auto", height: "400px" }}
                             />
                         </div>
 
@@ -131,10 +131,8 @@ function SignUpComplete() {
                                 <h5 className="fw-semibold">Hello, {user.user_fname.toUpperCase() ?? 'User'} {user.user_lname.toUpperCase() ?? ''}!</h5>
                                 <p className="text-muted small mt-3">
                                     You have successfully registered your account with Fiaxit. A verification link has been sent to:
+                                    <span className="badge bg-success-subtle small text-success-emphasis mt-2">{user.user_email ?? 'your email'}</span>
                                 </p>
-                                <div className="alert alert-info small mt-2" role="alert">
-                                    <strong>{user.user_email ?? 'your email'}</strong>
-                                </div>
                                 <p className="text-muted small">
                                     Click the link to verify your account. The link expires in <strong>15 minutes</strong>. 
                                     If you don't see the email, please check your spam/junk folder.

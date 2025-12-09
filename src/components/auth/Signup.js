@@ -152,8 +152,8 @@ function SignUp() {
                     </div>
 
                     <div className='text-center mt-3'>
-                        <div>
-                            <Link to="/auth/login">Already have an account? Log In</Link>
+                        <div class="text-muted fs-small">
+                            Already have an account? <Link to="/auth/login">Log In</Link>
                         </div>
                     </div>
 
