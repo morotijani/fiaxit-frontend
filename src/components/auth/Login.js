@@ -28,14 +28,8 @@ function Login() {
     return (
         <div className="animate-fade-in">
             <div className="d-flex justify-content-center align-items-center bg-light" style={{ minHeight: "100vh" }}>
-                <div
-                    className="card shadow-lg border-0 p-4 main-card-container"
-                    style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "space-between",
-                    }}
-                >
+                <div className="card shadow-lg border-0 p-4 main-card-container">
+
                     {/* top bar */}
                     <div className="mb-3 mx-auto" style={{ width: "40px", height: "4px", backgroundColor: "#e2e8f0", borderRadius: "10px" }}></div>
 
@@ -92,12 +86,12 @@ function Login() {
                             Don't have an account? <Link to="/auth/signup" className="text-primary fw-bold text-decoration-none">Sign up</Link>
                         </p>
                     </div>
-                </div>
 
-                {/* Footer */}
-                <div className="text-muted text-center small mt-4 px-3 pb-2 opacity-75">
-                    By logging in, you agree to our{" "}
-                    <Link to="#" className="text-decoration-none fw-semibold">Terms</Link>{" "} &{" "}<Link to="#" className="text-decoration-none fw-semibold"> Privacy</Link>.
+                    {/* Footer */}
+                    <div className="text-muted text-center small mt-4 px-3 pb-2 opacity-75">
+                        By logging in, you agree to our{" "}
+                        <Link to="#" className="text-decoration-none fw-semibold">Terms</Link>{" "} &{" "}<Link to="#" className="text-decoration-none fw-semibold"> Privacy</Link>.
+                    </div>
                 </div>
             </div>
         </div>

@@ -1,9 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
 import { Routes, Route, useNavigate } from 'react-router-dom';
-import 'bootstrap/dist/css/bootstrap.min.css';
-import 'bootstrap/dist/js/bootstrap.bundle.min.js'; // optional for JS features (modal, dropdowns, etc.)
-import 'bootstrap-icons/font/bootstrap-icons.css'; // bootstrap icons
-import 'material-symbols/outlined.css'; // material icons
 import MainFooter from './components/MainFooter';
 import { AuthContext } from './contexts/AuthContext';
 import Main from './components/main/Main'
@@ -104,27 +100,29 @@ function AppIndex() {
     }
 
     return (
-        <div className="d-flex justify-content-center align-items-center bg-light main-card">
-            <div className="card shadow-sm border-0 p-0 d-flex flex-column main-card-container">
-                <div className="flex-grow-1 overflow-auto main-page-scroll">
-                    <Routes>
-                        <Route path="/trade/receive/:id" element={<ReceiveAsset />} />
-                        <Route path="/trade/send" element={<SendCrypto />} />
-                        <Route path="/trade/receive" element={<Receive />} />
-                        <Route path="/crypto/:id" element={<Crypto />} />
-                        <Route path="/wallet/:id" element={<WalletDetails />} />
-                        <Route path="/wallets" element={<Wallets />} />
-                        <Route path="/transactions" element={<Transactions />} />
-                        <Route path="/settings" element={<SettingsForm />} />
-                        <Route path="/profile" element={<Profile />} />
-                        <Route path="/contacts/:id" element={<ContactForm />} />
-                        <Route path="/contacts" element={<Contacts />} />
-                        <Route path="/todos" element={<Todos />} />
-                        <Route path="/admin/add-coin" element={<AddCoin />} />
-                        <Route path="/" element={<Main />} />
-                    </Routes>
+        <div className="animate-fade-in">
+            <div className="d-flex justify-content-center align-items-center bg-light main-card">
+                <div className="card shadow-lg border-0 p-0 main-card-container">
+                    <div className="flex-grow-1 overflow-auto main-page-scroll">
+                        <Routes>
+                            <Route path="/trade/receive/:id" element={<ReceiveAsset />} />
+                            <Route path="/trade/send" element={<SendCrypto />} />
+                            <Route path="/trade/receive" element={<Receive />} />
+                            <Route path="/crypto/:id" element={<Crypto />} />
+                            <Route path="/wallet/:id" element={<WalletDetails />} />
+                            <Route path="/wallets" element={<Wallets />} />
+                            <Route path="/transactions" element={<Transactions />} />
+                            <Route path="/settings" element={<SettingsForm />} />
+                            <Route path="/profile" element={<Profile />} />
+                            <Route path="/contacts/:id" element={<ContactForm />} />
+                            <Route path="/contacts" element={<Contacts />} />
+                            <Route path="/todos" element={<Todos />} />
+                            <Route path="/admin/add-coin" element={<AddCoin />} />
+                            <Route path="/" element={<Main />} />
+                        </Routes>
+                    </div>
+                    <MainFooter />
                 </div>
-                <MainFooter />
             </div>
         </div>
     );

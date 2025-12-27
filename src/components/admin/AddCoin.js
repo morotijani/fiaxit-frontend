@@ -38,7 +38,7 @@ function AddCoin() {
     };
 
     return (
-        <div className="animate-fade-in bg-white" style={{ minHeight: '100vh' }}>
+        <div className="animate-fade-in">
             <div className="d-flex align-items-center p-3 border-bottom sticky-top bg-white glass">
                 <button className="btn btn-light rounded-circle p-2 shadow-sm me-3" onClick={() => navigate(-1)}>
                     <span className="material-symbols-outlined text-secondary" style={{ fontSize: '20px' }}>arrow_back</span>
@@ -86,8 +86,10 @@ function AddCoin() {
                         <input name="icon" className="form-control py-3 rounded-4 border-2" placeholder="https://..." onChange={handleChange} />
                     </div>
 
-                    <button type="submit" className="btn btn-primary w-100 py-3 rounded-4 fw-bold shadow" disabled={loading}>
-                        {loading ? 'Adding Coin...' : 'Confirm & Add Coin'}
+                    <button type="submit" className="btn btn-primary w-100 py-3 rounded-4 fw-bold shadow-sm mb-4" disabled={loading}>
+                        {loading ? (
+                            <><span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span> Adding Coin...</>
+                        ) : 'Confirm & Add Coin'}
                     </button>
                 </form>
             </div>

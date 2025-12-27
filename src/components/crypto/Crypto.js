@@ -57,7 +57,7 @@ function CryptoDetails() {
         async function fetchCoin() {
             try {
                 setLoading(true);
-                
+
                 // check cache first
                 const cached = getCachedData('coin', id);
                 if (cached) {
@@ -70,7 +70,7 @@ function CryptoDetails() {
 
                 const url = `convert/coin/${id}`;
                 const coinData = await jsonGet(url);
-                
+
                 if (coinData && coinData.success && coinData.data) {
                     if (mounted) {
                         setCoin(coinData.data);
@@ -100,7 +100,7 @@ function CryptoDetails() {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id]);
-    
+
     // Fetch chart data based on time range
     useEffect(() => {
         let mounted = true;
@@ -154,21 +154,23 @@ function CryptoDetails() {
         return () => {
             mounted = false;
         }
-    }, [coin, range]); // depend on coin object, not coin.slug string
+    }, [coin, range]);
 
     if (loading) {
         return (
-            <div className="text-center py-3">
-                <div className="spinner-border spinner-border-sm text-secondary" role="status" />
-                <small className="text-muted ms-2">Loading crypto details</small>
+            <div className="animate-fade-in d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '100vh' }}>
+                <div className="spinner-border text-primary mb-3" role="status" />
+                <span className="text-muted small fw-bold text-uppercase tracking-wider">Loading Assets...</span>
             </div>
         );
     }
 
     if (!coin) {
         return (
-            <div className="text-center py-3">
-                <small className="text-muted">No crypto details found</small>
+            <div className="animate-fade-in d-flex flex-column align-items-center justify-content-center" style={{ minHeight: '100vh' }}>
+                <span className="material-symbols-outlined text-muted mb-2" style={{ fontSize: '48px' }}>error</span>
+                <span className="text-muted">Crypto details not found</span>
+                <button className="btn btn-primary mt-3 rounded-pill px-4" onClick={() => navigate('/')}>Go Back</button>
             </div>
         );
     }
@@ -179,132 +181,125 @@ function CryptoDetails() {
     const volume24h = Number(coin.quote?.USD?.volume_24h || 0);
 
     return (
-        <div>
-            {loading  ? (
-                <div className="text-center py-3">
-                    <div className="spinner-border spinner-border-sm text-secondary" role="status" />
-                    <small className="text-muted ms-2">Loading crypto details</small>
+        <div className="animate-fade-in">
+            {/* Top Bar / Header */}
+            <div className="p-3 border-bottom d-flex align-items-center justify-content-between sticky-top bg-white glass">
+                <button className="btn btn-light rounded-circle p-2 shadow-sm" onClick={() => navigate(-1)}>
+                    <span className="material-symbols-outlined text-secondary" style={{ fontSize: '20px' }}>arrow_back</span>
+                </button>
+                <div className="text-center">
+                    <h6 className="m-0 fw-bold">{coin.name}</h6>
+                    <small className="text-muted text-uppercase fw-bold" style={{ fontSize: '0.65rem' }}>{coin.symbol} • Live</small>
                 </div>
-                // <>
-                // <Skeleton height={40} width="60%" />
-                // <Skeleton height={30} width="30%" />
-                // </>
-            ) : (
-                    <div>
-                        {!coin ? (
-                            <div className="text-center py-3">
-                                <small className="text-muted">No crypto details found</small>
-                            </div>
-                        ) : (
-                            <div className="bg-light rounded-5 rounded-top-0 mb-4">
-                                {/* top bar */}
-                                <div className="mb-3 mx-auto" style={{ width: "50%", height: "4px", backgroundColor: "#f0f0f0", borderRadius: "2px" }}></div>
+                <button className="btn btn-light rounded-circle p-2 shadow-sm">
+                    <span className="material-symbols-outlined text-secondary" style={{ fontSize: '20px' }}>star</span>
+                </button>
+            </div>
 
-                                <div className="d-flex justify-content-between align-items-center mb-2 p-3">
-                                    <button className="btn btn-sm" onClick={() => navigate(-1)}>
-                                        <span className="material-symbols-outlined">keyboard_backspace</span>
-                                    </button>
-                                    <h6 className="mb-0">Coin Details</h6>
-                                    <button className="btn btn-light btn-sm" onClick={() => navigate('/deposit')}>
-                                        <span className="material-symbols-outlined">share</span>
-                                    </button>
-                                </div>
-                                <div className="p-3" style={{ overflowY: "auto", flexGrow: 1 }}>
-                                    <div className="coin-header">
-                                        <img
-                                            src={`https://s2.coinmarketcap.com/static/img/coins/64x64/${coin.id}.png`}
-                                            className="coin-icon"
-                                            alt=""
-                                        />
-                                        <h1>{coin.name} ({coin.symbol})</h1>
-                                    </div>
+            <div className="flex-grow-1">
+                {/* Summary Section */}
+                <div className="p-4 text-center">
+                    <div className="mb-2">
+                        <img
+                            src={`https://s2.coinmarketcap.com/static/img/coins/64x64/${coin.id}.png`}
+                            className="rounded-circle shadow-sm"
+                            alt=""
+                            style={{ width: '48px', height: '48px' }}
+                        />
+                    </div>
+                    <h2 className="fw-bold mb-1">${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</h2>
+                    <div className={`d-inline-flex align-items-center px-2 py-1 rounded-pill ${percentChange >= 0 ? 'bg-success-subtle text-success' : 'bg-danger-subtle text-danger'}`}>
+                        <span className="material-symbols-outlined me-1" style={{ fontSize: '14px' }}>
+                            {percentChange >= 0 ? 'trending_up' : 'trending_down'}
+                        </span>
+                        <small className="fw-bold">{Math.abs(percentChange).toFixed(2)}% (24h)</small>
+                    </div>
+                </div>
 
-                                    {/* Price */}
-                                    <h2 className="price">${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</h2>
-
-                                    <p
-                                        className="percent-change"
-                                        style={{
-                                            color: percentChange > 0 ? "#4caf50" : "#ff5252",
-                                        }}
-                                    >
-                                        {percentChange > 0 ? "▲" : "▼"}
-                                        {Math.abs(percentChange).toFixed(2)}%
-                                    </p>
-                                </div>
-                            </div>
-                        )}
-
-                        {/* Time Range Selector */}
-                        <TimeRangeSelector active={range} onChange={setRange} />
-
-                        {/* Chart */}
+                {/* Chart Section */}
+                <div className="p-2">
+                    <TimeRangeSelector active={range} onChange={setRange} />
+                    <div className="mt-3" style={{ minHeight: '260px' }}>
                         {chartLoading ? (
-                            // <Skeleton height={300} radius={12} />
-                            <div className="text-center py-3">
-                                <div className="spinner-border spinner-border-sm text-secondary" role="status" />
-                                <small className="text-muted ms-2">Loading crypto graph data</small>
+                            <div className="d-flex flex-column align-items-center justify-content-center" style={{ height: '260px' }}>
+                                <div className="spinner-border spinner-border-sm text-primary mb-2" role="status" />
+                                <small className="text-muted fs-xs fw-bold text-uppercase">Mapping Market Data...</small>
                             </div>
                         ) : chartData.length === 0 ? (
-                                <div className="text-center py-3">
-                                    <small className="text-muted">No chart data found</small>
-                                </div>
-                            ) : (
-                                <Chart
-                                    type="area"
-                                    height={320}
-                                    series={[
-                                        {
-                                            name: "Price",
-                                            data: chartData.map((c) => c[1]),
-                                        },
-                                    ]}
-                                    options={{
-                                        chart: { toolbar: { show: false } },
-                                        stroke: { curve: "smooth" },
-                                        fill: { opacity: 0.2 },
-                                        xaxis: { labels: { show: false } },
-                                        yaxis: { labels: { show: false } },
-                                        // theme: { mode: "dark" },
-                                    }}
-                                />
-                            )
-                        }
-                        
-                        <div className="p-4">
+                            <div className="d-flex align-items-center justify-content-center" style={{ height: '260px' }}>
+                                <small className="text-muted">Chart data currently unavailable</small>
+                            </div>
+                        ) : (
+                            <Chart
+                                type="area"
+                                height={260}
+                                series={[{ name: "Price", data: chartData.map((c) => c[1]) }]}
+                                options={{
+                                    chart: { toolbar: { show: false }, sparks: { enabled: true } },
+                                    stroke: { curve: "smooth", width: 3, colors: [percentChange >= 0 ? '#10b981' : '#ef4444'] },
+                                    fill: {
+                                        type: 'gradient',
+                                        gradient: {
+                                            shadeIntensity: 1,
+                                            opacityFrom: 0.45,
+                                            opacityTo: 0.05,
+                                            stops: [20, 100],
+                                            colorStops: [
+                                                { offset: 0, color: percentChange >= 0 ? '#10b981' : '#ef4444', opacity: 0.4 },
+                                                { offset: 100, color: percentChange >= 0 ? '#10b981' : '#ef4444', opacity: 0 }
+                                            ]
+                                        }
+                                    },
+                                    xaxis: { labels: { show: false }, axisBorder: { show: false }, axisTicks: { show: false } },
+                                    yaxis: { labels: { show: false } },
+                                    grid: { show: false },
+                                    tooltip: { theme: 'light', x: { show: false } }
+                                }}
+                            />
+                        )}
+                    </div>
+                </div>
 
-                            {/* stats */}
-                            <div className="card border-0 bg-warning bg-opacity-10 mb-3">
-                                <div className="card-body">
-                                    <div className="text-secondary fs-xl fw-bold mb-3">Stats</div>
-                                    <div className="row">
-                                        <div className="col-sm-6">
-                                            <span className="stats-label mb-5">Market Cap</span>
-                                            <p className="font-monospace fw-bold fs-sm">
-                                                ${marketCap.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                                            </p>
-                                        </div>
-                                        <div className="col-sm-6">
-                                            <span className="stats-label mb-5">Volume (24h)</span>
-                                            <p className="font-monospace fw-bold fs-sm">
-                                                ${volume24h.toLocaleString(undefined, { maximumFractionDigits: 0 })}
-                                            </p>
-                                        </div>
-                                    </div>
+                {/* Stats Grid */}
+                <div className="p-4 pt-0">
+                    <h6 className="fw-bold mb-3">Market Stats</h6>
+                    <div className="row g-3">
+                        <div className="col-6">
+                            <div className="bg-white p-3 rounded-4 border shadow-sm h-100">
+                                <small className="text-muted fw-bold text-uppercase d-block mb-1" style={{ fontSize: '0.65rem' }}>Market Cap</small>
+                                <div className="fw-bold text-dark" style={{ fontSize: '0.9rem' }}>
+                                    ${marketCap.toLocaleString(undefined, { maximumFractionDigits: 0 })}
                                 </div>
                             </div>
-                            
-                            {/* About */}
-                            <div className="">
-                                <h4 className="fs-5">About {coin.name}</h4>
-                                <p className="fs-sm">{coin.slug} is a digital asset tracked by CoinMarketCap. It supports decentralized transactions and smart contract execution.</p>
+                        </div>
+                        <div className="col-6">
+                            <div className="bg-white p-3 rounded-4 border shadow-sm h-100">
+                                <small className="text-muted fw-bold text-uppercase d-block mb-1" style={{ fontSize: '0.65rem' }}>Volume (24h)</small>
+                                <div className="fw-bold text-dark" style={{ fontSize: '0.9rem' }}>
+                                    ${volume24h.toLocaleString(undefined, { maximumFractionDigits: 0 })}
+                                </div>
                             </div>
                         </div>
                     </div>
-                )
-            }
+
+                    {/* About Section */}
+                    <div className="mt-4 p-3 bg-white rounded-4 border shadow-sm">
+                        <h6 className="fw-bold mb-2">About {coin.name}</h6>
+                        <p className="text-muted mb-0" style={{ fontSize: '0.85rem', lineHeight: '1.6' }}>
+                            {coin.name} is a leading digital asset in the cryptocurrency market. {coin.slug} is currently valued at ${price.toLocaleString()} with a 24-hour trading volume of ${volume24h.toLocaleString()}.
+                        </p>
+                    </div>
+
+                    {/* Action Button */}
+                    <div className="mt-4 mb-2 pb-4">
+                        <button className="btn btn-primary w-100 py-3 rounded-4 fw-bold shadow-sm" onClick={() => navigate('/wallets')}>
+                            Trade {coin.symbol}
+                        </button>
+                    </div>
+                </div>
+            </div>
         </div>
-    )
+    );
 }
 
 export default CryptoDetails;
