@@ -10,7 +10,7 @@ function Main() {
     const [walletStore, walletDispatch] = useContext(WalletContext);
     const navigate = useNavigate();
 
-    
+
     // create greeting function based on time of day
     function getGreeting() {
         const hour = new Date().getHours();
@@ -63,12 +63,12 @@ function Main() {
         }
         loadBalance();
         return () => { mounted = false; };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [walletStore?.wallets?.length, JSON.stringify(walletStore?.rates)]);
 
     function formatFiat(p) {
         if (!Number.isFinite(p)) return '-';
-        return `$${p.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`;
+        return `$${p.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
     }
 
     // live assets state (from CoinMarketCap Pro)
@@ -81,7 +81,7 @@ function Main() {
         async function fetchAssets() {
             try {
                 setLoadingAssets(true);
-                
+
                 const url = 'convert/coinmarketcap/listings/latest?start=1&limit=20&convert=USD';
                 const res = await jsonGet(url);
                 if (res.success) {
@@ -117,143 +117,117 @@ function Main() {
 
     function formatPrice(p) {
         if (!Number.isFinite(p)) return '-';
-        if (p >= 1) return `$${p.toLocaleString(undefined, {minimumFractionDigits:2, maximumFractionDigits:2})}`;
+        if (p >= 1) return `$${p.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
         return `$${p.toPrecision(6)}`;
     }
 
     return (
-        <div>
-            <div className="bg-light rounded-5 rounded-top-0 mb-4">
+        <div className="animate-fade-in">
+            <div className="bg-white rounded-5 rounded-top-0 mb-4 shadow-sm border-bottom">
                 {/* top bar */}
-                <div className="mb-3 mx-auto" style={{ width: "50%", height: "4px", backgroundColor: "#f0f0f0", borderRadius: "2px" }}></div>
+                <div className="mb-3 mx-auto" style={{ width: "40px", height: "4px", backgroundColor: "#e2e8f0", borderRadius: "10px", marginTop: "12px" }}></div>
 
                 {/* Header */}
                 <div className="d-flex justify-content-between align-items-center p-3">
                     <div className="d-flex align-items-center">
-                        <Link to="/profile" className="d-flex align-items-center">
-                            <img src={Avatar} className='img-fluid rounded-pill shadow-sm' alt="ETH" style={{ width: "30px", height: "30px" }} />
+                        <Link to="/profile" className="d-flex align-items-center text-decoration-none">
+                            <div className="position-relative">
+                                <img src={Avatar} className='img-fluid rounded-circle shadow-sm' alt="User" style={{ width: "40px", height: "40px", border: "2px solid #fff" }} />
+                                <div className="position-absolute bottom-0 end-0 bg-success rounded-circle" style={{ width: "10px", height: "10px", border: "2px solid #fff" }}></div>
+                            </div>
+                            <div className="ps-2">
+                                <div className="text-muted small mb-0">Hi, {(authStore.user?.user_fname || 'User')} 👋</div>
+                                <div className='fw-bold text-dark' style={{ fontSize: '0.9rem' }}>{getGreeting()}</div>
+                            </div>
                         </Link>
-                        <div className="ps-2 lh-sm">
-                            <Link to="/profile" className="d-flex align-items-center text-decoration-none">
-                                <div className="text-muted mb-0">Hi, {(authStore.user?.user_fname || 'Stranger').toUpperCase()} 🙋‍♂️</div>
-                            </Link>
-                            <div className='fw-bold mb-0'>{getGreeting()}</div>
-                        </div>
                     </div>
-                    <button className="btn btn-sm" onClick={() => navigate('/notifications')}>
-                        <span className="material-symbols-outlined">siren</span>
-                    </button>
-                </div>
-                <div className="d-flex justify-content-between align-items-center mb-2 p-3">
-                    <h6 className="mb-0">Account 1 ⌄</h6>
-                    <button className="btn btn-light btn-sm shadow-sm" onClick={() => navigate('/wallets')}>
-                        Assets
+                    <button className="btn btn-light rounded-circle p-2 shadow-sm" onClick={() => navigate('/notifications')}>
+                        <span className="material-symbols-outlined text-secondary" style={{ fontSize: '20px' }}>notifications</span>
                     </button>
                 </div>
 
-                {/* Balance */}
-                <div className="text-center my-3">
-                    <h3 className="fw-bold">
+                {/* Balance Section */}
+                <div className="text-center py-4">
+                    <small className="text-muted text-uppercase fw-semibold" style={{ letterSpacing: '1px' }}>Total Balance</small>
+                    <div className="balance-amount my-1">
                         {loadingBalance ? (
-                            <span className="spinner-border spinner-border-sm text-secondary" role="status" />
+                            <div className="spinner-border spinner-border-sm text-primary" role="status" />
                         ) : (
                             formatFiat(userBalance)
                         )}
-                    </h3>
-                    <div className="text-success small fw-semibold">+ $56.17 (+0.67%)</div>
+                    </div>
+                    <div className="d-inline-flex align-items-center px-2 py-1 bg-success-subtle rounded-pill">
+                        <span className="material-symbols-outlined text-success me-1" style={{ fontSize: '14px' }}>trending_up</span>
+                        <small className="text-success fw-bold">+$56.17 (0.67%)</small>
+                    </div>
                 </div>
 
                 {/* Action Buttons */}
-                <div className="d-flex justify-content-around my-3 pb-3">
-                    <div className="text-center">
-                        <div
-                            className="rounded-circle d-flex justify-content-center align-items-center mb-1"
-                            style={{ width: "45px", height: "45px", backgroundColor: "#E6F9E6", cursor: 'pointer' }} 
-                            onClick={() => navigate("/trade/send")}
-                        >
-                            <i className="bi bi-arrow-up-left"></i>
+                <div className="d-flex justify-content-around my-4 px-3 pb-3">
+                    {[
+                        { icon: 'arrow_upward', label: 'Send', route: '/trade/send', color: '#0052ff' },
+                        { icon: 'arrow_downward', label: 'Receive', route: '/trade/receive', color: '#0052ff' },
+                        { icon: 'swap_horiz', label: 'Swap', route: '/trade/swap', color: '#0052ff' },
+                        { icon: 'more_horiz', label: 'More', route: '/more', color: '#5b616e' }
+                    ].map((act, i) => (
+                        <div key={i} className="text-center" style={{ cursor: 'pointer' }} onClick={() => navigate(act.route)}>
+                            <div
+                                className="rounded-circle d-flex justify-content-center align-items-center shadow-sm mx-auto mb-2"
+                                style={{ width: "52px", height: "52px", backgroundColor: "#fff", transition: 'all 0.2s' }}
+                            >
+                                <span className="material-symbols-outlined" style={{ color: act.color, fontSize: '24px' }}>{act.icon}</span>
+                            </div>
+                            <small className="fw-semibold text-secondary">{act.label}</small>
                         </div>
-                        <small>Send</small>
-                    </div>
-                    <div className="text-center">
-                        <div
-                            className="rounded-circle d-flex justify-content-center align-items-center mb-1"
-                            style={{ width: "45px", height: "45px", backgroundColor: "#E6F9E6", cursor: 'pointer' }}
-                            onClick={() => navigate("/trade/receive")}
-                        >
-                            <i className="bi bi-arrow-down-left"></i>
-                        </div>
-                        <small>Request</small>
-                    </div>
-                    <div className="text-center">
-                        <div
-                            className="rounded-circle d-flex justify-content-center align-items-center mb-1"
-                            style={{ width: "45px", height: "45px", backgroundColor: "#E6F9E6", cursor: 'pointer' }}
-                            onClick={() => navigate("/trade/swap")}
-                        >
-                            <i className="bi bi-arrow-left-right"></i>
-                        </div>
-                        <small>Swap</small>
-                    </div>
-                    <div className="text-center">
-                        <div
-                            className="rounded-circle d-flex justify-content-center align-items-center mb-1"
-                            style={{ width: "45px", height: "45px", backgroundColor: "#E6F9E6" }}
-                        >
-                            <i className="bi bi-three-dots-vertical"></i>
-                        </div>
-                        <small>More</small>
-                    </div>
+                    ))}
                 </div>
             </div>
-            <div className="p-4">
+
+            <div className="px-3 pb-5">
                 {/* Tokens Header */}
                 <div className="d-flex justify-content-between align-items-center mb-3">
-                    <h6 className="fw-bold mb-0">Tokens</h6>
-                    <div>
-                        <span className="badge bg-light text-dark me-2">Market</span>
-                        <button className="btn btn-light btn-sm">⋯</button>
-                    </div>
+                    <h6 className="fw-bold mb-0">Assets</h6>
+                    <button className="btn btn-link btn-sm text-decoration-none fw-bold" onClick={() => navigate('/wallets')}>Manage</button>
                 </div>
 
-
                 {/* Token List */}
-                <div className="list-group border-0">
+                <div className="list-group list-group-flush rounded-4 overflow-hidden border shadow-sm bg-white">
                     {loadingAssets ? (
-                        <div className="text-center py-3">
-                            <div className="spinner-border spinner-border-sm text-secondary" role="status" />
-                            <small className="text-muted ms-2">Loading tokens...</small>
+                        <div className="text-center py-5">
+                            <div className="spinner-border text-primary" role="status" />
+                            <div className="text-muted small mt-2">Updating market prices...</div>
                         </div>
                     ) : (
                         (assets.length ? assets : []).map((t) => {
                             const changeClass = (t.change >= 0) ? 'text-success' : 'text-danger';
                             return (
-                                <div key={t.id} className="d-flex justify-content-between align-items-center py-2 border-bottom" onClick={() => navigate(`/crypto/${t.id}`)} style={{ cursor: 'pointer' }}>
+                                <div key={t.id} className="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-3 border-0 crypto-card" onClick={() => navigate(`/crypto/${t.id}`)} style={{ cursor: 'pointer' }}>
                                     <div className="d-flex align-items-center">
                                         <div
-                                            className="rounded-circle bg-light d-flex justify-content-center align-items-center me-2"
-                                            style={{ width: "35px", height: "35px", overflow: 'hidden' }}
+                                            className="rounded-circle bg-light d-flex justify-content-center align-items-center me-3 shadow-sm"
+                                            style={{ width: "40px", height: "40px", border: "1px solid #f1f5f9" }}
                                         >
                                             <img
                                                 src={t.icon}
                                                 alt={t.symbol}
-                                                style={{ width: 28, height: 28, objectFit: 'contain' }}
+                                                style={{ width: 28, height: 28 }}
                                                 onError={(e) => {
                                                     e.currentTarget.onerror = null;
                                                     e.currentTarget.style.display = 'none';
-                                                    const parent = e.currentTarget.parentNode;
-                                                    if (parent) parent.textContent = t.symbol?.charAt(0) || '•';
+                                                    e.currentTarget.parentNode.textContent = t.symbol?.charAt(0) || '•';
                                                 }}
                                             />
                                         </div>
                                         <div>
-                                            <div className="fw-semibold">{t.name}</div>
-                                            <div className={`small ${changeClass}`}>{t.change?.toFixed(2)}%</div>
+                                            <div className="fw-bold">{t.name}</div>
+                                            <div className="text-muted small">{t.symbol}</div>
                                         </div>
                                     </div>
                                     <div className="text-end">
-                                        <div className="fw-semibold">{formatPrice(t.price)}</div>
-                                        <div className="small text-muted">{t.symbol}</div>
+                                        <div className="fw-bold">{formatPrice(t.price)}</div>
+                                        <div className={`small fw-semibold ${changeClass}`}>
+                                            {t.change > 0 ? '+' : ''}{t.change?.toFixed(2)}%
+                                        </div>
                                     </div>
                                 </div>
                             )
@@ -262,7 +236,7 @@ function Main() {
                 </div>
             </div>
         </div>
-            
+
     );
 }
 

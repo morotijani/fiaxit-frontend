@@ -36,7 +36,7 @@ function Wallets() {
     const navigate = useNavigate();
     const [walletStore, walletDispatch] = useContext(WalletContext);
 
-   // state for enriched wallets (info + balance)
+    // state for enriched wallets (info + balance)
     const [assets, setAssets] = useState([]);
     const [loadingAssets, setLoadingAssets] = useState(true);
 
@@ -94,11 +94,11 @@ function Wallets() {
                             infoData = {};
                         }
                         console.log('Wallet info data for', symbol, address, infoData);
-                        
+
                         // extract fields with fallbacks
                         const name = infoData?.name || symbol;
-                        const logo = infoData?.logo || infoData?.logo_url || infoData?.icon || 
-                                   (infoData?.id ? `https://s2.coinmarketcap.com/static/img/coins/64x64/${infoData.id}.png` : null);
+                        const logo = infoData?.logo || infoData?.logo_url || infoData?.icon ||
+                            (infoData?.id ? `https://s2.coinmarketcap.com/static/img/coins/64x64/${infoData.id}.png` : null);
                         const price = Number(
                             infoData?.price ||
                             infoData?.quote?.USD?.price ||
@@ -166,81 +166,84 @@ function Wallets() {
 
         fetchWallets();
         return () => { mounted = false; }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [walletStore?.wallets?.length]); // depend on length, not object reference
 
     return (
-        <div>
-            <div className="d-flex justify-content-between align-items-center p-3" style={{ backgroundColor: "#eaeae6"}}>
-                {/* back button */}
-                <button className="btn btn-sm" onClick={() => navigate(-1)}>
-                    <span className="material-symbols-outlined">keyboard_backspace</span>
+        <div className="animate-fade-in bg-white" style={{ minHeight: '100vh' }}>
+            <div className="d-flex justify-content-between align-items-center p-3 border-bottom sticky-top bg-white glass">
+                <button className="btn btn-light rounded-circle p-2 shadow-sm" onClick={() => navigate(-1)}>
+                    <span className="material-symbols-outlined text-secondary" style={{ fontSize: '20px' }}>arrow_back</span>
                 </button>
-                <h5 className="m-0">Manage & add wallets</h5>
-                <button className="btn btn-sm" onClick={() => navigate("/notifications")}>
-                    <span className="material-symbols-outlined">siren</span>
+                <h6 className="m-0 fw-bold">My Assets</h6>
+                <button className="btn btn-light rounded-circle p-2 shadow-sm" onClick={() => navigate("/notifications")}>
+                    <span className="material-symbols-outlined text-secondary" style={{ fontSize: '20px' }}>notifications</span>
                 </button>
             </div>
+
             <div className="p-4">
-                {/* Header */}
-                <div className="text-center mb-2">
-                    <h6 className="">
-                        My asstes &nbsp;
-                        <span className="badge rounded-pill bg-dark">{walletStore.total}</span>
-                    </h6>
-                    <p className="text-muted small mb-0">View and manage your wallets</p>
+                {/* Summary Card */}
+                <div className="bg-primary rounded-4 p-4 text-white mb-4 shadow-lg position-relative overflow-hidden">
+                    <div className="position-absolute end-0 top-0 opacity-25" style={{ fontSize: '100px', transform: 'translate(20%, -20%)' }}>
+                        <span className="material-symbols-outlined">account_balance_wallet</span>
+                    </div>
+                    <small className="opacity-75 text-uppercase fw-bold" style={{ letterSpacing: '1px' }}>Total Assets</small>
+                    <h2 className="fw-bold mb-0 mt-1">{walletStore.total}</h2>
+                    <p className="small mb-0 opacity-75">Unique wallet addresses linked</p>
                 </div>
 
                 {/* Wallet List */}
-                <div className="flex-grow-1 overflow-auto">
+                <div className="mb-5">
                     {loadingAssets ? (
-                        <div className="text-center py-3">
-                            <div className="spinner-border spinner-border-sm text-secondary" role="status" />
-                            <small className="text-muted ms-2">Loading wallets...</small>
+                        <div className="text-center py-5">
+                            <div className="spinner-border text-primary" role="status" />
+                            <div className="text-muted small mt-2">Fetching wallet details...</div>
                         </div>
                     ) : assets.length === 0 ? (
-                        <div className="text-center py-3">
-                            <small className="text-muted">No wallets found</small>
+                        <div className="text-center py-5 bg-light rounded-4 border border-dashed">
+                            <span className="material-symbols-outlined text-muted" style={{ fontSize: '48px' }}>account_balance_wallet</span>
+                            <p className="text-muted mt-2">No active wallets found</p>
+                            <button className="btn btn-primary btn-sm mt-2 rounded-pill px-4">Create First Wallet</button>
                         </div>
                     ) : (
                         assets.map((w) => {
                             const changeClass = (Number(w.change) >= 0) ? 'text-success' : 'text-danger';
                             return (
-                                <div key={w.id} className="d-flex justify-content-between align-items-center border-bottom py-3" style={{ cursor: "pointer" }} onClick={() => navigate('/wallet/' + w.wallet_id)}>
+                                <div key={w.id} className="d-flex justify-content-between align-items-center py-3 crypto-card border-bottom" style={{ cursor: "pointer" }} onClick={() => navigate('/wallet/' + w.wallet_id)}>
                                     <div className="d-flex align-items-center">
                                         <div
-                                            className="rounded-circle bg-light d-flex align-items-center justify-content-center me-3"
-                                            style={{ width: 45, height: 45, overflow: 'hidden' }}
+                                            className="rounded-circle bg-light d-flex align-items-center justify-content-center me-3 shadow-sm"
+                                            style={{ width: 48, height: 48, border: '1px solid #f1f5f9' }}
                                         >
                                             {w.logo ? (
                                                 <img
                                                     src={w.logo}
                                                     alt={w.symbol}
-                                                    style={{ width: 36, height: 36, objectFit: 'contain' }}
+                                                    style={{ width: 32, height: 32 }}
                                                     onError={(e) => {
                                                         e.currentTarget.onerror = null;
                                                         e.currentTarget.style.display = 'none';
-                                                        const parent = e.currentTarget.parentNode;
-                                                        if (parent) parent.textContent = w.symbol?.charAt(0) || '•';
+                                                        e.currentTarget.parentNode.textContent = w.symbol?.charAt(0) || '•';
                                                     }}
                                                 />
                                             ) : (
-                                                <div className="fw-bold">{w.symbol?.charAt(0)}</div>
+                                                <div className="fw-bold text-primary">{w.symbol?.charAt(0)}</div>
                                             )}
                                         </div>
                                         <div>
-                                            <div className="fw-semibold">{w.name}</div>
-                                            <div className="text-muted small">
-                                                {w.symbol} • {shortenAddress(w.address)}
-                                                {w.error && <span className="text-danger ms-2">(error)</span>}
+                                            <div className="fw-bold text-dark">{w.name}</div>
+                                            <div className="text-muted small d-flex align-items-center">
+                                                <span className="badge bg-light text-dark me-2">{w.symbol}</span>
+                                                {shortenAddress(w.address)}
                                             </div>
                                         </div>
                                     </div>
 
                                     <div className="text-end">
-                                        <div className="fw-semibold">{w.priceFormatted}</div>
-                                        <div className={`small ${changeClass}`}>{(w.change || 0).toFixed(2)}%</div>
-                                        {/* <div className="small text-muted">Bal: {Number(w.balance || 0)}</div> */}
+                                        <div className="fw-bold text-dark">{w.priceFormatted}</div>
+                                        <div className={`small fw-semibold ${changeClass}`}>
+                                            {w.change >= 0 ? '+' : ''}{(w.change || 0).toFixed(2)}%
+                                        </div>
                                     </div>
                                 </div>
                             )
@@ -248,17 +251,14 @@ function Wallets() {
                     )}
 
                     {/* Add New Wallet Button */}
-                    <div className="text-center py-4">
+                    <div className="mt-4">
                         <button
-                            className="btn btn-outline-secondary d-flex align-items-center justify-content-center w-100"
-                            style={{
-                                borderRadius: "15px",
-                                fontWeight: "500",
-                                padding: "10px 0",
-                            }}
+                            className="btn btn-light d-flex align-items-center justify-content-center w-100 py-3 border rounded-4 shadow-sm"
+                            style={{ transition: 'all 0.2s', fontWeight: '600' }}
+                            onClick={() => toast.success('Select a coin to add', { icon: '🪙' })}
                         >
-                            <span className="material-symbols-outlined me-2">add_circle</span>
-                            Add Wallet
+                            <span className="material-symbols-outlined me-2 text-primary">add_circle</span>
+                            Add New Wallet
                         </button>
                     </div>
                 </div>

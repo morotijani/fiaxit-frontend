@@ -14,7 +14,7 @@ import { TodoContext } from './contexts/TodoContext';
 import Crypto from './components/crypto/Crypto'
 
 import Receive from './components/trade/Receive'
-import SendCrypto  from './components/trade/Send'
+import SendCrypto from './components/trade/Send'
 import ReceiveAsset from './components/trade/ReceiveAsset'
 
 import Transactions from './components/transactions/Transactions'
@@ -30,6 +30,7 @@ import { ContactContext } from './contexts/ContactContext'
 
 import Profile from './components/profile/Profile'
 import SettingsForm from './components/profile/SettingsForm'
+import AddCoin from './components/admin/AddCoin'
 
 import { jsonGet } from './helpers/Ajax'
 import Preloader from './components/Preloader'
@@ -50,7 +51,7 @@ function AppIndex() {
         (async function startup() {
             try {
                 // trigger auth check in store
-                await authDispatch({type: "isLoggedIn"});
+                await authDispatch({ type: "isLoggedIn" });
                 // simple presence check for token to avoid stale context race
                 const token = localStorage.getItem('userJWTToken');
                 if (!token && !authStore.loggedIn) {
@@ -74,26 +75,26 @@ function AppIndex() {
         // get all todos from db
         const resp = await jsonGet('todos')
         if (resp && resp.success) {
-            todoDispatch({type: 'setTodos', payload: {todos: resp.data, total: resp.total}})
+            todoDispatch({ type: 'setTodos', payload: { todos: resp.data, total: resp.total } })
         }
 
         // get all contacts
         const contactResp = await jsonGet('contacts');
         if (contactResp && contactResp.success) {
-            contactDispatch({type: 'setContacts', payload: {contacts: contactResp.data, total: contactResp.total}});
+            contactDispatch({ type: 'setContacts', payload: { contacts: contactResp.data, total: contactResp.total } });
         }
 
         // get all transactions
         const transactionResp = await jsonGet('transactions');
         if (transactionResp && transactionResp.success) {
-            transactionDispatch({type: 'setTransactions', payload: {transactions: transactionResp.data, total: transactionResp.total}});
+            transactionDispatch({ type: 'setTransactions', payload: { transactions: transactionResp.data, total: transactionResp.total } });
             console.log('Transactions loaded:', transactionResp.data);
         }
 
         // get all wallets
         const walletResp = await jsonGet('wallets');
         if (walletResp && walletResp.success) {
-            walletDispatch({type: 'setWallets', payload: {wallets: walletResp.data, total: walletResp.total, rates: walletResp.rates}});
+            walletDispatch({ type: 'setWallets', payload: { wallets: walletResp.data, total: walletResp.total, rates: walletResp.rates } });
             console.log('Wallets loaded:', walletResp.data);
         }
     }
@@ -119,6 +120,7 @@ function AppIndex() {
                         <Route path="/contacts/:id" element={<ContactForm />} />
                         <Route path="/contacts" element={<Contacts />} />
                         <Route path="/todos" element={<Todos />} />
+                        <Route path="/admin/add-coin" element={<AddCoin />} />
                         <Route path="/" element={<Main />} />
                     </Routes>
                 </div>
