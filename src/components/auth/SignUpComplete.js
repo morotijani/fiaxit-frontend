@@ -138,8 +138,10 @@ function SignUpComplete() {
                                     If you don't see the email, please check your spam/junk folder.
                                 </p>
                                 <div className="mt-4">
-                                    <p className="text-muted small mb-0">Didn't receive the email?</p>
-                                    <button className="btn btn-link btn-sm text-primary">Resend verification link</button>
+                                    <p className="text-muted small mb-0">
+                                        Didn't receive the email?
+                                        <button className="btn btn-link btn-sm text-primary">Resend verification link</button>
+                                    </p>
                                 </div>
                             </div>
                         ) : (

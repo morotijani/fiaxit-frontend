@@ -92,6 +92,9 @@ function SignUp() {
                         backgroundColor: "white",
                     }}
                 >
+                    {/* top bar */}
+                    <div className="mb-3 mx-auto" style={{ width: "50%", height: "4px", backgroundColor: "#f0f0f0", borderRadius: "2px" }}></div>
+
                     {/* Heading */}
                     <img className="img-fluid" src={Logo} alt="" width="72" height="35"></img>
                     <div className="mt-4">

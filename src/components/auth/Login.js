@@ -54,7 +54,7 @@ function Login() {
                             <img
                             src="https://blush.design/api/download?shareUri=gToALQCf3sSkwAY2&c=Hair_0%7E8b542f_Skin_0%7E4b3425&w=800&h=800&fm=png"
                             alt="Meditation Illustration" className="img-fluid"
-                            style={{ width: "300px", height: "auto" }}
+                            style={{ width: "auto", height: "300px" }}
                             />
                         </div>
 

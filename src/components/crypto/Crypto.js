@@ -197,6 +197,9 @@ function CryptoDetails() {
                             </div>
                         ) : (
                             <div className="bg-light rounded-5 rounded-top-0 mb-4">
+                                {/* top bar */}
+                                <div className="mb-3 mx-auto" style={{ width: "50%", height: "4px", backgroundColor: "#f0f0f0", borderRadius: "2px" }}></div>
+
                                 <div className="d-flex justify-content-between align-items-center mb-2 p-3">
                                     <button className="btn btn-sm" onClick={() => navigate(-1)}>
                                         <span className="material-symbols-outlined">keyboard_backspace</span>

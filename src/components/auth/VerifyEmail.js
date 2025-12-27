@@ -243,7 +243,7 @@ function VerifyEmail() {
                                                 Sign Up
                                             </Link>
                                         </>
-                                    ) : verifyError.status === 'already_verified' ? (
+                                    ) : verifyError.status === 'is_verified' ? (
                                         <>
                                             <Link to="/auth/login" className="btn btn-warning btn-sm">
                                                 Go to Login
