@@ -71,33 +71,33 @@ function Login() {
                                 placeholder="••••••••"
                             />
                         </div>
+                    </div>
 
-                        <div className='text-center'>
-                            <button
-                                className="btn btn-primary w-100 py-3 mb-4 shadow"
-                                onClick={form.submitForm}
-                                style={{ borderRadius: '12px', fontSize: '1rem' }}
-                            >
-                                Sign In
-                            </button>
+                    <div className='text-center'>
+                        <button
+                            className="btn btn-primary w-100 py-3 mb-4 shadow"
+                            onClick={form.submitForm}
+                            style={{ borderRadius: '12px', fontSize: '1rem' }}
+                        >
+                            Sign In
+                        </button>
 
-                            <div className="d-flex align-items-center my-4 opacity-50">
-                                <hr className="flex-grow-1" />
-                                <span className="mx-3 small fw-bold">OR</span>
-                                <hr className="flex-grow-1" />
-                            </div>
-
-                            <p className="mb-0">
-                                Don't have an account? <Link to="/auth/signup" className="text-primary fw-bold text-decoration-none">Sign up</Link>
-                            </p>
+                        <div className="d-flex align-items-center my-4 opacity-50">
+                            <hr className="flex-grow-1" />
+                            <span className="mx-3 small fw-bold">OR</span>
+                            <hr className="flex-grow-1" />
                         </div>
-                    </div>
 
-                    {/* Footer */}
-                    <div className="text-muted text-center small mt-4 px-3 pb-2 opacity-75">
-                        By logging in, you agree to our{" "}
-                        <Link to="#" className="text-decoration-none fw-semibold">Terms</Link>{" "} &{" "}<Link to="#" className="text-decoration-none fw-semibold"> Privacy</Link>.
+                        <p className="mb-0">
+                            Don't have an account? <Link to="/auth/signup" className="text-primary fw-bold text-decoration-none">Sign up</Link>
+                        </p>
                     </div>
+                </div>
+
+                {/* Footer */}
+                <div className="text-muted text-center small mt-4 px-3 pb-2 opacity-75">
+                    By logging in, you agree to our{" "}
+                    <Link to="#" className="text-decoration-none fw-semibold">Terms</Link>{" "} &{" "}<Link to="#" className="text-decoration-none fw-semibold"> Privacy</Link>.
                 </div>
             </div>
         </div>
