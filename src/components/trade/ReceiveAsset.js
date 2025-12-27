@@ -151,7 +151,7 @@ function ReceiveAsset() {
         }
     };
 
-     if (loading) {
+    if (loading) {
         return (
             <div className="p-4 text-center">
                 <div className="spinner-border text-secondary" role="status" />
@@ -172,67 +172,110 @@ function ReceiveAsset() {
     const displayName = asset.wallet_name || asset.wallet_symbol?.toUpperCase() || 'Asset';
 
     return (
-        <div>
-            <div className="bg-light rounded-5 rounded-top-0 mb-4">
-                {/* top bar */}
-                <div className="mb-3 mx-auto" style={{ width: "50%", height: "4px", backgroundColor: "#f0f0f0", borderRadius: "2px" }}></div>
+        <div className="animate-fade-in">
+            {/* Top Handle for App-like feel */}
+            <div className="mb-3 mx-auto" style={{ width: "40px", height: "4px", backgroundColor: "#e2e8f0", borderRadius: "10px", marginTop: "12px" }}></div>
 
-                <div className="d-flex justify-content-between align-items-center mb-2 p-3">
-                    <button className="btn btn-sm" onClick={() => navigate(-1)}>
-                        <span className="material-symbols-outlined">keyboard_backspace</span>
-                    </button>
-                    <h6 className="mb-0">Receive {displayName}</h6>
-                    <div style={{ width: 36 }} />
-                </div>
+            {/* Header / Top Bar */}
+            <div className="p-3 border-0 border-bottom d-flex align-items-center justify-content-between sticky-top bg-white glass">
+                <button className="btn btn-light rounded-circle p-2 shadow-sm" onClick={() => navigate(-1)}>
+                    <span className="material-symbols-outlined text-secondary" style={{ fontSize: '20px' }}>arrow_back</span>
+                </button>
+                <h6 className="m-0 fw-bold">Receive {asset.wallet_symbol}</h6>
+                <div style={{ width: 40 }} /> {/* Spacer to center the title */}
             </div>
+
             <div className="p-4">
+                {/* Asset Identity */}
                 <div className="text-center mb-4">
-                    <div style={{ width: 56, height: 56, margin: '0 auto', borderRadius: 12, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', background: '#f5f5f5' }}>
+                    <div
+                        className="d-inline-flex align-items-center justify-content-center bg-white shadow-sm mb-3"
+                        style={{ width: '72px', height: '72px', borderRadius: '18px', border: '1px solid var(--border)', overflow: 'hidden' }}
+                    >
                         {asset.logo ? (
                             <img
                                 src={asset.logo}
-                                alt={asset.wallet_symbol || displayName}
+                                alt={displayName}
                                 style={{ width: 48, height: 48, objectFit: 'contain' }}
-                                onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.style.display = 'none'; }}
+                                onError={(e) => {
+                                    e.currentTarget.onerror = null;
+                                    e.currentTarget.style.display = 'none';
+                                    e.currentTarget.parentNode.textContent = asset.wallet_symbol?.charAt(0) || '•';
+                                }}
                             />
                         ) : (
-                            <div className="fw-bold">{(asset.wallet_symbol || displayName || '').charAt(0)}</div>
+                            <div className="fw-bold text-primary fs-3">{(asset.wallet_symbol || '').charAt(0)}</div>
                         )}
                     </div>
-
-                    <div className="mt-3">
-                        <div className="text-muted small">Your {displayName} address</div>
-                        <div className="fw-semibold fs-5">{displayAddress}</div>
+                    <h5 className="fw-bold mb-1">{displayName}</h5>
+                    <div className="badge rounded-pill bg-light text-muted border px-3 py-1 fw-normal">
+                        Mainnet Network
                     </div>
                 </div>
 
+                {/* QR Code Section */}
                 <div className="d-flex justify-content-center mb-4">
-                    <div className="bg-white p-3 rounded" style={{ width: 260, height: 260 }}>
+                    <div className="bg-white p-4 rounded-4 shadow-sm border" style={{ width: '260px', height: '260px' }}>
                         {displayAddress ? (
-                            <QRCodeSVG value={displayAddress} size={220} />
+                            <div className="d-flex align-items-center justify-content-center w-100 h-100">
+                                <QRCodeSVG
+                                    value={displayAddress}
+                                    size={210}
+                                    level="H"
+                                    includeMargin={false}
+                                    fgColor="var(--text-main, #000)"
+                                    bgColor="transparent"
+                                />
+                            </div>
                         ) : (
-                            <div className="text-center text-muted small" style={{ width: 220, height: 220, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                                No address
+                            <div className="text-center text-muted small h-100 d-flex align-items-center justify-content-center">
+                                Address not available
                             </div>
                         )}
                     </div>
                 </div>
 
-                <div className="d-flex gap-3 justify-content-center mb-3">
-                    <Button onClick={handleCopy} className="btn-light flex-grow-1 me-3">
-                        <span className="material-symbols-outlined me-2">content_copy</span>
-                        Copy
-                    </Button>
-
-                    <Button onClick={shareAddress} className="btn-dark flex-grow-1">
-                        <span className="material-symbols-outlined me-2">share</span>
-                        Share
-                    </Button>
+                {/* Address Display */}
+                <div className="bg-light rounded-4 p-3 mb-4 border border-dashed">
+                    <div className="text-muted small text-center mb-2 fw-semibold text-uppercase" style={{ letterSpacing: '0.5px' }}>
+                        Your Deposit Address
+                    </div>
+                    <div
+                        className="text-center fw-bold text-break px-2"
+                        style={{ fontSize: '0.95rem', color: 'var(--text-main)', cursor: 'pointer' }}
+                        onClick={handleCopy}
+                    >
+                        {displayAddress}
+                    </div>
                 </div>
 
-                <p className="text-muted small text-center mt-4">
-                    Send only {displayName} to this address. Incorrect transfers may result in loss of funds.
-                </p>
+                {/* Actions */}
+                <div className="d-flex gap-3 mb-4">
+                    <button
+                        onClick={handleCopy}
+                        className="btn btn-primary flex-grow-1 rounded-pill py-3 d-flex align-items-center justify-content-center shadow-sm"
+                        style={{ fontWeight: '600' }}
+                    >
+                        <span className="material-symbols-outlined me-2">content_copy</span>
+                        Copy
+                    </button>
+                    <button
+                        onClick={shareAddress}
+                        className="btn btn-light flex-grow-1 rounded-pill py-3 d-flex align-items-center justify-content-center shadow-sm border"
+                        style={{ fontWeight: '600' }}
+                    >
+                        <span className="material-symbols-outlined me-2">share</span>
+                        Share
+                    </button>
+                </div>
+
+                {/* Warning Card */}
+                <div className="alert alert-warning border-0 rounded-4 p-3 d-flex align-items-start mb-5" style={{ backgroundColor: 'rgba(255, 193, 7, 0.1)' }}>
+                    <span className="material-symbols-outlined text-warning me-2" style={{ fontSize: '20px' }}>warning</span>
+                    <div className="small text-dark-emphasis">
+                        <strong>Important:</strong> Send only <strong>{displayName} ({asset.wallet_symbol})</strong> to this address. Sending any other asset may result in permanent loss of funds.
+                    </div>
+                </div>
             </div>
         </div>
     )

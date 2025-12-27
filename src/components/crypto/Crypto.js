@@ -182,8 +182,11 @@ function CryptoDetails() {
 
     return (
         <div className="animate-fade-in">
+            {/* top bar */}
+            <div className="mb-3 mx-auto" style={{ width: "40px", height: "4px", backgroundColor: "#e2e8f0", borderRadius: "10px", marginTop: "12px" }}></div>
+
             {/* Top Bar / Header */}
-            <div className="p-3 border-bottom d-flex align-items-center justify-content-between sticky-top bg-white glass">
+            <div className="p-3 border-0 border-bottom d-flex align-items-center justify-content-between sticky-top bg-white glass">
                 <button className="btn btn-light rounded-circle p-2 shadow-sm" onClick={() => navigate(-1)}>
                     <span className="material-symbols-outlined text-secondary" style={{ fontSize: '20px' }}>arrow_back</span>
                 </button>

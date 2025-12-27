@@ -14,7 +14,7 @@ function SendCrypto() {
     const [selectedAsset, setSelectedAsset] = useState();
     const [showReview, setShowReview] = useState(false);
     const [sending, setSending] = useState(false);
-    
+
     // Form-like local fields (compatible with your Form helper shape)
     const [fields, setFields] = useState({
         crypto_id: { value: '', isInvalid: false, msg: '' },
@@ -119,14 +119,14 @@ function SendCrypto() {
         try {
             const payload = {
                 crypto_id: fields.crypto_id.value,
-                crypto_symbol: fields.crypto_symbol.value, 
-                crypto_name: fields.crypto_name.value, 
-                crypto_price: Number(fields.crypto_price.value || 0), 
-                toAddress: fields.toAddress.value, 
-                amount_usd: Number(fields.amount.value || 0), 
-                amount: Number(cryptoAmount), 
-                note: fields.note.value || '', 
-                feeRate: Number(networkFee), 
+                crypto_symbol: fields.crypto_symbol.value,
+                crypto_name: fields.crypto_name.value,
+                crypto_price: Number(fields.crypto_price.value || 0),
+                toAddress: fields.toAddress.value,
+                amount_usd: Number(fields.amount.value || 0),
+                amount: Number(cryptoAmount),
+                note: fields.note.value || '',
+                feeRate: Number(networkFee),
                 privateKey: fields.privateKey.value || null
             };
 
@@ -157,111 +157,128 @@ function SendCrypto() {
     };
 
     return (
-        <div>
-            <div className="bg-light rounded-5 rounded-top-0 mb-4" style={{ boxShadow: "0 -2px 10px rgba(0, 0, 0, 0.1)" }}>
-                {/* top bar */}
-                <div className="mb-3 mx-auto" style={{ width: "50%", height: "4px", backgroundColor: "#f0f0f0", borderRadius: "2px" }}></div>
+        <div className="animate-fade-in">
+            {/* Top Handle for App-like feel */}
+            <div className="mb-3 mx-auto" style={{ width: "40px", height: "4px", backgroundColor: "#e2e8f0", borderRadius: "10px", marginTop: "12px" }}></div>
 
-                <div className="d-flex justify-content-between align-items-center mb-2 p-3">
-                    <button className="btn btn-sm" onClick={() => navigate(-1)}>
-                        <span className="material-symbols-outlined">keyboard_backspace</span>
-                    </button>
-                    <h6 className="mb-0">Send Crypto Funds</h6>
-                    <div style={{ width: 36 }} />
-                </div>
+            {/* Header / Top Bar */}
+            <div className="p-3 border-0 border-bottom d-flex align-items-center justify-content-between sticky-top bg-white glass">
+                <button className="btn btn-light rounded-circle p-2 shadow-sm" onClick={() => navigate(-1)}>
+                    <span className="material-symbols-outlined text-secondary" style={{ fontSize: '20px' }}>arrow_back</span>
+                </button>
+                <h6 className="m-0 fw-bold">Send Crypto</h6>
+                <button className="btn btn-light rounded-circle p-2 shadow-sm" onClick={() => navigate("/transactions")}>
+                    <span className="material-symbols-outlined text-secondary" style={{ fontSize: '20px' }}>history</span>
+                </button>
             </div>
-            <div className="p-4">
 
-                {/* Select Asset */}
-                <div className="bg-warning bg-opacity-10 border-warning border-opacity-25 p-2 rounded-3 mb-3" onClick={handleOpenModal} style={{ cursor: 'pointer' }} title="Click to select an asset">
+            <div className="p-4">
+                {/* Asset Selection Preview */}
+                <div
+                    className="p-3 rounded-4 border shadow-sm mb-4 bg-white hover-fade"
+                    onClick={handleOpenModal}
+                    style={{ cursor: 'pointer', transition: 'all 0.2s' }}
+                >
                     {!selectedAsset ? (
-                        <div className="text-center text-body-secondary">
-                            <span>Click to select an asset to send funds</span>
+                        <div className="d-flex align-items-center justify-content-between py-2">
+                            <div className="d-flex align-items-center">
+                                <div className="rounded-circle bg-light d-flex align-items-center justify-content-center me-3" style={{ width: '44px', height: '44px' }}>
+                                    <span className="material-symbols-outlined text-muted">add</span>
+                                </div>
+                                <div className="fw-bold">Select asset to send</div>
+                            </div>
+                            <span className="material-symbols-outlined text-muted">chevron_right</span>
                         </div>
                     ) : (
-                        <div className="row align-items-center">
-                            <div className="col-auto">
-                                {selectedAsset.logo ? (
-                                    <img src={selectedAsset.logo} alt={selectedAsset.symbol} style={{ width: 36, height: 36, objectFit: 'contain' }} onError={(e)=>{ e.currentTarget.onerror=null; e.currentTarget.style.display='none'; }} />
-                                ) : (
-                                    <div className="fw-bold">{(selectedAsset.symbol || '•').charAt(0)}</div>
-                                )}
+                        <div className="d-flex align-items-center justify-content-between">
+                            <div className="d-flex align-items-center">
+                                <div className="rounded-circle bg-light d-flex align-items-center justify-content-center me-3 shadow-sm" style={{ width: '48px', height: '48px', border: '1px solid var(--border)' }}>
+                                    {selectedAsset.logo ? (
+                                        <img src={selectedAsset.logo} alt={selectedAsset.symbol} style={{ width: 32, height: 32, objectFit: 'contain' }} onError={(e) => { e.currentTarget.onerror = null; e.currentTarget.style.display = 'none'; e.currentTarget.parentNode.textContent = selectedAsset.symbol?.charAt(0) || '•'; }} />
+                                    ) : (
+                                        <div className="fw-bold text-primary">{(selectedAsset.symbol || '•').charAt(0)}</div>
+                                    )}
+                                </div>
+                                <div>
+                                    <div className="fw-bold">{selectedAsset.name}</div>
+                                    <div className="text-muted small d-flex align-items-center">
+                                        <span className="badge bg-light text-dark me-2">{selectedAsset.symbol}</span>
+                                        {shortenAddress(selectedAsset.address || '')}
+                                    </div>
+                                </div>
                             </div>
-                            <div className="col ms-n2">
-                                <h6 className="fs-base fw-normal mb-0">{selectedAsset.name}</h6>
-                                <span className="fs-sm text-body-secondary">{shortenAddress(selectedAsset.address || '')}</span>
-                                <br />
-                                <span className="text-body-secondary">Available: {typeof selectedAsset.balance === 'number' ? selectedAsset.balance : (selectedAsset.balance ?? 0)} {selectedAsset.symbol}</span>
-                            </div>
-                            <div className="col-auto">
-                                <h6 className="fs-base fw-normal mb-0">Bal: {selectedAsset.balanceFiatFormatted ?? '$0.00'}</h6>
+                            <div className="text-end">
+                                <div className="fw-bold">{selectedAsset.balanceFiatFormatted ?? '$0.00'}</div>
+                                <div className="text-muted small">
+                                    {typeof selectedAsset.balance === 'number' ? selectedAsset.balance.toFixed(4) : '0.0000'} {selectedAsset.symbol}
+                                </div>
                             </div>
                         </div>
                     )}
                 </div>
-              
-                {/* Price row */}
-                <div className="d-flex justify-content-between mb-2" style={{ fontSize: "12px" }}>
-                    <span>{selectedAsset?.symbol ?? 'Crypto'} current market price:</span>
-                    <span><strong>{selectedAsset?.priceFormatted ?? (pricePerUnit ? `$${pricePerUnit.toFixed(2)}` : '$0.00')} USD</strong></span>
-                </div>
 
-                {/* Amount Input (USD) */}
-                <FieldBlock
-                    id="amount"
-                    name="amount"
-                    type="number"
-                    value={fields.amount.value}
-                    onChange={handleFieldChange}
-                    label="Amount (USD):"
-                    isInvalid={fields.amount.isInvalid}
-                    feedback={fields.amount.msg}
-                    className="fw-bolder w-100 bg-transparent text-center font-monospace"
-                    style={{ outline: "2px solid transparent", outlineOffset: "2px", height: "6rem", fontSize: "2.5rem" }}
-                    autoFocus={true}
-                />
-
-                <div className="bg-light rounded-3 p-3 mb-3" style={{ fontSize: "13px" }}>
-                    <div className="d-flex justify-content-between text-xs text-muted">
-                        <span className="fw-semibold">Amount in crypto</span>
-                        <span>
-                            {selectedAsset?.name ?? '—'}:&nbsp;
-                            <strong id="amount-in-crypto-amount">{cryptoAmount ? cryptoAmount.toFixed(8) : '0.00000000'} {selectedAsset?.symbol ?? ''}</strong>
+                {/* Amount Section */}
+                <div className="text-center mb-4">
+                    <div className="text-muted small mb-2 fw-semibold text-uppercase" style={{ letterSpacing: '0.5px' }}>Enter Amount (USD)</div>
+                    <FieldBlock
+                        id="amount"
+                        name="amount"
+                        type="number"
+                        value={fields.amount.value}
+                        onChange={handleFieldChange}
+                        isInvalid={fields.amount.isInvalid}
+                        feedback={fields.amount.msg}
+                        className="fw-bold w-100 bg-transparent text-center border-0 shadow-none px-0"
+                        style={{ fontSize: "3.5rem", letterSpacing: "-1px", color: 'var(--text-main)' }}
+                        placeholder="0.00"
+                        autoFocus={true}
+                    />
+                    <div className="d-inline-flex align-items-center px-3 py-1 bg-light rounded-pill border shadow-sm mt-3">
+                        <span className="material-symbols-outlined text-primary me-2" style={{ fontSize: '18px' }}>currency_exchange</span>
+                        <span className="fw-bold small">
+                            {cryptoAmount ? cryptoAmount.toFixed(8) : '0.00000000'} {selectedAsset?.symbol ?? ''}
                         </span>
                     </div>
                 </div>
 
-                {/* Address Input */}
-                <FieldBlock
-                    id="toAddress"
-                    name="toAddress"
-                    value={fields.toAddress.value}
-                    onChange={handleFieldChange}
-                    label="Recipient Address:"
-                    isInvalid={fields.toAddress.isInvalid}
-                    feedback={fields.toAddress.msg}
-                />
+                {/* Recipient & Note */}
+                <div className="bg-white rounded-4 border shadow-sm p-4 mb-4">
+                    <FieldBlock
+                        id="toAddress"
+                        name="toAddress"
+                        value={fields.toAddress.value}
+                        onChange={handleFieldChange}
+                        label="Recipient Address"
+                        placeholder="Paste or type address"
+                        isInvalid={fields.toAddress.isInvalid}
+                        feedback={fields.toAddress.msg}
+                        className="rounded-3 border-light-subtle"
+                    />
 
-                {/* Note */}
-                <FieldBlock
-                    id="note"
-                    name="note"
-                    value={fields.note.value}
-                    onChange={handleFieldChange}
-                    label="Note (optional):"
-                    isInvalid={fields.note.isInvalid}
-                    feedback={fields.note.msg}
-                />
+                    <div className="mt-4">
+                        <FieldBlock
+                            id="note"
+                            name="note"
+                            value={fields.note.value}
+                            onChange={handleFieldChange}
+                            label="Note (optional)"
+                            placeholder="What's this for?"
+                            isInvalid={fields.note.isInvalid}
+                            feedback={fields.note.msg}
+                            className="rounded-3 border-light-subtle"
+                        />
+                    </div>
+                </div>
 
-                {/* Send Button */}
-                <div className="d-grid mt-3">
-                    <Button
-                        variant="primary"
-                        className="btn-dark mt-6 w-100"
+                {/* Primary Action */}
+                <div className="mb-5">
+                    <button
+                        className="btn btn-primary w-100 rounded-pill py-3 shadow-lg d-flex align-items-center justify-content-center fw-bold"
                         onClick={handleReview}
                     >
-                        Review Send
-                    </Button>
+                        Review Transaction
+                        <span className="material-symbols-outlined ms-2">chevron_right</span>
+                    </button>
                 </div>
 
                 {/* Select Asset Modal */}
@@ -269,37 +286,66 @@ function SendCrypto() {
 
                 {/* Review Modal */}
                 {showReview && (
-                    <div className="fixed inset-0 bg-black/60 d-flex justify-content-center align-items-center p-6" role="dialog" aria-modal="true">
-                        <div className="bg-white w-100" style={{ maxWidth: 560, borderRadius: 12, padding: 20 }}>
-                            <h4 className="mb-3">Review Transaction</h4>
+                    <div className="modal show d-block" tabIndex="-1" style={{ backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 1050 }}>
+                        <div className="modal-dialog modal-dialog-centered px-3">
+                            <div className="modal-content rounded-4 border-0 shadow-lg overflow-hidden animate-slide-up">
+                                <div className="modal-header border-0 pb-0">
+                                    <h5 className="modal-title fw-bold">Review Send</h5>
+                                    <button type="button" className="btn-close shadow-none" onClick={() => setShowReview(false)}></button>
+                                </div>
+                                <div className="modal-body pt-0 mt-3 px-4">
+                                    <div className="text-center mb-4 py-3 bg-light rounded-4 border border-dashed">
+                                        <div className="text-muted small mb-1">Sending Total</div>
+                                        <h3 className="fw-bold mb-0">${usdAmount.toFixed(2)}</h3>
+                                        <div className="text-primary fw-bold">{cryptoAmount.toFixed(8)} {selectedAsset?.symbol}</div>
+                                    </div>
 
-                            <div className="mb-3">
-                                <div className="text-muted small">Asset</div>
-                                <div className="fw-medium">{selectedAsset?.name} ({selectedAsset?.symbol})</div>
-                            </div>
+                                    <div className="mb-4">
+                                        <div className="d-flex justify-content-between mb-2">
+                                            <span className="text-muted">Asset</span>
+                                            <span className="fw-bold">{selectedAsset?.name}</span>
+                                        </div>
+                                        <div className="d-flex justify-content-between mb-2">
+                                            <span className="text-muted">Recipient</span>
+                                            <span className="fw-bold text-end" style={{ maxWidth: '180px', wordBreak: 'break-all', fontSize: '0.85rem' }}>
+                                                {shortenAddress(fields.toAddress.value)}
+                                            </span>
+                                        </div>
+                                        <div className="d-flex justify-content-between mb-2">
+                                            <span className="text-muted">Network Fee</span>
+                                            <span className="text-success fw-bold">${networkFee.toFixed(2)}</span>
+                                        </div>
+                                    </div>
 
-                            <div className="mb-3">
-                                <div className="text-muted small">Recipient</div>
-                                <div className="fw-medium break-all">{fields.toAddress.value}</div>
-                            </div>
+                                    <div className="alert alert-info border-0 rounded-4 p-3 d-flex align-items-start mb-4" style={{ backgroundColor: 'rgba(0, 82, 255, 0.05)' }}>
+                                        <span className="material-symbols-outlined text-primary me-2" style={{ fontSize: '20px' }}>info</span>
+                                        <div className="small text-dark-emphasis">
+                                            Transactions are permanent. Please double check the recipient address before confirming.
+                                        </div>
+                                    </div>
 
-                            <div className="mb-3">
-                                <div className="text-muted small">Amount</div>
-                                <div className="fw-medium">{cryptoAmount ? cryptoAmount.toFixed(8) : '0.00000000'} {selectedAsset?.symbol} ({`$${usdAmount.toFixed(2)}`})</div>
-                            </div>
-
-                            <div className="mb-3">
-                                <div className="text-muted small">Network Fee</div>
-                                <div className="fw-medium">{networkFee ? `$${networkFee.toFixed(2)}` : '$0.00'}</div>
-                            </div>
-
-                            <div className="d-grid gap-2">
-                                <Button variant="primary" className="btn btn-dark" onClick={handleSend} disabled={sending}>
-                                    {sending ? 'Sending…' : 'Confirm Send'}
-                                </Button>
-                                <Button variant="secondary" className="btn btn-light" onClick={() => setShowReview(false)}>
-                                    Cancel
-                                </Button>
+                                    <div className="d-grid gap-3 mb-2">
+                                        <button
+                                            className="btn btn-primary rounded-pill py-3 fw-bold shadow-sm d-flex align-items-center justify-content-center"
+                                            onClick={handleSend}
+                                            disabled={sending}
+                                        >
+                                            {sending ? (
+                                                <>
+                                                    <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                                                    Broadcasting...
+                                                </>
+                                            ) : 'Confirm and Send'}
+                                        </button>
+                                        <button
+                                            className="btn btn-light rounded-pill py-3 fw-bold border mb-2"
+                                            onClick={() => setShowReview(false)}
+                                            disabled={sending}
+                                        >
+                                            Go Back
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>

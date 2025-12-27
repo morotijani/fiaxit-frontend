@@ -43,7 +43,7 @@ function Receive() {
     // state for enriched wallets (info + balance)
     const [assets, setAssets] = useState([]);
     const [loadingAssets, setLoadingAssets] = useState(true);
-    
+
     useEffect(() => {
         let mounted = true;
 
@@ -176,42 +176,46 @@ function Receive() {
     };
 
     return (
-        <div>
-            <div className="bg-light rounded-5 rounded-top-0 mb-4">
-                {/* top bar */}
-                <div className="mb-3 mx-auto" style={{ width: "50%", height: "4px", backgroundColor: "#f0f0f0", borderRadius: "2px" }}></div>
+        <div className="animate-fade-in">
+            {/* Top Handle for App-like feel */}
+            <div className="mb-3 mx-auto" style={{ width: "40px", height: "4px", backgroundColor: "#e2e8f0", borderRadius: "10px", marginTop: "12px" }}></div>
 
-                <div className="d-flex justify-content-between align-items-center mb-2 p-3">
-                    <button className="btn btn-sm" onClick={() => navigate(-1)}>
-                        <span className="material-symbols-outlined">keyboard_backspace</span>
-                    </button>
-                    <h6 className="mb-0">Receive crypto</h6>
-                    <button className="btn btn-light btn-sm" onClick={() => navigate('/transactions')}>
-                        Activity
-                    </button>
-                </div>
+            {/* Header / Top Bar */}
+            <div className="p-3 border-0 border-bottom d-flex align-items-center justify-content-between sticky-top bg-white glass">
+                <button className="btn btn-light rounded-circle p-2 shadow-sm" onClick={() => navigate(-1)}>
+                    <span className="material-symbols-outlined text-secondary" style={{ fontSize: '20px' }}>arrow_back</span>
+                </button>
+                <h6 className="m-0 fw-bold">Receive Crypto</h6>
+                <button className="btn btn-light rounded-circle p-2 shadow-sm" onClick={() => navigate("/transactions")}>
+                    <span className="material-symbols-outlined text-secondary" style={{ fontSize: '20px' }}>history</span>
+                </button>
             </div>
 
             <div className="p-4">
-                {/* Header */}
-                <div className="text-center mb-2">
-                    <h6 className="">
-                        My asstes &nbsp;
-                        <span className="badge rounded-pill bg-dark">{walletStore?.total ?? 0}</span>
-                    </h6>
-                    <p className="text-muted small mb-0">View and receive funds on your wallets</p>
+                {/* Statistics Header */}
+                <div className="text-center mb-4">
+                    <div className="d-inline-flex align-items-center justify-content-center bg-primary bg-opacity-10 text-primary rounded-circle mb-2 shadow-sm" style={{ width: '64px', height: '64px' }}>
+                        <span className="material-symbols-outlined" style={{ fontSize: '32px' }}>download</span>
+                    </div>
+                    <h5 className="fw-bold mb-1">Select Asset</h5>
+                    <div className="badge rounded-pill bg-light text-dark shadow-sm border px-3 py-2">
+                        {walletStore?.total ?? 0} Active Wallets
+                    </div>
+                    <p className="text-muted small mt-2">Choose an asset to view its deposit address</p>
                 </div>
 
                 {/* Assets List */}
-                <div className="flex-grow-1 overflow-auto">
+                <div className="list-group rounded-4 border shadow-sm overflow-hidden mb-5 bg-white">
                     {loadingAssets ? (
-                        <div className="text-center py-3">
-                            <div className="spinner-border spinner-border-sm text-secondary" role="status" />
-                            <small className="text-muted ms-2">Loading assets...</small>
+                        <div className="text-center py-5">
+                            <div className="spinner-border text-primary" role="status" />
+                            <div className="text-muted small mt-2">Fetching your wallets...</div>
                         </div>
                     ) : assets.length === 0 ? (
-                        <div className="text-center py-3">
-                            <small className="text-muted">No assets found</small>
+                        <div className="p-5 text-center bg-light">
+                            <span className="material-symbols-outlined text-muted" style={{ fontSize: '48px' }}>account_balance_wallet</span>
+                            <p className="text-muted mt-2">No active wallets found</p>
+                            <button className="btn btn-primary btn-sm mt-2 rounded-pill px-4" onClick={() => navigate('/wallets')}>Manage Wallets</button>
                         </div>
                     ) : (
                         assets.map((asset) => {
@@ -219,63 +223,58 @@ function Receive() {
                             return (
                                 <div
                                     key={outerKey}
-                                    className="bg-[#16181D] rounded-xl border border-[#26282D] p-4 cursor-pointer hover:bg-[#1C1E24] mb-3 rounded-3"
+                                    className="list-group-item list-group-item-action d-flex justify-content-between align-items-center py-3 border-0 border-bottom"
                                     onClick={() => navigate(`/trade/receive/${asset.wallet_id ?? asset.id}`)}
+                                    style={{ cursor: 'pointer' }}
                                 >
-                                    <div className="d-flex justify-content-between align-items-center">
+                                    <div className="d-flex align-items-center">
+                                        <div
+                                            className="rounded-circle bg-light d-flex justify-content-center align-items-center me-3 shadow-sm"
+                                            style={{ width: "48px", height: "48px", border: "1px solid var(--border)" }}
+                                        >
+                                            {asset.logo ? (
+                                                <img
+                                                    src={asset.logo}
+                                                    alt={asset.symbol || asset.name}
+                                                    style={{ width: 32, height: 32, objectFit: 'contain' }}
+                                                    onError={(e) => {
+                                                        e.currentTarget.onerror = null;
+                                                        e.currentTarget.style.display = 'none';
+                                                        e.currentTarget.parentNode.textContent = asset.symbol?.charAt(0) || '•';
+                                                    }}
+                                                />
+                                            ) : (
+                                                <div className="fw-bold text-primary">{asset.symbol?.charAt(0) ?? '•'}</div>
+                                            )}
+                                        </div>
                                         <div>
-                                            <p className="text-gray-300 text-sm fw-bold mb-1">Your {asset.name} address</p>
-                                            <p className="text-lg mb-2">{shortenAddress(asset.address || '')}</p>
-
-                                            <div className="d-flex align-items-center gap-2 mt-2">
-                                                {asset.logo ? (
-                                                    <img
-                                                        src={asset.logo}
-                                                        alt={asset.symbol || asset.name}
-                                                        style={{ width: 36, height: 36, objectFit: 'contain' }}
-                                                        onError={(e) => {
-                                                            e.currentTarget.onerror = null;
-                                                            e.currentTarget.style.display = 'none';
-                                                        }}
-                                                    />
-                                                ) : (
-                                                    <div className="fw-bold">{asset.symbol?.charAt(0) ?? '•'}</div>
-                                                )}
+                                            <div className="fw-bold">{asset.name}</div>
+                                            <div className="text-muted small d-flex align-items-center">
+                                                <span className="badge bg-light text-dark me-2">{asset.symbol}</span>
+                                                {shortenAddress(asset.address || '')}
                                             </div>
                                         </div>
+                                    </div>
 
-                                        {/* Buttons */}
-                                        <div className="d-flex align-items-center gap-3">
-                                            <Button variant=""
-                                                className="btn-light rounded-circle"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    navigate(`/trade/receive/${asset.wallet_id ?? asset.id}`);
-                                                }}
-                                                title="Show QR"
-                                            >
-                                                <span className="material-symbols-outlined fs-3 fw-normal">qr_code_2</span>
-                                            </Button>
-
-                                            <Button variant=""
-                                                className="btn-light rounded-circle"
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    handleCopy(asset.address);
-                                                }}
-                                                title="Copy address"
-                                            >
-                                                <span className="material-symbols-outlined fs-3 fw-normal">content_copy</span>
-                                            </Button>
-                                        </div>
+                                    {/* Action Buttons */}
+                                    <div className="d-flex align-items-center gap-2">
+                                        <button
+                                            className="btn btn-light rounded-circle p-2 shadow-sm border-0"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                handleCopy(asset.address);
+                                            }}
+                                            title="Copy address"
+                                        >
+                                            <span className="material-symbols-outlined text-secondary" style={{ fontSize: '20px' }}>content_copy</span>
+                                        </button>
+                                        <span className="material-symbols-outlined text-muted" style={{ fontSize: '20px' }}>chevron_right</span>
                                     </div>
                                 </div>
                             )
                         })
                     )}
-
                 </div>
-
             </div>
         </div>
     )

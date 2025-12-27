@@ -17,10 +17,49 @@
   --radius-md: 12px;
   --radius-lg: 20px;
   --glass: rgba(255, 255, 255, 0.7);
+  --card-bg: #ffffff;
+}
+
+[data-bs-theme="dark"] {
+  --bg-light: #0a0b0d;
+  --secondary: #f4f7f9;
+  --surface: #111214;
+  --text-main: #f4f7f9;
+  --text-muted: #9ba3af;
+  --border: #232529;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --glass: rgba(17, 18, 20, 0.8);
+  --card-bg: #1a1b1f;
 }
 
 * {
   box-sizing: border-box;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+[data-bs-theme="dark"] .bg-white,
+[data-bs-theme="dark"] .card {
+  background-color: var(--surface) !important;
+  color: var(--text-main) !important;
+}
+
+[data-bs-theme="dark"] .bg-light {
+  background-color: var(--bg-light) !important;
+}
+
+[data-bs-theme="dark"] .text-dark {
+  color: var(--text-main) !important;
+}
+
+[data-bs-theme="dark"] .list-group-item {
+  background-color: var(--surface);
+  color: var(--text-main);
+  border-color: var(--border);
+}
+
+[data-bs-theme="dark"] .list-group-item:hover {
+  background-color: var(--bg-light);
 }
 
 body {
@@ -31,6 +70,7 @@ body {
   background-color: var(--bg-light);
   color: var(--text-main);
   font-weight: 400;
+  min-height: 100vh;
 }
 
 /* Custom Scrollbar */
