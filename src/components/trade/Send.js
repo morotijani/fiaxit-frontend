@@ -46,18 +46,16 @@ function SendCrypto() {
                 crypto_id: { ...prev.crypto_id, value: '' },
                 crypto_symbol: { ...prev.crypto_symbol, value: '' },
                 crypto_name: { ...prev.crypto_name, value: '' },
-                crypto_price: { ...prev.crypto_price, value: '' },
-                privateKey: { ...prev.privateKey, value: '' }
+                crypto_price: { ...prev.crypto_price, value: '' }
             }));
             return;
         }
         setFields(prev => ({
             ...prev,
-            crypto_id: { ...prev.crypto_id, value: selectedAsset.rawInfo.id ?? '' },
+            crypto_id: { ...prev.crypto_id, value: selectedAsset.wallet_id ?? selectedAsset.rawInfo.id ?? '' },
             crypto_symbol: { ...prev.crypto_symbol, value: selectedAsset.symbol ?? '' },
             crypto_name: { ...prev.crypto_name, value: selectedAsset.name ?? selectedAsset.symbol ?? '' },
-            crypto_price: { ...prev.crypto_price, value: String(selectedAsset.price ?? 0) },
-            privateKey: { ...prev.privateKey, value: selectedAsset.wallet_privatekey ?? '' }
+            crypto_price: { ...prev.crypto_price, value: String(selectedAsset.price ?? 0) }
         }));
     }, [selectedAsset]);
 
@@ -126,8 +124,7 @@ function SendCrypto() {
                 amount_usd: Number(fields.amount.value || 0),
                 amount: Number(cryptoAmount),
                 note: fields.note.value || '',
-                feeRate: Number(networkFee),
-                privateKey: fields.privateKey.value || null
+                feeRate: Number(networkFee)
             };
 
             const resp = await jsonPost(`trade/${selectedAsset?.symbol.toLowerCase()}/send`, payload, null);

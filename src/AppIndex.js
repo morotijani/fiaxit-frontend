@@ -27,6 +27,7 @@ import { ContactContext } from './contexts/ContactContext'
 import Profile from './components/profile/Profile'
 import SettingsForm from './components/profile/SettingsForm'
 import AddCoin from './components/admin/AddCoin'
+import Notifications from './components/notifications/Notifications'
 
 import { jsonGet } from './helpers/Ajax'
 import Preloader from './components/Preloader'
@@ -113,6 +114,7 @@ function AppIndex() {
                             <Route path="/wallets" element={<Wallets />} />
                             <Route path="/transactions" element={<Transactions />} />
                             <Route path="/settings" element={<SettingsForm />} />
+                            <Route path="/notifications" element={<Notifications />} />
                             <Route path="/profile" element={<Profile />} />
                             <Route path="/contacts/:id" element={<ContactForm />} />
                             <Route path="/contacts" element={<Contacts />} />

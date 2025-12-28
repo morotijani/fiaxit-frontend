@@ -96,7 +96,9 @@ function Transactions() {
 
             const tFrom = tx.transaction_by ?? '';
             const tTo = tx.transaction_to ?? '';
-            const type = tTo === authStore?.user_id ? "Receive" : tFrom === authStore?.user_id ? "Send" : tx.transaction_type ?? 'Unknown';
+            // Use both common ID patterns for maximum compatibility
+            const currentUserId = authStore.user?.user_id || authStore.user?.id;
+            const type = tTo === currentUserId ? "Receive" : tFrom === currentUserId ? "Send" : tx.transaction_type ?? 'Unknown';
 
             const amountNum = Number(tx.transaction_amount ?? tx.amount ?? tx.value ?? 0) || 0;
             const amountSign = type === "Send" ? "-" : type === "Receive" ? "+" : "";

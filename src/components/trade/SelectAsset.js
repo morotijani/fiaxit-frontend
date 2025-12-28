@@ -66,7 +66,6 @@ const SelectAsset = ({ isOpen, onClose, onSelectAsset }) => {
                 }
 
                 const jobs = storeWallets.map(async (w) => {
-                    console.log('wallet all', w.wallet_privatekey);
                     const symbolRaw = (w.wallet_symbol || '');
                     const symbol = symbolRaw.toUpperCase();
                     const symLower = symbolRaw.toLowerCase();
@@ -104,26 +103,49 @@ const SelectAsset = ({ isOpen, onClose, onSelectAsset }) => {
 
                     // fetch balance safely and normalize
                     let balance = 0;
-                    let balanceFiatFormatted = 0;
+                    let balanceFiatFormatted = '$0.00';
                     try {
                         const balanceResp = await jsonGet(`wallets/${symLower}/${address}/balance`);
                         if (balanceResp && balanceResp.success) {
                             const balanceData = balanceResp.data ?? {};
-                            const b = balanceData.balance ?? balanceData;
-                            if (symLower === 'eth') {
-                                if (b?.balanceEth != null) balance = Number(b.balanceEth) || 0;
-                                else if (b?.balanceEth != null) balance = Number(b.balanceEth) || 0;
-                            } else if (symLower === 'btc') {
-                                if (b?.btc != null) balance = Number(b.btc) || 0;
-                                else if (typeof b.btc === 'number') balance = Number(b.btc) || 0;
-                            } else {
-                                balance = Number(b?.total ?? b?.amount ?? b?.balance ?? 0) || 0;
+
+                            // support multiple shapes in a unified way (similar to backend)
+                            const payload = balanceData;
+
+                            const candidates = [
+                                payload?.balance?.total,
+                                payload?.balance?.btc,
+                                payload?.balanceEth,
+                                payload?.usdt?.balance,
+                                payload?.balance?.eth,
+                                payload?.balance,
+                                payload?.amount,
+                                payload?.value
+                            ];
+
+                            let found = false;
+                            for (const c of candidates) {
+                                if (c !== undefined && c !== null) {
+                                    const n = Number(c);
+                                    if (!isNaN(n) && typeof c !== 'object') {
+                                        balance = n;
+                                        found = true;
+                                        break;
+                                    }
+                                    if (typeof c === 'object' && c !== null) {
+                                        const nt = Number(c.total ?? c.btc ?? c.balance ?? 0);
+                                        if (!isNaN(nt)) {
+                                            balance = nt;
+                                            found = true;
+                                            break;
+                                        }
+                                    }
+                                }
                             }
+
                             // convert balance to fiat
-                            balanceFiatFormatted = parseFloat(balance) * price;
-                            balanceFiatFormatted = `$${balanceFiatFormatted.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-                        } else {
-                            // quietly ignore; balanceFiatFormatted remains 0
+                            const fiatValue = parseFloat(balance) * price;
+                            balanceFiatFormatted = `$${fiatValue.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
                         }
                     } catch (err) {
                         console.warn(`Error fetching balance for ${symbol}`, err);
