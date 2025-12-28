@@ -40,6 +40,18 @@ function Login() {
                         <p className="text-muted">Enter your email and password to log in</p>
                     </div>
 
+                    {/* Illustration */}
+                    {/* <div className="d-flex justify-content-center my-4 py-2">
+                        <div className="bg-light rounded-circle p-4 d-flex align-items-center justify-content-center shadow-inner" style={{ width: '180px', height: '180px' }}>
+                            <img
+                                src="https://blush.design/api/download?shareUri=gToALQCf3sSkwAY2&c=Hair_0%7E8b542f_Skin_0%7E4b3425&w=800&h=800&fm=png"
+                                alt="Login Illustration"
+                                className="img-fluid"
+                                style={{ width: "140px", height: "auto" }}
+                            />
+                        </div>
+                    </div> */}
+
                     {/* Form Section */}
                     <div className="px-2">
                         <div className="mb-3">

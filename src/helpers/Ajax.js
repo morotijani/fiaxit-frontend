@@ -15,13 +15,13 @@ export function runFetch(url, method, data, callback) {
     const options = {
         method: method,
         headers: {
-            'Accept': 'application/json', 
-            'Content-Type': 'application/json', 
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
             // 'X-CMC_PRO_API_KEY': process.env.REACT_APP_CMC_API_KEY 
         }
     }
 
-    if (method !== 'GET' && method !== 'DELETE'){
+    if (method !== 'GET' && method !== 'DELETE') {
         options['body'] = JSON.stringify(data);
     }
 
@@ -51,26 +51,21 @@ export function runFetch(url, method, data, callback) {
 
     return fetch(fullUrl, options)
         .then(async resp => {
-            if(resp.ok) {
+            if (resp.ok) {
                 return resp.json();
-            } else if (resp.status === 422) {
+            } else if (resp.status === 422 || resp.status === 401 || resp.status === 400) {
+                // validation or bad request, return errors as JSON
                 return resp.json().then(errors => {
-                    return {status: resp.status, success: false, errors: errors}
-                });
-            } else if (resp.status === 401) {
-                // unauthorized, token may be expired or invalid
-                // optionally, could trigger a logout event here
-                return resp.json().then(errors => {
-                    return {status: resp.status, success: false, errors: errors}
+                    return { status: resp.status, success: false, errors: errors }
                 });
             } else {
                 // include status and text for easier debugging
-                const text = await resp.text().catch(()=>resp.statusText);
+                const text = await resp.text().catch(() => resp.statusText);
                 throw new Error(`HTTP ${resp.status}: ${text || resp.statusText}`);
             }
         })
         .then(resp => {
-            if(typeof callback === 'function') {
+            if (typeof callback === 'function') {
                 return callback(resp);
             } else {
                 return resp;

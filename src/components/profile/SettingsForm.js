@@ -11,24 +11,24 @@ function SettingsForm() {
     const [formUrl, setFormUrl] = useState('users');
     const [formMethod, setFormMethod] = useState('POST');
     const [fields, setFields] = useState({
-        fname: {value: '', isInvalid: false, msg: ''}, 
-        mname: {value: '', isInvalid: false, msg: ''}, 
-        lname: {value: '', isInvalid: false, msg: ''}, 
-        email: {value: '', isInvalid: false, msg: ''}, 
-        phone: {value: '', isInvalid: false, msg: ''}, 
+        fname: { value: '', isInvalid: false, msg: '' },
+        mname: { value: '', isInvalid: false, msg: '' },
+        lname: { value: '', isInvalid: false, msg: '' },
+        email: { value: '', isInvalid: false, msg: '' },
+        phone: { value: '', isInvalid: false, msg: '' },
     });
     const [authStore, userDispatch] = useContext(AuthContext);
-    
+
     const success = (resp) => {
         if (resp.success) {
-            userDispatch({type: 'updateUser', payload: resp.data.user});
+            userDispatch({ type: 'updateUser', payload: resp.data.user });
             navigate('/profile');
-            toast.success('Profile deatils updated !', {duration: 6000})
+            toast.success('Profile deatils updated !', { duration: 6000 })
         } else {
-            toast.error('Error updating profile details.', {duration: 6000})
+            toast.error('Error updating profile details.', { duration: 6000 })
         }
     }
-    
+
     useEffect(() => {
         const res = authStore.user
         form.populateFormValues({
@@ -45,27 +45,59 @@ function SettingsForm() {
     const form = new Form(formUrl, fields, setFields, success, formMethod);
 
     return (
-        <div>
-            <div className="d-flex justify-content-between align-items-center p-3" style={{ backgroundColor: "#eaeae6"}}>
-                {/* back button */}
-                <button className="btn btn-sm" onClick={() => navigate(-1)}>
-                    <span className="material-symbols-outlined">keyboard_backspace</span>
+        <div className="animate-fade-in">
+            {/* Top Handle for App-like feel */}
+            <div className="mb-3 mx-auto" style={{ width: "40px", height: "4px", backgroundColor: "#e2e8f0", borderRadius: "10px", marginTop: "12px" }}></div>
+
+            {/* Header / Top Bar */}
+            <div className="p-3 border-0 border-bottom d-flex align-items-center justify-content-between sticky-top bg-white glass">
+                <button className="btn btn-light rounded-circle p-2 shadow-sm" onClick={() => navigate(-1)}>
+                    <span className="material-symbols-outlined text-secondary" style={{ fontSize: '20px' }}>arrow_back</span>
                 </button>
-                <h5 className="m-0">Profile Settings</h5>
-                <button className="btn btn-sm" onClick={() => navigate("/notifications")}>
-                    <span class="material-symbols-outlined">siren</span>
+                <h6 className="m-0 fw-bold">Profile Settings</h6>
+                <button className="btn btn-light rounded-circle p-2 shadow-sm" onClick={() => navigate("/notifications")}>
+                    <span className="material-symbols-outlined text-secondary" style={{ fontSize: '20px' }}>notifications</span>
                 </button>
             </div>
+
             <div className="p-4">
-                <h6 className="text-muted mb-2">Settings</h6>
-                <FieldBlock id="fname" label="First name: " isInvalid={fields.fname.isInvalid} value={fields.fname.value} onChange={form.handleInputChanges} feedback={fields.fname.msg} />
-                <FieldBlock id="mname" label="Middle name: " isInvalid={fields.mname.isInvalid} value={fields.mname.value} onChange={form.handleInputChanges} feedback={fields.mname.msg} />
-                <FieldBlock id="lname" label="Last name: " isInvalid={fields.lname.isInvalid} value={fields.lname.value} onChange={form.handleInputChanges} feedback={fields.lname.msg} />
-                <FieldBlock id="email" label="Email: " type="email" isInvalid={fields.email.isInvalid} value={fields.email.value} onChange={form.handleInputChanges} feedback={fields.email.msg} />
-                <FieldBlock id="phone" type="tel" label="Phone: " isInvalid={fields.phone.isInvalid} value={fields.phone.value} onChange={form.handleInputChanges} feedback={fields.phone.msg} />
-                <div className="d-flex justify-content-end mt-4">
-                    <Button variant="" onClick={() => navigate('/profile')}>Cancel</Button>&nbsp;&nbsp;
-                    <Button variant="primary" onClick={form.submitForm}>Save Changes</Button>
+                <div className="mb-4">
+                    <h5 className="fw-bold mb-1">Personal Information</h5>
+                    <p className="text-muted small">Update your profile details and contact information.</p>
+                </div>
+
+                <div className="bg-white rounded-4 border shadow-sm p-4 mb-4">
+                    <div className="mb-3">
+                        <FieldBlock id="fname" label="First Name" isInvalid={fields.fname.isInvalid} value={fields.fname.value} onChange={form.handleInputChanges} feedback={fields.fname.msg} placeholder="Enter your first name" />
+                    </div>
+                    <div className="mb-3">
+                        <FieldBlock id="mname" label="Middle Name" isInvalid={fields.mname.isInvalid} value={fields.mname.value} onChange={form.handleInputChanges} feedback={fields.mname.msg} placeholder="Enter your middle name" />
+                    </div>
+                    <div className="mb-3">
+                        <FieldBlock id="lname" label="Last Name" isInvalid={fields.lname.isInvalid} value={fields.lname.value} onChange={form.handleInputChanges} feedback={fields.lname.msg} placeholder="Enter your last name" />
+                    </div>
+                    <div className="mb-3">
+                        <FieldBlock id="email" label="Email Address" type="email" isInvalid={fields.email.isInvalid} value={fields.email.value} onChange={form.handleInputChanges} feedback={fields.email.msg} placeholder="your@email.com" />
+                    </div>
+                    <div className="mb-0">
+                        <FieldBlock id="phone" type="tel" label="Phone Number" isInvalid={fields.phone.isInvalid} value={fields.phone.value} onChange={form.handleInputChanges} feedback={fields.phone.msg} placeholder="+1 (555) 000-0000" />
+                    </div>
+                </div>
+
+                <div className="d-grid gap-3">
+                    <button
+                        className="btn btn-primary rounded-pill py-3 fw-bold shadow-sm d-flex align-items-center justify-content-center"
+                        onClick={form.submitForm}
+                    >
+                        <span className="material-symbols-outlined me-2">save</span>
+                        Save Changes
+                    </button>
+                    <button
+                        className="btn btn-light rounded-pill py-3 fw-bold border mb-5"
+                        onClick={() => navigate('/profile')}
+                    >
+                        Cancel
+                    </button>
                 </div>
             </div>
         </div>

@@ -13,62 +13,64 @@ function Logout() {
     async function logout() {
         const resp = await jsonGet('auth/logout');
         if (resp.success) {
-            authDispatch({type: 'logout'});
+            authDispatch({ type: 'logout' });
             navigate('/auth/login');
-            toast.success("You have been logged out successfully.", {duration: 6000});
+            toast.success("You have been logged out successfully.", { duration: 6000 });
         } else {
             console.error('Logout failed:', resp.errors.message)
-            toast.error(`An error occurred while logging out. Please try again.`, {duration: 6000});
+            toast.error(`An error occurred while logging out. Please try again.`, { duration: 6000 });
         }
     }
 
     return (
-        <div>
+        <div className="animate-fade-in">
             <div className="d-flex justify-content-center align-items-center bg-light" style={{ minHeight: "100vh" }}>
-                <div
-                    className="card shadow-sm border-0 p-4"
-                    style={{
-                        width: "460px",
-                        borderRadius: "25px",
-                        minHeight: "90vh",
-                        display: "flex",
-                        justifyContent: "space-between",
-                    }}
-                >
-                    {/* top bar */}
-                    <div className="mb-3 mx-auto" style={{ width: "50%", height: "4px", backgroundColor: "#f0f0f0", borderRadius: "2px" }}></div>
+                <div className="card shadow-lg border-0 p-4 main-card-container">
 
-                    {/* Heading */}
-                    <img className="img-fluid" src={Logo} alt="" width="72" height="35"></img>
-                    <div className="mt-4">
-                        <h4 className="fw-bold">Logout of your Fiaxit account.</h4>
-                        <p className="text-muted mb-4">You're about to log out from your account. Don't worry - your savings and progress are safe. You can log back in anytime. </p>
+                    {/* Top Handle for App-like feel */}
+                    <div className="mb-4 mx-auto" style={{ width: "40px", height: "4px", backgroundColor: "#e2e8f0", borderRadius: "10px" }}></div>
+
+                    {/* Logo & Header */}
+                    <div className="text-center">
+                        <img className="img-fluid mb-4" src={Logo} alt="Fiaxit" style={{ height: "40px" }} />
+                        <h3 className="fw-700 mb-2" style={{ letterSpacing: '-1px' }}>Logging out?</h3>
+                        <p className="text-muted px-2">You're about to log out. Your progress is saved and we'll be here when you return.</p>
                     </div>
-                    {/* Top Section */}
-                    <div>
-                        {/* Illustration */}
-                        <div className="d-flex justify-content-center mt-3">
+
+                    {/* Illustration */}
+                    <div className="d-flex justify-content-center my-4 py-2">
+                        <div className="bg-light rounded-circle p-4 d-flex align-items-center justify-content-center shadow-inner" style={{ width: '180px', height: '180px' }}>
                             <img
-                            src="https://blush.design/api/download?shareUri=YLrH0N7qjk8qx26d&c=Hair_0%7Eff5290_Skin_0%7E715b4c&w=800&h=800&fm=png"
-                            alt="Meditation Illustration" className="img-fluid"
-                            style={{ width: "300px", height: "auto" }}
+                                src="https://blush.design/api/download?shareUri=YLrH0N7qjk8qx26d&c=Hair_0%7Eff5290_Skin_0%7E715b4c&w=800&h=800&fm=png"
+                                alt="Logout Illustration"
+                                className="img-fluid"
+                                style={{ width: "140px", height: "auto" }}
                             />
                         </div>
+                    </div>
 
-                        <div className="d-flex justify-content-between">
-                            <Button className="btn-light flex-grow-1 me-3" onClick={logout}>
-                                Yes Please
-                            </Button>
-                            <Button className="btn-dark flex-grow-1" onClick={() => navigate("/")}>
-                                Not Now
-                            </Button>
-                        </div>
+                    {/* Actions */}
+                    <div className="d-grid gap-3 px-2">
+                        <button
+                            className="btn btn-primary rounded-pill py-3 fw-bold shadow-sm d-flex align-items-center justify-content-center"
+                            onClick={logout}
+                        >
+                            <span className="material-symbols-outlined me-2">logout</span>
+                            Yes, Log me out
+                        </button>
+                        <button
+                            className="btn btn-light rounded-pill py-3 fw-bold border"
+                            onClick={() => navigate("/")}
+                        >
+                            Cancel
+                        </button>
                     </div>
 
                     {/* Footer */}
-                    <div className="text-muted small mt-4 px-3 pb-2">
-                        We care about your data. By logging out, we promise your data is saved with us alone. See our{" "}
-                        <Link to="/terms" className="text-decoration-none fw-semibold">Terms</Link>{" "} and{" "}<Link to="/privacy-policy" className="text-decoration-none fw-semibold"> Privacy Policy</Link>.
+                    <div className="text-muted text-center small mt-5 px-3 pb-2 opacity-75">
+                        We value your security. By logging out, we ensure your session is terminated safely. See our{" "}
+                        <Link to="/terms" className="text-decoration-none fw-semibold">Terms</Link>{" "} &{" "}
+                        <Link to="/privacy-policy" className="text-decoration-none fw-semibold">Privacy</Link>.
                     </div>
                 </div>
             </div>

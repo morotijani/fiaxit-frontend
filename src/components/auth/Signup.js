@@ -21,15 +21,13 @@ function SignUp() {
     })
 
     //
+    //
     function success(resp) {
         // navigate('/auth/login');
         navigate(`/auth/registered/${resp.data.user_id}`);
         // send toast of signup
         toast.success("Account created successfully! Please verify your email before logging in.");
     }
-
-    // setup form
-    const form = new Form('auth/signup', fields, setFields, success);
 
     // Stepper state: define groups of field ids for each step
     const stepGroups = [
@@ -38,6 +36,32 @@ function SignUp() {
         ['pin', 'invitationcode']                 // step 2 - extra
     ];
     const [step, setStep] = useState(0);
+
+    function onError(resp) {
+        // Find the first error field path
+        let errorPath = '';
+        if (resp.path) {
+            errorPath = resp.path;
+        } else if (resp.errors) {
+            if (Array.isArray(resp.errors) && resp.errors.length > 0) {
+                errorPath = resp.errors[0].path;
+            } else if (resp.errors.path) {
+                errorPath = resp.errors.path;
+            }
+        }
+
+        if (errorPath) {
+            // Find which step this errorPath belongs to
+            const targetStep = stepGroups.findIndex(group => group.includes(errorPath));
+            if (targetStep !== -1 && targetStep !== step) {
+                setStep(targetStep);
+                toast.error(`Please check the details in Step ${targetStep + 1}`);
+            }
+        }
+    }
+
+    // setup form
+    const form = new Form('auth/signup', fields, setFields, success, onError);
 
     // simple per-step validation: require non-empty values (you can expand rules)
     function validateStep(currStep) {

@@ -81,81 +81,78 @@ function SignUpComplete() {
     }, [id]);
 
     return (
-        <div>
-            <div className="d-flex justify-content-center align-items-center bg-light" style={{ minHeight: "100vh", background: "linear-gradient(135deg, #f7f9fc, #eef1f5)" }}>
-                <div
-                    className="card shadow-sm border-0 p-4"
-                    style={{
-                        width: "460px",
-                        borderRadius: "25px",
-                        minHeight: "90vh",
-                        display: "flex",
-                        flexDirection: "column",
-                        justifyContent: "space-between",
-                        backgroundColor: "white",
-                    }}
-                >
-                    {/* Top bar */}
-                    <div className="mb-3 mx-auto" style={{ width: "50%", height: "4px", backgroundColor: "#f0f0f0", borderRadius: "2px" }} />
+        <div className="animate-fade-in">
+            <div className="d-flex justify-content-center align-items-center bg-light" style={{ minHeight: "100vh" }}>
+                <div className="card shadow-lg border-0 p-4 main-card-container">
 
-                    {/* Header Section */}
-                    <div>
-                        <img className="img-fluid" src={Logo} alt="Fiaxit Logo" width="72" height="35" />
-                        <div className="mt-4">
-                            <h4 className="fw-bold">Account Registered</h4>
-                            <p className="text-muted mb-4">We sent a verification link to your email.</p>
-                        </div>
+                    {/* Top Handle for App-like feel */}
+                    <div className="mb-4 mx-auto" style={{ width: "40px", height: "4px", backgroundColor: "#e2e8f0", borderRadius: "10px" }}></div>
+
+                    {/* Logo & Header */}
+                    <div className="text-center">
+                        <img className="img-fluid mb-4" src={Logo} alt="Fiaxit" style={{ height: "40px" }} />
+                        <h3 className="fw-700 mb-2" style={{ letterSpacing: '-1px' }}>Account Registered</h3>
+                        <p className="text-muted">We've sent a verification link to your email.</p>
                     </div>
 
                     {/* Main Content Section */}
-                    <div>
-                        {/* Illustration */}
-                        <div className="d-flex justify-content-center mt-3 mb-4">
-                            <img
-                                src="https://blush.design/api/download?shareUri=8PM0lK-V7hK0Fdjx&c=Hair_0%7Ef5bbee_Skin_0%7E715b4c&w=800&h=800&fm=png"
-                                alt="Verification Illustration"
-                                className="img-fluid"
-                                style={{ width: "auto", height: "400px" }}
-                            />
-                        </div>
-
+                    <div className="flex-grow-1 d-flex flex-column justify-content-center">
                         {loadingUser ? (
-                            <div className="text-center my-4">
-                                <div className="spinner-border text-primary" role="status">
+                            <div className="text-center py-5">
+                                <div className="spinner-border text-primary mb-3" role="status" style={{ width: '3rem', height: '3rem' }}>
                                     <span className="visually-hidden">Loading...</span>
                                 </div>
-                                <small className="text-muted mt-2 d-block">Loading your account information...</small>
+                                <p className="text-muted fw-500">Preparing your account...</p>
                             </div>
                         ) : user ? (
-                            <div className="text-center mt-4">
-                                <h5 className="fw-semibold">Hello, {user.user_fname.toUpperCase() ?? 'User'} {user.user_lname.toUpperCase() ?? ''}!</h5>
-                                <p className="text-muted small mt-3">
-                                    You have successfully registered your account with Fiaxit. A verification link has been sent to:
-                                    <span className="badge bg-success-subtle small text-success-emphasis mt-2">{user.user_email ?? 'your email'}</span>
-                                </p>
-                                <p className="text-muted small">
-                                    Click the link to verify your account. The link expires in <strong>15 minutes</strong>. 
-                                    If you don't see the email, please check your spam/junk folder.
-                                </p>
-                                <div className="mt-4">
-                                    <p className="text-muted small mb-0">
-                                        Didn't receive the email?
-                                        <button className="btn btn-link btn-sm text-primary">Resend verification link</button>
-                                    </p>
+                            <>
+                                {/* Illustration */}
+                                <div className="d-flex justify-content-center my-4">
+                                    <div className="bg-light rounded-circle p-4 d-flex align-items-center justify-content-center shadow-inner" style={{ width: '180px', height: '180px' }}>
+                                        <img
+                                            src="https://blush.design/api/download?shareUri=8PM0lK-V7hK0Fdjx&c=Hair_0%7Ef5bbee_Skin_0%7E715b4c&w=800&h=800&fm=png"
+                                            alt="Verification Illustration"
+                                            className="img-fluid"
+                                            style={{ width: "140px", height: "auto" }}
+                                        />
+                                    </div>
                                 </div>
-                            </div>
+
+                                <div className="text-center px-2">
+                                    <h5 className="fw-700 mb-3">Welcome, {user.user_fname}!</h5>
+                                    <div className="bg-success-subtle p-3 rounded-4 border border-success-subtle mb-4">
+                                        <p className="text-success-emphasis small mb-1 fw-bold">Verification Email Sent To:</p>
+                                        <div className="fw-bold text-success-emphasis">{user.user_email}</div>
+                                    </div>
+
+                                    <p className="text-muted small mb-4">
+                                        Please click the link in the email to verify your account. The link expires in <strong className="text-main">15 minutes</strong>.
+                                    </p>
+
+                                    <div className="pt-3 border-top">
+                                        <p className="text-muted small mb-0">
+                                            Didn't receive the email?
+                                            <button className="btn btn-link btn-sm text-primary fw-bold text-decoration-none">Resend link</button>
+                                        </p>
+                                    </div>
+                                </div>
+                            </>
                         ) : (
-                            <div className="text-center my-4">
-                                <p className="text-danger small">Unable to load account details.</p>
-                                <Link to="/auth/signup" className="btn btn-primary btn-sm">Go back to Sign Up</Link>
+                            <div className="text-center py-5">
+                                <span className="material-symbols-outlined text-danger mb-3" style={{ fontSize: '48px' }}>error</span>
+                                <p className="text-danger fw-bold">Unable to load account details.</p>
+                                <button onClick={() => navigate('/auth/signup')} className="btn btn-primary rounded-pill px-4 mt-2">
+                                    Back to Sign Up
+                                </button>
                             </div>
                         )}
                     </div>
 
                     {/* Footer */}
-                    <div className="text-muted small mt-4 px-3 pb-2 text-center">
-                        We care about your data. By signing up, we promise your data is saved with us alone. See our{" "}
-                        <Link to="/terms" className="text-decoration-none fw-semibold">Terms</Link>{" "} and{" "}<Link to="/privacy-policy" className="text-decoration-none fw-semibold"> Privacy Policy</Link>.
+                    <div className="text-muted text-center small mt-5 px-3 pb-2 opacity-75">
+                        We value your privacy. Your data is encrypted and saved securely. See our{" "}
+                        <Link to="/terms" className="text-decoration-none fw-semibold">Terms</Link>{" "} &{" "}
+                        <Link to="/privacy-policy" className="text-decoration-none fw-semibold">Privacy</Link>.
                     </div>
                 </div>
             </div>
