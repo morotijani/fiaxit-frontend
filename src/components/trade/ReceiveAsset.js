@@ -68,6 +68,19 @@ async function fetchCoinInfo(symbol) {
     return null;
 }
 
+async function fetchLocalCoinInfo(symbol) {
+    if (!symbol) return null;
+    try {
+        const resp = await jsonGet('coins');
+        if (resp && resp.success && Array.isArray(resp.data)) {
+            return resp.data.find(c => c.coin_symbol.toLowerCase() === symbol.toLowerCase());
+        }
+    } catch (err) {
+        console.error('fetchLocalCoinInfo error', err);
+    }
+    return null;
+}
+
 
 function ReceiveAsset() {
     const navigate = useNavigate();
@@ -96,16 +109,33 @@ function ReceiveAsset() {
                 }
 
                 const symbol = (w.wallet_symbol || '').toLowerCase();
-                const coinInfo = await fetchCoinInfo(symbol);
+                const [coinInfo, localCoin] = await Promise.all([
+                    fetchCoinInfo(symbol),
+                    fetchLocalCoinInfo(symbol)
+                ]);
 
                 const logo = coinInfo?.logo || coinInfo?.logo_url || coinInfo?.icon ||
                     (coinInfo?.id ? `https://s2.coinmarketcap.com/static/img/coins/64x64/${coinInfo.id}.png` : null);
+
+                // Determine dynamic network label
+                let networkLabel = 'Mainnet Network';
+                if (localCoin) {
+                    const type = localCoin.coin_type || '';
+                    const net = (localCoin.coin_network || 'Mainnet').charAt(0).toUpperCase() + (localCoin.coin_network || 'Mainnet').slice(1);
+
+                    if (type === 'BTC') networkLabel = `Bitcoin ${net} Network`;
+                    else if (type === 'ETH') networkLabel = `Ethereum ${net} Network`;
+                    else if (type === 'ERC20') networkLabel = `Ethereum (${type}) ${net}`;
+                    else if (type === 'TRC20') networkLabel = `Tron (${type}) ${net}`;
+                    else networkLabel = `${net} Network`;
+                }
 
                 const normalized = {
                     wallet_id: w.wallet_id ?? w.id ?? id,
                     wallet_address: w.wallet_address ?? w.address ?? '',
                     wallet_symbol: w.wallet_symbol ?? w.symbol ?? symbol,
                     wallet_name: w.wallet_name ?? w.name ?? (coinInfo?.name || symbol?.toUpperCase()),
+                    wallet_network: networkLabel,
                     rawInfo: coinInfo || {},
                     logo
                 };
@@ -209,7 +239,7 @@ function ReceiveAsset() {
                     </div>
                     <h5 className="fw-bold mb-1">{displayName}</h5>
                     <div className="badge rounded-pill bg-light text-muted border px-3 py-1 fw-normal">
-                        Mainnet Network
+                        {asset.wallet_network}
                     </div>
                 </div>
 

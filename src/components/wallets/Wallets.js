@@ -32,6 +32,8 @@ function setCachedData(key, data) {
     }
 }
 
+import CreateWalletModal from './CreateWalletModal';
+
 function Wallets() {
     const navigate = useNavigate();
     const [walletStore, walletDispatch] = useContext(WalletContext);
@@ -39,6 +41,7 @@ function Wallets() {
     // state for enriched wallets (info + balance)
     const [assets, setAssets] = useState([]);
     const [loadingAssets, setLoadingAssets] = useState(true);
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
     useEffect(() => {
         let mounted = true;
@@ -171,6 +174,9 @@ function Wallets() {
 
     return (
         <div className="animate-fade-in bg-white" style={{ minHeight: '100vh' }}>
+
+            <div className="mb-3 mx-auto" style={{ width: "40px", height: "4px", backgroundColor: "#e2e8f0", borderRadius: "10px", marginTop: "12px" }}></div>
+
             <div className="d-flex justify-content-between align-items-center p-3 border-bottom sticky-top bg-white glass">
                 <button className="btn btn-light rounded-circle p-2 shadow-sm" onClick={() => navigate(-1)}>
                     <span className="material-symbols-outlined text-secondary" style={{ fontSize: '20px' }}>arrow_back</span>
@@ -203,7 +209,7 @@ function Wallets() {
                         <div className="text-center py-5 bg-light rounded-4 border border-dashed">
                             <span className="material-symbols-outlined text-muted" style={{ fontSize: '48px' }}>account_balance_wallet</span>
                             <p className="text-muted mt-2">No active wallets found</p>
-                            <button className="btn btn-primary btn-sm mt-2 rounded-pill px-4">Create First Wallet</button>
+                            <button className="btn btn-primary btn-sm mt-2 rounded-pill px-4" onClick={() => setIsCreateModalOpen(true)}>Create First Wallet</button>
                         </div>
                     ) : (
                         assets.map((w) => {
@@ -255,7 +261,7 @@ function Wallets() {
                         <button
                             className="btn btn-light d-flex align-items-center justify-content-center w-100 py-3 border rounded-4 shadow-sm"
                             style={{ transition: 'all 0.2s', fontWeight: '600' }}
-                            onClick={() => toast.success('Select a coin to add', { icon: '🪙' })}
+                            onClick={() => setIsCreateModalOpen(true)}
                         >
                             <span className="material-symbols-outlined me-2 text-primary">add_circle</span>
                             Add New Wallet
@@ -263,6 +269,11 @@ function Wallets() {
                     </div>
                 </div>
             </div>
+
+            <CreateWalletModal
+                isOpen={isCreateModalOpen}
+                onClose={() => setIsCreateModalOpen(false)}
+            />
         </div>
     )
 }

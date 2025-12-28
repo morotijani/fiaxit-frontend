@@ -5,10 +5,13 @@ import { WalletContext } from '../../contexts/WalletContext'
 import Avatar from '../../assets/avatar.jpeg'
 import { jsonGet } from '../../helpers/Ajax'
 
+import CreateWalletModal from '../wallets/CreateWalletModal'
+
 function Main() {
     const [authStore, authDispatch] = useContext(AuthContext);
     const [walletStore, walletDispatch] = useContext(WalletContext);
     const navigate = useNavigate();
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
 
     // create greeting function based on time of day
@@ -181,6 +184,21 @@ function Main() {
                         </div>
                     ))}
                 </div>
+
+                {/* Empty State CTA */}
+                {(!walletStore?.wallets || walletStore.wallets.length === 0) && (
+                    <div className="px-3 pb-4">
+                        <div className="bg-primary bg-opacity-10 rounded-4 p-3 border border-primary border-opacity-25 d-flex align-items-center justify-content-between">
+                            <div>
+                                <div className="fw-bold text-primary small">No wallet yet?</div>
+                                <div className="text-muted" style={{ fontSize: '0.75rem' }}>Create one to start trading</div>
+                            </div>
+                            <button className="btn btn-primary btn-sm rounded-pill px-3 fw-bold" onClick={() => setIsCreateModalOpen(true)}>
+                                Create Wallet
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
 
             <div className="px-3 pb-5">
@@ -235,6 +253,10 @@ function Main() {
                     )}
                 </div>
             </div>
+            <CreateWalletModal
+                isOpen={isCreateModalOpen}
+                onClose={() => setIsCreateModalOpen(false)}
+            />
         </div>
 
     );

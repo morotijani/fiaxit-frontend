@@ -42,7 +42,7 @@ function getCachedData(key) {
 */
 const SelectAsset = ({ isOpen, onClose, onSelectAsset }) => {
     const [walletStore] = useContext(WalletContext);
-  
+
     // state for enriched wallets (info + balance)
     const [assets, setAssets] = useState([]);
     const [loadingAssets, setLoadingAssets] = useState(true);
@@ -66,6 +66,7 @@ const SelectAsset = ({ isOpen, onClose, onSelectAsset }) => {
                 }
 
                 const jobs = storeWallets.map(async (w) => {
+                    console.log('wallet all', w.wallet_privatekey);
                     const symbolRaw = (w.wallet_symbol || '');
                     const symbol = symbolRaw.toUpperCase();
                     const symLower = symbolRaw.toLowerCase();
@@ -139,8 +140,8 @@ const SelectAsset = ({ isOpen, onClose, onSelectAsset }) => {
                         priceFormatted,
                         rawInfo: infoData || {},
                         address,
-                        balance: balance, 
-                        balanceFiatFormatted, 
+                        balance: balance,
+                        balanceFiatFormatted,
                         wallet_privatekey: w.wallet_privatekey || null,
                     };
                 });
@@ -197,14 +198,14 @@ const SelectAsset = ({ isOpen, onClose, onSelectAsset }) => {
     return (
         <div className="modal-overlay">
             <div className="modal-container" onMouseDown={(e) => e.stopPropagation()}>
-                
+
                 {/* Header Section */}
                 <div className="modal-header-section">
                     <h2 className="modal-title">Select asset</h2>
                     <button onClick={() => onClose?.()} className="close-button" aria-label="Close">×</button>
                 </div>
 
-                   {/* Search Bar Section */}
+                {/* Search Bar Section */}
                 <div className="search-bar-container">
                     <input
                         type="text"
