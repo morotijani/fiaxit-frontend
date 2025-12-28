@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { jsonGet } from '../../helpers/Ajax'
 import { toast } from 'react-hot-toast';
@@ -10,7 +10,6 @@ function VerifyEmail() {
     const [loadingUser, setLoadingUser] = useState(true);
     const [user, setUser] = useState(null);
     const [verifyError, setVerifyError] = useState(null);
-    const hasRun = useRef(false);
 
     async function verifyUser(userId, verifyCode) {
         if (!userId || !verifyCode) {
@@ -19,18 +18,25 @@ function VerifyEmail() {
 
         try {
             const resp = await jsonGet(`auth/verify/${userId}/${verifyCode}`);
+
             // Success response (2xx)
             if (resp && resp.success) {
-                return { success: true, data: resp.data || resp };
+                return {
+                    success: true,
+                    data: resp.data || resp,
+                    message: resp.message || 'Email verified successfully!'
+                };
             }
 
             // Error response (400, 401, 422 handled by Ajax.js)
             if (resp && resp.success === false) {
+                // Ajax returns { status, success, errors: { ...api_response... } }
+                const apiResponse = resp.errors || resp;
                 return {
                     success: false,
-                    status: resp.errors?.status || resp.status || 'verification_failed',
-                    message: resp.errors?.message || resp.message || 'Verification failed',
-                    details: resp.errors || resp
+                    status: apiResponse.status || resp.status || 'verification_failed',
+                    message: apiResponse.message || resp.message || 'Verification failed',
+                    details: apiResponse
                 };
             }
 
@@ -45,9 +51,6 @@ function VerifyEmail() {
     }
 
     useEffect(() => {
-        if (hasRun.current) return;
-        hasRun.current = true;
-
         let mounted = true;
 
         (async function startup() {
@@ -61,18 +64,12 @@ function VerifyEmail() {
                 if (mounted) setLoadingUser(true);
                 const result = await verifyUser(id, code);
 
-                if (!mounted) {
-                    // Even if unmounted, we should probably clear loading for this instance
-                    // but in React, setting state on unmounted is usually ignored/warned.
-                    // The important thing is that the SECOND mount (Strict mode) 
-                    // should not be stuck.
-                    return;
-                }
+                if (!mounted) return;
 
                 if (result.success) {
                     setUser(result.data);
                     setVerifyError(null);
-                    toast.success('Email verified successfully!', { duration: 4000 });
+                    toast.success(result.message || 'Email verified successfully!', { duration: 4000 });
                 } else {
                     const { status, message } = result;
                     setVerifyError({ status, message });
@@ -83,7 +80,7 @@ function VerifyEmail() {
                     } else if (status === 'invalid_user') {
                         toast.error('User not found. Please sign up again.');
                     } else if (status === 'expired' || status === 'invalid_code') {
-                        // Keep the error on screen for these specific cases
+                        // Keep on-screen message
                     } else {
                         toast.error(message || 'Verification failed.');
                     }
@@ -95,8 +92,7 @@ function VerifyEmail() {
                     setVerifyError({ status: 'unexpected_error', message: err.message });
                 }
             } finally {
-                // Remove the mounted check for clearing loading, or ensure it's cleared
-                setLoadingUser(false);
+                if (mounted) setLoadingUser(false);
             }
         })();
 
@@ -136,9 +132,14 @@ function VerifyEmail() {
                                 </div>
 
                                 <div className="text-center px-2">
-                                    <h4 className="fw-700 mb-2">Success!</h4>
+                                    <h4 className="fw-700 mb-2">
+                                        {verifyError?.status === 'is_verified' ? "Already Verified!" : "Success!"}
+                                    </h4>
                                     <p className="text-muted small mb-4">
-                                        Your email has been verified. You're now ready to access the full power of Fiaxit.
+                                        {verifyError?.status === 'is_verified'
+                                            ? (verifyError.message || "Your account is already verified. You can proceed to login safely.")
+                                            : (user?.message || "Your email has been verified. You're now ready to access the full power of Fiaxit.")
+                                        }
                                     </p>
                                     <Link to="/auth/login" className="btn btn-primary w-100 py-3 rounded-4 shadow-sm mb-3">
                                         Back to Login
@@ -155,13 +156,18 @@ function VerifyEmail() {
                                 </div>
 
                                 <div className="text-center px-2">
-                                    <h4 className="fw-700 mb-2 text-danger">Verification Failed</h4>
+                                    <h4 className="fw-700 mb-2 text-danger">
+                                        {verifyError?.status === 'expired' ? "Link Expired" :
+                                            verifyError?.status === 'invalid_code' ? "Invalid Link" :
+                                                verifyError?.status === 'invalid_user' ? "User Not Found" :
+                                                    "Verification Failed"}
+                                    </h4>
                                     <p className="text-muted small mb-4">
                                         {verifyError?.message || "There was a problem verifying your account."}
                                     </p>
 
                                     <div className="d-grid gap-2">
-                                        {verifyError?.status === 'expired' ? (
+                                        {(verifyError?.status === 'expired' || verifyError?.status === 'invalid_code') ? (
                                             <Link to="/auth/signup" className="btn btn-primary w-100 py-3 rounded-4 shadow-sm">
                                                 Request New Link
                                             </Link>
@@ -181,6 +187,7 @@ function VerifyEmail() {
 
                     {/* Footer */}
                     <div className="text-muted text-center small mt-5 px-3 pb-2 opacity-75">
+                        We care about your data. We promise your data is saved with us alone. See our{" "}
                         <Link to="/terms" className="text-decoration-none fw-semibold">Terms</Link>{" "} &{" "}
                         <Link to="/privacy-policy" className="text-decoration-none fw-semibold">Privacy</Link>.
                     </div>
