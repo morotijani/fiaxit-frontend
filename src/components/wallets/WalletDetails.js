@@ -364,7 +364,11 @@ function WalletDetails() {
                             return txs.map((tx, index) => {
                                 const rawAmount = tx?.amount ?? tx?.value ?? tx?.total ?? 0;
                                 const amountNum = Number(rawAmount) || 0;
-                                const isSent = amountNum < 0;
+
+                                // Improved isSent detection: check type first, then from-address, then fallback to numeric sign
+                                const isSent = tx.type === 'sent' ||
+                                    (tx.from && String(tx.from).toLowerCase() === String(t.wallet_address).toLowerCase()) ||
+                                    amountNum < 0;
 
                                 let toAddress = '';
                                 if (Array.isArray(tx?.outputs) && tx.outputs.length > 0) {
