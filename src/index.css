@@ -195,3 +195,50 @@ body {
   font-weight: 700;
   letter-spacing: -1px;
 }
+
+/* Converter Specific Styles */
+.glass-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.swap-btn {
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.swap-btn:hover {
+  transform: rotate(180deg) scale(1.1);
+}
+
+.no-spinner::-webkit-inner-spin-button,
+.no-spinner::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+[data-bs-theme="dark"] .glass-card {
+  background: rgba(30, 32, 38, 0.7) !important;
+  border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+[data-bs-theme="dark"] .dropdown-menu {
+  background-color: var(--surface);
+  border-color: var(--border);
+}
+
+[data-bs-theme="dark"] .dropdown-item {
+  color: var(--text-main);
+}
+
+[data-bs-theme="dark"] .dropdown-item:hover {
+  background-color: var(--bg-light);
+}
+
+[data-bs-theme="dark"] .btn-white {
+  background-color: var(--bg-light);
+  color: var(--text-main);
+  border-color: var(--border);
+}

@@ -31,6 +31,7 @@ import ChangePassword from './components/profile/ChangePassword'
 import ChangePIN from './components/profile/ChangePIN'
 import AddCoin from './components/admin/AddCoin'
 import Notifications from './components/notifications/Notifications'
+import Converter from './components/converter/Converter'
 
 import { jsonGet } from './helpers/Ajax'
 import Preloader from './components/Preloader'
@@ -117,6 +118,7 @@ function AppIndex() {
                             <Route path="/wallets" element={<Wallets />} />
                             <Route path="/transactions" element={<Transactions />} />
                             <Route path="/settings" element={<SettingsForm />} />
+                            <Route path="/converter" element={<Converter />} />
                             <Route path="/change-password" element={<ChangePassword />} />
                             <Route path="/change-pin" element={<ChangePIN />} />
                             <Route path="/notifications" element={<Notifications />} />
