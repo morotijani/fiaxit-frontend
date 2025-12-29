@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from 'react';
-import { Routes, Route, useNavigate } from 'react-router-dom';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
 import MainFooter from './components/MainFooter';
 import { AuthContext } from './contexts/AuthContext';
 import Main from './components/main/Main'
@@ -32,6 +32,12 @@ import ChangePIN from './components/profile/ChangePIN'
 import AddCoin from './components/admin/AddCoin'
 import Notifications from './components/notifications/Notifications'
 import Converter from './components/converter/Converter'
+import AdminLayout from './components/admin/AdminLayout'
+import AdminDashboard from './components/admin/AdminDashboard'
+import AdminUsers from './components/admin/AdminUsers'
+import AdminKYC from './components/admin/AdminKYC'
+import AdminTransactions from './components/admin/AdminTransactions'
+import AdminCoins from './components/admin/AdminCoins'
 
 import { jsonGet } from './helpers/Ajax'
 import Preloader from './components/Preloader'
@@ -102,6 +108,27 @@ function AppIndex() {
 
     if (loading) {
         return <Preloader />;
+    }
+
+    const { pathname } = useLocation();
+    const isAdminRoute = pathname.startsWith('/admin');
+    const userIsAdmin = authStore.user && authStore.user.user_role === 'admin';
+
+    // If it's an admin route, we provide a full-screen experience
+    if (isAdminRoute && userIsAdmin) {
+        return (
+            <div className="admin-wrapper animate-fade-in vh-100 vw-100 overflow-hidden bg-light">
+                <AdminLayout>
+                    <Routes>
+                        <Route path="/admin/users" element={<AdminUsers />} />
+                        <Route path="/admin/kyc" element={<AdminKYC />} />
+                        <Route path="/admin/transactions" element={<AdminTransactions />} />
+                        <Route path="/admin/coins" element={<AdminCoins />} />
+                        <Route path="/admin" element={<AdminDashboard />} />
+                    </Routes>
+                </AdminLayout>
+            </div>
+        );
     }
 
     return (

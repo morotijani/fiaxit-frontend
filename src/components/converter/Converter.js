@@ -106,7 +106,7 @@ function Converter() {
             </div>
 
             {/* Main Converter Card */}
-            <div className="glass-card p-4 rounded-5 shadow-sm border bg-white position-relative overflow-hidden mb-4">
+            <div className="glass-card converter-main-card p-4 rounded-5 shadow-sm border bg-white position-relative mb-4">
                 <div className="position-absolute top-0 end-0 p-4 opacity-10">
                     <span className="material-symbols-outlined" style={{ fontSize: '120px' }}>currency_exchange</span>
                 </div>
@@ -132,7 +132,7 @@ function Converter() {
                                     {fromAsset.symbol}
                                     <span className="material-symbols-outlined ms-1 small">expand_more</span>
                                 </button>
-                                <ul className="dropdown-menu dropdown-menu-end rounded-4 shadow border-0 p-2" style={{ minWidth: '200px' }}>
+                                <ul className="dropdown-menu dropdown-menu-end rounded-4 shadow border-0 p-2 scrollable-menu" style={{ minWidth: '200px' }}>
                                     <li className="dropdown-header text-uppercase small fw-bold p-2">Cryptocurrencies</li>
                                     {cryptos.map(c => (
                                         <li key={c.id}>
@@ -192,7 +192,7 @@ function Converter() {
                                     {toAsset.symbol}
                                     <span className="material-symbols-outlined ms-1 small">expand_more</span>
                                 </button>
-                                <ul className="dropdown-menu dropdown-menu-end rounded-4 shadow border-0 p-2" style={{ minWidth: '200px' }}>
+                                <ul className="dropdown-menu dropdown-menu-end rounded-4 shadow border-0 p-2 scrollable-menu" style={{ minWidth: '200px' }}>
                                     <li className="dropdown-header text-uppercase small fw-bold p-2">Cryptocurrencies</li>
                                     {cryptos.map(c => (
                                         <li key={c.id}>
@@ -248,14 +248,14 @@ function Converter() {
             <h6 className="fw-bold mb-3 px-1">Market Insights</h6>
             <div className="row g-3">
                 <div className="col-6">
-                    <div className="glass-card p-3 rounded-4 border bg-white h-100">
+                    <div className="glass-card market-insights-card p-3 rounded-4 border bg-white h-100">
                         <small className="text-muted d-block mb-1">24h Vol (BTC)</small>
                         <div className="fw-bold">$34.2B</div>
                         <div className="text-success small fw-bold mt-1">+2.45%</div>
                     </div>
                 </div>
                 <div className="col-6">
-                    <div className="glass-card p-3 rounded-4 border bg-white h-100">
+                    <div className="glass-card market-insights-card p-3 rounded-4 border bg-white h-100">
                         <small className="text-muted d-block mb-1">Market Cap</small>
                         <div className="fw-bold">$2.4T</div>
                         <div className="text-danger small fw-bold mt-1">-0.12%</div>
