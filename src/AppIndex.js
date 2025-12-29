@@ -25,6 +25,7 @@ import ContactForm from './components/contacts/ContactForm'
 import { ContactContext } from './contexts/ContactContext'
 
 import Profile from './components/profile/Profile'
+import KYCSubmit from './components/profile/KYCSubmit'
 import SettingsForm from './components/profile/SettingsForm'
 import AddCoin from './components/admin/AddCoin'
 import Notifications from './components/notifications/Notifications'
@@ -116,6 +117,7 @@ function AppIndex() {
                             <Route path="/settings" element={<SettingsForm />} />
                             <Route path="/notifications" element={<Notifications />} />
                             <Route path="/profile" element={<Profile />} />
+                            <Route path="/kyc-submit" element={<KYCSubmit />} />
                             <Route path="/contacts/:id" element={<ContactForm />} />
                             <Route path="/contacts" element={<Contacts />} />
                             <Route path="/todos" element={<Todos />} />

@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useContext } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { AuthContext } from '../../contexts/AuthContext'
 import Button from '../elements/Button'
 import { shortenAddress } from '../../helpers/StringHelpers'
 import FieldBlock from '../elements/FieldBlock'
@@ -9,6 +10,7 @@ import toast from 'react-hot-toast';
 
 function SendCrypto() {
     const navigate = useNavigate();
+    const [authStore] = useContext(AuthContext);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedAsset, setSelectedAsset] = useState();
@@ -25,7 +27,8 @@ function SendCrypto() {
         amount: { value: '', isInvalid: false, msg: '' }, // USD amount
         feeRate: { value: '0', isInvalid: false, msg: '' },
         note: { value: '', isInvalid: false, msg: '' },
-        privateKey: { value: '', isInvalid: false, msg: '' }
+        privateKey: { value: '', isInvalid: false, msg: '' },
+        pin: { value: '', isInvalid: false, msg: '' }
     });
 
     // helper to update fields similar to Form.handleInputChanges
@@ -106,6 +109,14 @@ function SendCrypto() {
         return true;
     }
 
+    function validatePin() {
+        if (!fields.pin.value || fields.pin.value.length < 4) {
+            setFields(prev => ({ ...prev, pin: { ...prev.pin, isInvalid: true, msg: 'Please enter your 4-digit PIN' } }));
+            return false;
+        }
+        return true;
+    }
+
     const handleReview = () => {
         if (!validateBeforeReview()) return;
         setShowReview(true);
@@ -113,6 +124,7 @@ function SendCrypto() {
 
     const handleSend = async () => {
         if (!validateBeforeReview()) return;
+        if (!validatePin()) return;
         setSending(true);
         try {
             const payload = {
@@ -124,7 +136,8 @@ function SendCrypto() {
                 amount_usd: Number(fields.amount.value || 0),
                 amount: Number(cryptoAmount),
                 note: fields.note.value || '',
-                feeRate: Number(networkFee)
+                feeRate: Number(networkFee),
+                pin: fields.pin.value
             };
 
             const resp = await jsonPost(`trade/${selectedAsset?.symbol.toLowerCase()}/send`, payload, null);
@@ -170,6 +183,19 @@ function SendCrypto() {
             </div>
 
             <div className="p-4">
+                {/* KYC Limit Banner */}
+                {authStore?.user?.kyc_status !== 'verified' && (
+                    <div className="alert bg-warning-subtle border-0 rounded-4 p-3 mb-4 d-flex align-items-center">
+                        <span className="material-symbols-outlined text-warning me-3">info</span>
+                        <div className="small">
+                            <span className="fw-bold d-block text-warning-emphasis">Daily Send Limit</span>
+                            <span className="text-muted">Unverified accounts are limited to 5 sends per day.
+                                <button className="btn btn-link p-0 ms-1 small fw-bold text-decoration-none" onClick={() => navigate('/kyc-submit')}>Verify Now</button>
+                            </span>
+                        </div>
+                    </div>
+                )}
+
                 {/* Asset Selection Preview */}
                 <div
                     className="p-3 rounded-4 border shadow-sm mb-4 bg-white hover-fade"
@@ -319,6 +345,27 @@ function SendCrypto() {
                                         <div className="small text-dark-emphasis">
                                             Transactions are permanent. Please double check the recipient address before confirming.
                                         </div>
+                                    </div>
+
+                                    {/* PIN Input */}
+                                    <div className="mb-4 text-center">
+                                        <label className="form-label fw-bold small text-uppercase text-muted">Enter Transaction PIN</label>
+                                        <input
+                                            type="password"
+                                            name="pin"
+                                            className={`form-control form-control-lg text-center fw-bold rounded-4 shadow-sm border-2 ${fields.pin.isInvalid ? 'border-danger' : 'border-primary-subtle'}`}
+                                            placeholder="••••"
+                                            maxLength="6"
+                                            inputMode="numeric"
+                                            pattern="[0-9]*"
+                                            value={fields.pin.value}
+                                            onChange={handleFieldChange}
+                                            autoFocus
+                                            style={{ letterSpacing: '8px', fontSize: '24px' }}
+                                        />
+                                        {fields.pin.isInvalid && (
+                                            <div className="text-danger small mt-2 fw-bold">{fields.pin.msg}</div>
+                                        )}
                                     </div>
 
                                     <div className="d-grid gap-3 mb-2">

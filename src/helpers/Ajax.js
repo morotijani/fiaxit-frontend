@@ -2,9 +2,16 @@ export function runFetch(url, method, data, callback) {
     // const domain = process.env.REACT_APP_API;
 
     // normalize domain and build fullUrl more safely
-    let domain = process.env.REACT_APP_API || '';
+    let domain = process.env.REACT_APP_API || process.env.REACT_APP_API_URL || '';
+
+    // forcefully remove literal "undefined" which can happen if build-time env is missing
+    while (domain.includes('undefined')) {
+        domain = domain.replace('undefined', '');
+    }
+
     // ensure domain ends with single slash (if provided)
     if (domain && !domain.endsWith('/')) domain += '/';
+
     // remove leading slash from url to avoid double-slash
     const relative = url.startsWith('/') ? url.substring(1) : url;
     const fullUrl = domain ? domain + relative : (url.startsWith('/') ? url : '/' + url);
@@ -12,17 +19,23 @@ export function runFetch(url, method, data, callback) {
     // log the final URL (helps debug broken/missing env)
     console.log('API request to:', fullUrl);
 
+    const isFormData = data instanceof FormData;
+
     const options = {
         method: method,
         headers: {
             'Accept': 'application/json',
-            'Content-Type': 'application/json',
             // 'X-CMC_PRO_API_KEY': process.env.REACT_APP_CMC_API_KEY 
         }
     }
 
+    // Only set Content-Type if NOT FormData
+    if (!isFormData) {
+        options.headers['Content-Type'] = 'application/json';
+    }
+
     if (method !== 'GET' && method !== 'DELETE') {
-        options['body'] = JSON.stringify(data);
+        options['body'] = isFormData ? data : JSON.stringify(data);
     }
 
     // add authorization header if the user is logged in.

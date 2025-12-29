@@ -42,7 +42,7 @@ function SettingsForm() {
         setFormUrl(`user/update/${authStore.user.user_id}`)
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [])
-    const form = new Form(formUrl, fields, setFields, success, formMethod);
+    const form = new Form(formUrl, fields, setFields, success, null, formMethod);
 
     return (
         <div className="animate-fade-in">
