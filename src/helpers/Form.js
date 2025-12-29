@@ -96,38 +96,26 @@ export class Form {
             }
         };
 
-        if (resp.message && !resp.errors) {
-            if (resp.path && newState.hasOwnProperty(resp.path)) {
-                newState[resp.path].isInvalid = true;
-                newState[resp.path].msg = resp.message;
-            } else {
-                showGeneralError(resp.message);
-            }
-        }
+        // Determine the actual error data (handle Ajax.js wrapper)
+        const errorData = resp?.errors || resp;
+        const msg = errorData?.message || errorData?.error || resp?.message || "Something went wrong.";
 
-        // check if resp has errors array
-        if (resp.errors) {
-            if (!Array.isArray(resp.errors)) {
-                const key = resp.errors.path;
-                const msg = resp.errors.message;
+        if (errorData?.path && newState.hasOwnProperty(errorData.path)) {
+            newState[errorData.path].isInvalid = true;
+            newState[errorData.path].msg = msg;
+        } else if (resp.errors && Array.isArray(resp.errors)) {
+            resp.errors.forEach(error => {
+                const key = error.path;
+                const errorMsg = error.message;
                 if (key && newState.hasOwnProperty(key)) {
                     newState[key].isInvalid = true;
-                    newState[key].msg = msg || "There was an error with this field.";
+                    newState[key].msg = errorMsg;
                 } else {
-                    showGeneralError(msg || resp.message);
+                    showGeneralError(errorMsg);
                 }
-            } else {
-                resp.errors.forEach(error => {
-                    const key = error.path;
-                    const msg = error.message;
-                    if (key && newState.hasOwnProperty(key)) {
-                        newState[key].isInvalid = true;
-                        newState[key].msg = msg;
-                    } else {
-                        showGeneralError(msg || resp.message);
-                    }
-                })
-            }
+            })
+        } else {
+            showGeneralError(msg);
         }
 
         this.setFields({ ...newState });

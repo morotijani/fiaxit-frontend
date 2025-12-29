@@ -27,6 +27,8 @@ import { ContactContext } from './contexts/ContactContext'
 import Profile from './components/profile/Profile'
 import KYCSubmit from './components/profile/KYCSubmit'
 import SettingsForm from './components/profile/SettingsForm'
+import ChangePassword from './components/profile/ChangePassword'
+import ChangePIN from './components/profile/ChangePIN'
 import AddCoin from './components/admin/AddCoin'
 import Notifications from './components/notifications/Notifications'
 
@@ -115,6 +117,8 @@ function AppIndex() {
                             <Route path="/wallets" element={<Wallets />} />
                             <Route path="/transactions" element={<Transactions />} />
                             <Route path="/settings" element={<SettingsForm />} />
+                            <Route path="/change-password" element={<ChangePassword />} />
+                            <Route path="/change-pin" element={<ChangePIN />} />
                             <Route path="/notifications" element={<Notifications />} />
                             <Route path="/profile" element={<Profile />} />
                             <Route path="/kyc-submit" element={<KYCSubmit />} />

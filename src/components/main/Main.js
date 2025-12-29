@@ -135,7 +135,11 @@ function Main() {
                     <div className="d-flex align-items-center">
                         <Link to="/profile" className="d-flex align-items-center text-decoration-none">
                             <div className="position-relative">
-                                <img src={Avatar} className='img-fluid rounded-circle shadow-sm' alt="User" style={{ width: "40px", height: "40px", border: "2px solid #fff" }} />
+                                {authStore.user?.user_image ? (
+                                    <img src={authStore.user?.user_image} className='img-fluid rounded-circle shadow-sm' alt="User" style={{ width: "40px", height: "40px", border: "2px solid #fff" }} />
+                                ) : (
+                                    <img src={Avatar} className='img-fluid rounded-circle shadow-sm' alt="User" style={{ width: "40px", height: "40px", border: "2px solid #fff" }} />
+                                )}
                                 <div className="position-absolute bottom-0 end-0 bg-success rounded-circle" style={{ width: "10px", height: "10px", border: "2px solid #fff" }}></div>
                             </div>
                             <div className="ps-2">

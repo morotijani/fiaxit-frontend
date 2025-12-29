@@ -46,6 +46,7 @@ function SettingsForm() {
 
     return (
         <div className="animate-fade-in">
+
             {/* Top Handle for App-like feel */}
             <div className="mb-3 mx-auto" style={{ width: "40px", height: "4px", backgroundColor: "#e2e8f0", borderRadius: "10px", marginTop: "12px" }}></div>
 
@@ -80,7 +81,7 @@ function SettingsForm() {
                         <FieldBlock id="email" label="Email Address" type="email" isInvalid={fields.email.isInvalid} value={fields.email.value} onChange={form.handleInputChanges} feedback={fields.email.msg} placeholder="your@email.com" />
                     </div>
                     <div className="mb-0">
-                        <FieldBlock id="phone" type="tel" label="Phone Number" isInvalid={fields.phone.isInvalid} value={fields.phone.value} onChange={form.handleInputChanges} feedback={fields.phone.msg} placeholder="+1 (555) 000-0000" />
+                        <FieldBlock id="phone" type="tel" label="Phone Number" isInvalid={fields.phone.isInvalid} value={fields.phone.value} onChange={form.handleInputChanges} feedback={fields.phone.msg} placeholder="+233 (000) 000-0000" />
                     </div>
                 </div>
 

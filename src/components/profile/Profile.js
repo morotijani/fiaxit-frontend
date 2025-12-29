@@ -26,6 +26,10 @@ function Profile() {
         navigate('/change-pin');
     }
 
+    const handleImageUploadInvalid = (e) => {
+        toast.error('Please select a valid image file');
+    }
+
     const handleImageUpload = async (e) => {
         const file = e.target.files[0];
         if (!file) return;
@@ -90,7 +94,7 @@ function Profile() {
                                 {authStore.user?.user_fname?.charAt(0)}{authStore.user?.user_lname?.charAt(0)}
                             </div>
                         )}
-                        <div className="position-absolute bottom-0 end-0 bg-white rounded-circle p-1 shadow-sm d-flex align-items-center justify-content-center" style={{ width: '32px', height: '32px' }}>
+                        <div className="position-absolute bottom-0 end-0 bg-white rounded-circle p-1 shadow-sm d-flex align-items-center justify-content-center" style={{ width: '32px', height: '32px', cursor: 'pointer' }}>
                             <span className="material-symbols-outlined text-primary" style={{ fontSize: '18px' }}>photo_camera</span>
                         </div>
                         {uploading && (
@@ -105,6 +109,7 @@ function Profile() {
                         className="d-none"
                         accept="image/*"
                         onChange={handleImageUpload}
+                        onInvalid={handleImageUploadInvalid}
                     />
                     <h5 className="fw-bold mb-1">{fullName}</h5>
                     <div className="d-flex align-items-center justify-content-center">
@@ -210,6 +215,13 @@ function Profile() {
                         <div className="d-flex align-items-center">
                             <span className="material-symbols-outlined me-3 text-primary">lock_reset</span>
                             <span className="fw-semibold">Change Password</span>
+                        </div>
+                        <span className="material-symbols-outlined text-muted">chevron_right</span>
+                    </div>
+                    <div className="list-group-item d-flex justify-content-between align-items-center py-3 border-0 border-bottom" onClick={changePinLink} style={{ cursor: 'pointer' }}>
+                        <div className="d-flex align-items-center">
+                            <span className="material-symbols-outlined me-3 text-primary">lock_reset</span>
+                            <span className="fw-semibold">Change PIN</span>
                         </div>
                         <span className="material-symbols-outlined text-muted">chevron_right</span>
                     </div>

@@ -146,9 +146,17 @@ function SendCrypto() {
                 toast.success('Transaction initiated successfully', { duration: 6000 });
                 navigate(-1);
             } else {
-                const msg = resp?.errors?.details || 'Send failed';
+                // Standardize error message extraction (handle Ajax.js wrapper)
+                const errorSource = resp?.errors || resp;
+                const msg = errorSource?.message || errorSource?.error || 'Send failed';
+
                 // process field errors if present
-                if (resp?.errors && Array.isArray(resp.errors)) {
+                if (errorSource?.path && fields[errorSource.path]) {
+                    setFields(prev => ({
+                        ...prev,
+                        [errorSource.path]: { ...prev[errorSource.path], isInvalid: true, msg: msg }
+                    }));
+                } else if (resp?.errors && Array.isArray(resp.errors)) {
                     // mark first field error if any
                     const first = resp.errors[0];
                     if (first?.path && fields[first.path]) {
@@ -159,7 +167,7 @@ function SendCrypto() {
             }
         } catch (err) {
             console.error('Send error', err);
-            toast.error('Failed to send transaction', { duration: 6000 });
+            toast.error(err.message || 'Failed to send transaction', { duration: 6000 });
         } finally {
             setSending(false);
             setShowReview(false);
@@ -332,6 +340,12 @@ function SendCrypto() {
                                             <span className="text-muted">Recipient</span>
                                             <span className="fw-bold text-end" style={{ maxWidth: '180px', wordBreak: 'break-all', fontSize: '0.85rem' }}>
                                                 {shortenAddress(fields.toAddress.value)}
+                                            </span>
+                                        </div>
+                                        <div className="d-flex justify-content-between mb-2">
+                                            <span className="text-muted">Note</span>
+                                            <span className="fw-bold text-end" style={{ maxWidth: '180px', wordBreak: 'break-all', fontSize: '0.85rem' }}>
+                                                {fields.note.value}
                                             </span>
                                         </div>
                                         <div className="d-flex justify-content-between mb-2">
