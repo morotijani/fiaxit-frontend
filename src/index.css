@@ -272,6 +272,116 @@ body {
   overflow-y: auto !important;
 }
 
+.admin-list-item {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.admin-list-item:hover {
+  background-color: #f8f9fa !important;
+}
+
+[data-bs-theme="dark"] .admin-list-item:hover {
+  background-color: #2b2c2f !important;
+}
+
+.admin-input {
+  border-radius: 8px;
+  padding: 12px;
+  border: 1px solid #dadce0;
+}
+
+[data-bs-theme="dark"] .admin-input {
+  background-color: #1f1f1f;
+  border-color: #5f6368;
+  color: #e8eaed;
+}
+
+/* Admin Dark Mode Overrides */
+[data-bs-theme="dark"] .admin-wrapper {
+  background-color: #1f1f1f !important;
+  color: #e3e3e3;
+}
+
+[data-bs-theme="dark"] .admin-sidebar {
+  background: #1f1f1f;
+  border-right: 1px solid #444746;
+}
+
+[data-bs-theme="dark"] .admin-sidebar .nav-link {
+  color: #c4c7c5;
+}
+
+[data-bs-theme="dark"] .admin-sidebar .nav-link:hover {
+  background-color: #333535;
+  color: #e3e3e3;
+}
+
+[data-bs-theme="dark"] .admin-sidebar .nav-link.active {
+  background-color: #004a77;
+  color: #c2e7ff;
+}
+
+[data-bs-theme="dark"] .admin-header {
+  background: #1f1f1f;
+  border-bottom: 1px solid #444746;
+}
+
+[data-bs-theme="dark"] .admin-header .logo-text {
+  color: #c4c7c5;
+}
+
+[data-bs-theme="dark"] .admin-card {
+  background: #1b1b1b;
+  border: 1px solid #444746;
+}
+
+[data-bs-theme="dark"] .admin-card-title {
+  color: #e3e3e3;
+}
+
+[data-bs-theme="dark"] .admin-card-text {
+  color: #c4c7c5;
+}
+
+[data-bs-theme="dark"] .admin-table thead th {
+  background-color: #2a2a2a;
+  color: #c4c7c5;
+  border-bottom: 1px solid #444746;
+}
+
+[data-bs-theme="dark"] .admin-table tbody td {
+  color: #e3e3e3;
+  border-bottom: 1px solid #333535;
+}
+
+[data-bs-theme="dark"] .admin-table-container {
+  border-color: #444746;
+}
+
+[data-bs-theme="dark"] .list-group-item {
+  background-color: transparent !important;
+  border-color: #333535;
+  color: #e3e3e3;
+}
+
+[data-bs-theme="dark"] .admin-card .list-group-item:hover {
+  background-color: rgba(255, 255, 255, 0.03) !important;
+}
+
+[data-bs-theme="dark"] .bg-light {
+  background-color: #2a2a2a !important;
+}
+
+[data-bs-theme="dark"] .text-dark {
+  color: #e3e3e3 !important;
+}
+
+[data-bs-theme="dark"] .border {
+  border-color: #444746 !important;
+}
+
+
 /* Admin Dashboard Styles (Google Account Style) */
 .admin-wrapper {
   background-color: #ffffff;

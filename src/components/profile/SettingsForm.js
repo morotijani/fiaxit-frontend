@@ -16,6 +16,8 @@ function SettingsForm() {
         lname: { value: '', isInvalid: false, msg: '' },
         email: { value: '', isInvalid: false, msg: '' },
         phone: { value: '', isInvalid: false, msg: '' },
+        dob: { value: '', isInvalid: false, msg: '' },
+        gender: { value: '', isInvalid: false, msg: '' },
     });
     const [authStore, userDispatch] = useContext(AuthContext);
 
@@ -37,6 +39,8 @@ function SettingsForm() {
             lname: res.user_lname || '',
             email: res.user_email || '',
             phone: res.user_phone || '',
+            dob: res.user_dob || '',
+            gender: res.user_gender || '',
         });
         setFormMethod('PATCH');
         setFormUrl(`user/update/${authStore.user.user_id}`)
@@ -80,8 +84,26 @@ function SettingsForm() {
                     <div className="mb-3">
                         <FieldBlock id="email" label="Email Address" type="email" isInvalid={fields.email.isInvalid} value={fields.email.value} onChange={form.handleInputChanges} feedback={fields.email.msg} placeholder="your@email.com" />
                     </div>
-                    <div className="mb-0">
+                    <div className="mb-3">
                         <FieldBlock id="phone" type="tel" label="Phone Number" isInvalid={fields.phone.isInvalid} value={fields.phone.value} onChange={form.handleInputChanges} feedback={fields.phone.msg} placeholder="+233 (000) 000-0000" />
+                    </div>
+                    <div className="mb-3">
+                        <FieldBlock id="dob" type="date" label="Date of Birth" isInvalid={fields.dob.isInvalid} value={fields.dob.value} onChange={form.handleInputChanges} feedback={fields.dob.msg} />
+                    </div>
+                    <div className="mb-0">
+                        <label className="form-label small text-muted">Gender</label>
+                        <select
+                            id="gender"
+                            className="form-select border-0 bg-light p-3"
+                            style={{ borderRadius: '12px' }}
+                            value={fields.gender.value}
+                            onChange={form.handleInputChanges}
+                        >
+                            <option value="">Prefer not to say</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
                     </div>
                 </div>
 

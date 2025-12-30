@@ -66,7 +66,7 @@ export function runFetch(url, method, data, callback) {
         .then(async resp => {
             if (resp.ok) {
                 return resp.json();
-            } else if (resp.status === 422 || resp.status === 401 || resp.status === 400) {
+            } else if (resp.status === 422 || resp.status === 401 || resp.status === 400 || resp.status === 404) {
                 // validation or bad request, return errors as JSON
                 return resp.json().then(errors => {
                     return { status: resp.status, success: false, errors: errors }

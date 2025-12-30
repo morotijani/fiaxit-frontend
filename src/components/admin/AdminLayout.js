@@ -45,6 +45,24 @@ function AdminLayout({ children }) {
                         Assets
                     </NavLink>
 
+                    {/* divide */}
+                    <div className="border-top mx-4 my-4"></div>
+
+                    <NavLink to="/admin/profile" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
+                        <span className="material-symbols-outlined">account_box</span>
+                        Personal Info
+                    </NavLink>
+
+                    <NavLink to="/admin/security" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
+                        <span className="material-symbols-outlined">lock_open</span>
+                        Security
+                    </NavLink>
+
+                    <NavLink to="/admin/settings" className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}>
+                        <span className="material-symbols-outlined">settings</span>
+                        Settings
+                    </NavLink>
+
                     <div className="mt-4 pt-4 border-top mx-4">
                         <button onClick={handleLogout} className="nav-link text-danger border-0 bg-transparent w-100 d-flex align-items-center">
                             <span className="material-symbols-outlined">logout</span>
@@ -66,8 +84,20 @@ function AdminLayout({ children }) {
                             <div className="fw-medium small" style={{ color: '#202124' }}>{authStore.user?.user_fname} {authStore.user?.user_lname}</div>
                             <small className="text-muted d-block" style={{ fontSize: '11px' }}>Admin Console</small>
                         </div>
-                        <div className="bg-light rounded-circle d-flex align-items-center justify-content-center border" style={{ width: '38px', height: '38px', cursor: 'pointer' }}>
-                            <span className="material-symbols-outlined text-muted" style={{ fontSize: '20px' }}>account_circle</span>
+                        <div
+                            className="bg-light rounded-circle d-flex align-items-center justify-content-center border"
+                            style={{ width: '38px', height: '38px', cursor: 'pointer' }}
+                            onClick={() => navigate('/admin/profile')}
+                        >
+                            {authStore.user?.user_image ? (
+                                <img
+                                    src={authStore.user.user_image}
+                                    className="rounded-circle w-100 h-100 object-fit-cover"
+                                    alt="Admin"
+                                />
+                            ) : (
+                                <span className="material-symbols-outlined text-muted" style={{ fontSize: '20px' }}>account_circle</span>
+                            )}
                         </div>
                     </div>
                 </header>

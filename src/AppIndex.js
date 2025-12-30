@@ -38,6 +38,9 @@ import AdminUsers from './components/admin/AdminUsers'
 import AdminKYC from './components/admin/AdminKYC'
 import AdminTransactions from './components/admin/AdminTransactions'
 import AdminCoins from './components/admin/AdminCoins'
+import AdminProfile from './components/admin/AdminProfile'
+import AdminSecurity from './components/admin/AdminSecurity'
+import AdminSettings from './components/admin/AdminSettings'
 
 import { jsonGet } from './helpers/Ajax'
 import Preloader from './components/Preloader'
@@ -124,6 +127,9 @@ function AppIndex() {
                         <Route path="/admin/kyc" element={<AdminKYC />} />
                         <Route path="/admin/transactions" element={<AdminTransactions />} />
                         <Route path="/admin/coins" element={<AdminCoins />} />
+                        <Route path="/admin/profile" element={<AdminProfile />} />
+                        <Route path="/admin/security" element={<AdminSecurity />} />
+                        <Route path="/admin/settings" element={<AdminSettings />} />
                         <Route path="/admin" element={<AdminDashboard />} />
                     </Routes>
                 </AdminLayout>

@@ -13,17 +13,28 @@ function Login() {
         email: { value: "", isInvalid: false, msg: "" },
         password: { value: "", isInvalid: false, msg: "" }
     });
+    const [isLoading, setIsLoading] = useState(false);
 
     const [, authDispatch, getUser] = useContext(AuthContext)
 
     async function success(resp) {
+        setIsLoading(false);
         authDispatch({ type: 'login', payload: resp.token });
         await getUser()
         navigate('/'); // redirect to main page or root directory after loggedin
         toast.success("You have been logged in successfully", { duration: 6000 });
     }
 
-    const form = new Form('auth/login', fields, setFields, success);
+    function error(resp) {
+        setIsLoading(false);
+    }
+
+    const form = new Form('auth/login', fields, setFields, success, error);
+
+    const handleLogin = async (e) => {
+        setIsLoading(true);
+        await form.submitForm(e);
+    };
 
     return (
         <div className="animate-fade-in">
@@ -66,11 +77,15 @@ function Login() {
                             />
                         </div>
                         <div className="mb-4">
+                            <div className="d-flex justify-content-between align-items-center mb-2">
+                                <label className="form-label mb-0">Password</label>
+                                <Link to="/auth/forgot-password" style={{ fontSize: '0.8rem', color: '#1a73e8', textDecoration: 'none', fontWeight: '500' }}>Forgot password?</Link>
+                            </div>
                             <FieldBlock
                                 id="password"
                                 value={fields.password.value}
                                 onChange={form.handleInputChanges}
-                                label="Password"
+                                hideLabel={true}
                                 type="password"
                                 feedback={fields.password.msg}
                                 isInvalid={fields.password.isInvalid}
@@ -81,11 +96,19 @@ function Login() {
 
                     <div className='text-center'>
                         <button
-                            className="btn btn-primary w-100 py-3 mb-4 shadow"
-                            onClick={form.submitForm}
-                            style={{ borderRadius: '12px', fontSize: '1rem' }}
+                            className={`btn btn-primary w-100 py-3 mb-4 shadow d-flex align-items-center justify-content-center ${isLoading ? 'disabled' : ''}`}
+                            onClick={handleLogin}
+                            disabled={isLoading}
+                            style={{ borderRadius: '12px', fontSize: '1rem', minHeight: '58px' }}
                         >
-                            Sign In
+                            {isLoading ? (
+                                <>
+                                    <span className="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                                    Signing in...
+                                </>
+                            ) : (
+                                'Sign In'
+                            )}
                         </button>
 
                         <div className="d-flex align-items-center my-4 opacity-50">

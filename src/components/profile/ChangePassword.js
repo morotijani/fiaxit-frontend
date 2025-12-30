@@ -5,7 +5,7 @@ import FieldBlock from '../elements/FieldBlock'
 import toast from 'react-hot-toast';
 import { AuthContext } from '../../contexts/AuthContext'
 
-function ChangePassword() {
+function ChangePassword({ variant = 'default', onSuccess, onCancel }) {
     const navigate = useNavigate();
     const [authStore] = useContext(AuthContext);
 
@@ -18,7 +18,11 @@ function ChangePassword() {
     const success = (resp) => {
         if (resp.success) {
             toast.success('Password changed successfully!', { duration: 4000 });
-            navigate('/profile');
+            if (onSuccess) {
+                onSuccess();
+            } else {
+                navigate(variant === 'admin' ? '/admin/security' : '/profile');
+            }
         }
     }
 
@@ -35,24 +39,31 @@ function ChangePassword() {
         form.submitForm(e);
     }
 
+    const isMinimal = variant === 'admin';
+
     return (
         <div className="animate-fade-in">
-            <div className="mb-3 mx-auto" style={{ width: "40px", height: "4px", backgroundColor: "#e2e8f0", borderRadius: "10px", marginTop: "12px" }}></div>
+            {!isMinimal && (
+                <>
+                    <div className="mb-3 mx-auto" style={{ width: "40px", height: "4px", backgroundColor: "#e2e8f0", borderRadius: "10px", marginTop: "12px" }}></div>
+                    <div className="p-3 border-0 border-bottom d-flex align-items-center sticky-top bg-white glass">
+                        <button className="btn btn-light rounded-circle p-2 shadow-sm me-3" onClick={() => navigate(-1)}>
+                            <span className="material-symbols-outlined text-secondary" style={{ fontSize: '20px' }}>arrow_back</span>
+                        </button>
+                        <h6 className="m-0 fw-bold">Change Password</h6>
+                    </div>
+                </>
+            )}
 
-            <div className="p-3 border-0 border-bottom d-flex align-items-center sticky-top bg-white glass">
-                <button className="btn btn-light rounded-circle p-2 shadow-sm me-3" onClick={() => navigate(-1)}>
-                    <span className="material-symbols-outlined text-secondary" style={{ fontSize: '20px' }}>arrow_back</span>
-                </button>
-                <h6 className="m-0 fw-bold">Change Password</h6>
-            </div>
+            <div className={isMinimal ? 'p-0' : 'p-4'}>
+                {!isMinimal && (
+                    <div className="mb-4">
+                        <h5 className="fw-bold mb-1">Update Security</h5>
+                        <p className="text-muted small">Enter your current password and a new one to update your security.</p>
+                    </div>
+                )}
 
-            <div className="p-4">
-                <div className="mb-4">
-                    <h5 className="fw-bold mb-1">Update Security</h5>
-                    <p className="text-muted small">Enter your current password and a new one to update your security.</p>
-                </div>
-
-                <div className="bg-white rounded-4 border shadow-sm p-4 mb-4">
+                <div className={`${isMinimal ? 'bg-transparent border-0 shadow-none p-0' : 'bg-white rounded-4 border shadow-sm p-4'} mb-4`}>
                     <div className="mb-3">
                         <FieldBlock
                             id="current_password"
@@ -96,18 +107,20 @@ function ChangePassword() {
 
                 <div className="d-grid gap-3">
                     <button
-                        className="btn btn-primary rounded-pill py-3 fw-bold shadow-sm d-flex align-items-center justify-content-center"
+                        className={`btn btn-primary ${isMinimal ? 'admin-btn-primary' : 'rounded-pill py-3 fw-bold shadow-sm'} d-flex align-items-center justify-content-center`}
                         onClick={handleSubmit}
                     >
                         <span className="material-symbols-outlined me-2">lock_reset</span>
                         Update Password
                     </button>
-                    <button
-                        className="btn btn-light rounded-pill py-3 fw-bold border mb-5"
-                        onClick={() => navigate('/profile')}
-                    >
-                        Cancel
-                    </button>
+                    {!isMinimal && (
+                        <button
+                            className="btn btn-light rounded-pill py-3 fw-bold border mb-5"
+                            onClick={() => onCancel ? onCancel() : navigate('/profile')}
+                        >
+                            Cancel
+                        </button>
+                    )}
                 </div>
             </div>
         </div>

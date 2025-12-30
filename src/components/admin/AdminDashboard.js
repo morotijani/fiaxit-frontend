@@ -32,9 +32,15 @@ function AdminDashboard() {
     return (
         <div className="animate-fade-in">
             <div className="text-center mb-5">
-                <div className="bg-light rounded-circle d-inline-flex align-items-center justify-content-center border mb-3" style={{ width: '80px', height: '80px' }}>
-                    <span className="material-symbols-outlined text-muted" style={{ fontSize: '40px' }}>account_circle</span>
-                </div>
+                {/* display ser profile if it exist else display default icon */}
+                {authStore.user?.user_profile ? (
+                    <img src={authStore.user?.user_profile} alt="Profile" className="rounded-circle" style={{ width: '80px', height: '80px' }} />
+                ) : (
+                    <div className="bg-light rounded-circle d-inline-flex align-items-center justify-content-center border mb-3" style={{ width: '80px', height: '80px' }}>
+                        <span className="material-symbols-outlined text-muted" style={{ fontSize: '40px' }}>account_circle</span>
+                    </div>
+                )}
+
                 <h1 className="fw-normal" style={{ fontSize: '1.75rem', color: '#202124' }}>Welcome, {authStore.user?.user_fname}</h1>
                 <p className="text-muted">Manage your platform statistics, users, and security settings.</p>
             </div>

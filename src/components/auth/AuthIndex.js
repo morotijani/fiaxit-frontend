@@ -5,6 +5,8 @@ import SignUp from './SignUp';
 import SignUpComplete from './SignUpComplete'
 import VerifyEmail from './VerifyEmail'
 import Logout from './Logout';
+import ForgotPassword from './ForgotPassword';
+import ResetPassword from './ResetPassword';
 
 function AuthIndex() {
     return (
@@ -13,6 +15,8 @@ function AuthIndex() {
                 <Route exact path="logout" element={<Logout />} />
                 <Route exact path="login" element={<Login />} />
                 <Route exact path="signup" element={<SignUp />} />
+                <Route exact path="forgot-password" element={<ForgotPassword />} />
+                <Route exact path="reset-password" element={<ResetPassword />} />
                 <Route exact path="registered/:id" element={<SignUpComplete />} />
                 <Route exact path="verify/:id/:code" element={<VerifyEmail />} />
             </Routes>
