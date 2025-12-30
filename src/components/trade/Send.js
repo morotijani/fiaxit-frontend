@@ -184,7 +184,7 @@ function SendCrypto() {
                 pin: fields.pin.value
             };
 
-            const resp = await jsonPost(`trade / ${selectedAsset?.symbol.toLowerCase()}/send`, payload, null);
+            const resp = await jsonPost(`trade/${selectedAsset?.symbol.toLowerCase()}/send`, payload, null);
             console.log('payload', resp);
             if (resp && resp.success) {
                 if (resp.transaction) {
