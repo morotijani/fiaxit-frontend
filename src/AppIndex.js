@@ -8,6 +8,7 @@ import Todos from './components/todos/Todos'
 import { TodoContext } from './contexts/TodoContext';
 
 import Crypto from './components/crypto/Crypto'
+import { CoinContext } from './contexts/CoinContext';
 
 import Receive from './components/trade/Receive'
 import SendCrypto from './components/trade/Send'
@@ -29,6 +30,10 @@ import KYCSubmit from './components/profile/KYCSubmit'
 import SettingsForm from './components/profile/SettingsForm'
 import ChangePassword from './components/profile/ChangePassword'
 import ChangePIN from './components/profile/ChangePIN'
+import TwoFactorSettings from './components/profile/TwoFactorSettings'
+import WhitelistingSettings from './components/profile/WhitelistingSettings'
+import SessionsSettings from './components/profile/SessionsSettings'
+import AntiPhishingSettings from './components/profile/AntiPhishingSettings'
 import AddCoin from './components/admin/AddCoin'
 import Notifications from './components/notifications/Notifications'
 import Converter from './components/converter/Converter'
@@ -50,6 +55,7 @@ function AppIndex() {
 
     const navigate = useNavigate();
     const [authStore, authDispatch] = useContext(AuthContext);
+    const [coinStore, coinDispatch] = useContext(CoinContext)
     const [, todoDispatch] = useContext(TodoContext)
     const [, contactDispatch] = useContext(ContactContext)
     const [, transactionDispatch] = useContext(TransactionContext)
@@ -107,6 +113,13 @@ function AppIndex() {
             walletDispatch({ type: 'setWallets', payload: { wallets: walletResp.data, total: walletResp.total, rates: walletResp.rates } });
             console.log('Wallets loaded:', walletResp.data);
         }
+
+        // get all coins
+        const coinResp = await jsonGet('coins');
+        if (coinResp && coinResp.success) {
+            coinDispatch({ type: 'setCoins', payload: { coins: coinResp.data, total: coinResp.total } });
+            console.log('Coins loaded:', coinResp.data);
+        }
     }
 
     if (loading) {
@@ -154,6 +167,10 @@ function AppIndex() {
                             <Route path="/converter" element={<Converter />} />
                             <Route path="/change-password" element={<ChangePassword />} />
                             <Route path="/change-pin" element={<ChangePIN />} />
+                            <Route path="/two-factor" element={<TwoFactorSettings />} />
+                            <Route path="/whitelisting" element={<WhitelistingSettings />} />
+                            <Route path="/sessions" element={<SessionsSettings />} />
+                            <Route path="/anti-phishing" element={<AntiPhishingSettings />} />
                             <Route path="/notifications" element={<Notifications />} />
                             <Route path="/profile" element={<Profile />} />
                             <Route path="/kyc-submit" element={<KYCSubmit />} />

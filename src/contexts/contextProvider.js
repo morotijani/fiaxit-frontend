@@ -1,22 +1,25 @@
-import {AuthStore} from './AuthContext';
+import { AuthStore } from './AuthContext';
 import { TodoStore } from './TodoContext'
 import { ContactStore } from './ContactContext'
 import { TransactionStore } from './TransactionContext'
 import { WalletStore } from './WalletContext'
+import { CoinStore } from './CoinContext'
 import { ThemeProvider } from './ThemeContext';
 import { Toaster } from 'react-hot-toast';
 
 
 function ContextProvider(props) {
-    return(
+    return (
         <ThemeProvider>
             <ContactStore>
                 <AuthStore>
                     <TodoStore>
                         <TransactionStore>
                             <WalletStore>
-                                {props.children}
-                                <Toaster position="bottom-center" />
+                                <CoinStore>
+                                    {props.children}
+                                    <Toaster position="bottom-center" />
+                                </CoinStore>
                             </WalletStore>
                         </TransactionStore>
                     </TodoStore>
@@ -24,6 +27,6 @@ function ContextProvider(props) {
             </ContactStore>
         </ThemeProvider>
     );
-} 
+}
 
 export default ContextProvider;

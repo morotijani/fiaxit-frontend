@@ -225,6 +225,44 @@ function Profile() {
                         </div>
                         <span className="material-symbols-outlined text-muted">chevron_right</span>
                     </div>
+                    <div className="list-group-item d-flex justify-content-between align-items-center py-3 border-0 border-bottom" onClick={() => navigate('/two-factor')} style={{ cursor: 'pointer' }}>
+                        <div className="d-flex align-items-center">
+                            <span className="material-symbols-outlined me-3 text-primary">security</span>
+                            <span className="fw-semibold">Two-Factor Authentication</span>
+                        </div>
+                        <div className="d-flex align-items-center">
+                            <span className={`badge rounded-pill me-2 ${authStore.user?.user_2fa_enabled ? 'bg-success' : 'bg-light text-muted'}`}>
+                                {authStore.user?.user_2fa_enabled ? 'On' : 'Off'}
+                            </span>
+                            <span className="material-symbols-outlined text-muted">chevron_right</span>
+                        </div>
+                    </div>
+                    <div className="list-group-item d-flex justify-content-between align-items-center py-3 border-0 border-bottom" onClick={() => navigate('/whitelisting')} style={{ cursor: 'pointer' }}>
+                        <div className="d-flex align-items-center">
+                            <span className="material-symbols-outlined me-3 text-primary">verified_user</span>
+                            <span className="fw-semibold">Address Whitelisting</span>
+                        </div>
+                        <div className="d-flex align-items-center">
+                            <span className={`badge rounded-pill me-2 ${authStore.user?.user_whitelisting_enabled ? 'bg-success' : 'bg-light text-muted'}`}>
+                                {authStore.user?.user_whitelisting_enabled ? 'On' : 'Off'}
+                            </span>
+                            <span className="material-symbols-outlined text-muted">chevron_right</span>
+                        </div>
+                    </div>
+                    <div className="list-group-item d-flex justify-content-between align-items-center py-3 border-0 border-bottom" onClick={() => navigate('/sessions')} style={{ cursor: 'pointer' }}>
+                        <div className="d-flex align-items-center">
+                            <span className="material-symbols-outlined me-3 text-primary">devices</span>
+                            <span className="fw-semibold">Active Sessions</span>
+                        </div>
+                        <span className="material-symbols-outlined text-muted">chevron_right</span>
+                    </div>
+                    <div className="list-group-item d-flex justify-content-between align-items-center py-3 border-0 border-bottom" onClick={() => navigate('/anti-phishing')} style={{ cursor: 'pointer' }}>
+                        <div className="d-flex align-items-center">
+                            <span className="material-symbols-outlined me-3 text-primary">marking</span>
+                            <span className="fw-semibold">Anti-Phishing Code</span>
+                        </div>
+                        <span className="material-symbols-outlined text-muted">chevron_right</span>
+                    </div>
                     <div className="list-group-item d-flex justify-content-between align-items-center py-3 border-0 text-danger" onClick={() => navigate('/auth/logout')} style={{ cursor: 'pointer' }}>
                         <div className="d-flex align-items-center">
                             <span className="material-symbols-outlined me-3">logout</span>
