@@ -6,11 +6,13 @@ import { shortenAddress } from '../../helpers/StringHelpers'
 import FieldBlock from '../elements/FieldBlock'
 import { jsonPost } from '../../helpers/Ajax'
 import SelectAsset from './SelectAsset';
+import { TransactionContext } from '../../contexts/TransactionContext'
 import toast from 'react-hot-toast';
 
 function SendCrypto() {
     const navigate = useNavigate();
     const [authStore] = useContext(AuthContext);
+    const [, transactionDispatch] = useContext(TransactionContext);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedAsset, setSelectedAsset] = useState();
@@ -143,6 +145,9 @@ function SendCrypto() {
             const resp = await jsonPost(`trade/${selectedAsset?.symbol.toLowerCase()}/send`, payload, null);
             console.log('payload', resp);
             if (resp && resp.success) {
+                if (resp.transaction) {
+                    transactionDispatch({ type: 'AddTransaction', payload: resp.transaction });
+                }
                 toast.success('Transaction initiated successfully', { duration: 6000 });
                 navigate(-1);
             } else {

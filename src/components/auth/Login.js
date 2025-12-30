@@ -2,6 +2,7 @@ import { useState, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import FieldBlock from '../elements/FieldBlock'
 import { Form } from '../../helpers/Form'
+import { jsonPost } from '../../helpers/Ajax'
 import Button from '../elements/Button'
 import { AuthContext } from "../../contexts/AuthContext"
 import toast from 'react-hot-toast';
@@ -53,7 +54,7 @@ function Login() {
         }
         setIsLoading(true);
         try {
-            const resp = await (new Form()).jsonPost('auth/login/2fa', { user_id: tempUserId, token: twoFactorToken });
+            const resp = await jsonPost('auth/login/2fa', { user_id: tempUserId, token: twoFactorToken });
             if (resp.success) {
                 authDispatch({ type: 'login', payload: resp.token });
                 await getUser();

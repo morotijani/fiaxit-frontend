@@ -258,7 +258,7 @@ function Profile() {
                     </div>
                     <div className="list-group-item d-flex justify-content-between align-items-center py-3 border-0 border-bottom" onClick={() => navigate('/anti-phishing')} style={{ cursor: 'pointer' }}>
                         <div className="d-flex align-items-center">
-                            <span className="material-symbols-outlined me-3 text-primary">marking</span>
+                            <span className="material-symbols-outlined me-3 text-primary">confirmation_number</span>
                             <span className="fw-semibold">Anti-Phishing Code</span>
                         </div>
                         <span className="material-symbols-outlined text-muted">chevron_right</span>
