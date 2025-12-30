@@ -1,10 +1,12 @@
-import React, { useState, useEffect, useContext } from 'react'
-import { useNavigate } from 'react-router-dom'
+import React, { useState, useEffect, useContext, useRef } from 'react'
+import { useNavigate, useLocation } from 'react-router-dom'
 import { AuthContext } from '../../contexts/AuthContext'
+import { WalletContext } from '../../contexts/WalletContext'
+import { ContactContext } from '../../contexts/ContactContext'
 import Button from '../elements/Button'
 import { shortenAddress } from '../../helpers/StringHelpers'
 import FieldBlock from '../elements/FieldBlock'
-import { jsonPost } from '../../helpers/Ajax'
+import { jsonPost, jsonGet } from '../../helpers/Ajax'
 import SelectAsset from './SelectAsset';
 import { TransactionContext } from '../../contexts/TransactionContext'
 import toast from 'react-hot-toast';
@@ -12,7 +14,10 @@ import toast from 'react-hot-toast';
 function SendCrypto() {
     const navigate = useNavigate();
     const [authStore] = useContext(AuthContext);
+    const [walletStore] = useContext(WalletContext);
     const [, transactionDispatch] = useContext(TransactionContext);
+    const [contactStore, contactDispatch] = useContext(ContactContext);
+    const location = useLocation();
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedAsset, setSelectedAsset] = useState();
@@ -76,6 +81,43 @@ function SendCrypto() {
     const pricePerUnit = Number(selectedAsset?.price || 0);
     const cryptoAmount = pricePerUnit > 0 ? (usdAmount / pricePerUnit) : 0;
     const networkFee = 0.0; // replace with real fee calc if available
+
+    // Handle query params for quick-send from contacts
+    useEffect(() => {
+        const params = new URLSearchParams(location.search);
+        const addr = params.get('address');
+        const sym = params.get('symbol');
+
+        if (addr) {
+            setFields(prev => ({ ...prev, toAddress: { ...prev.toAddress, value: addr } }));
+        }
+
+        if (sym && walletStore.wallets) {
+            const found = walletStore.wallets.find(w => w.wallet_symbol?.toUpperCase() === sym.toUpperCase());
+            if (found) setSelectedAsset({
+                id: found.wallet_id,
+                symbol: found.wallet_symbol,
+                name: found.wallet_crypto_name,
+                address: found.wallet_address,
+                balance: found.dataValues?.wallet_balance || 0,
+                price: found.dataValues?.price_usd || 0,
+                logo: found.dataValues?.logo_url || '',
+                balanceFiatFormatted: found.dataValues?.balance_fiat_formatted || '$0.00',
+                rawInfo: found
+            });
+        }
+    }, [location.search, walletStore.wallets]);
+
+    // Fetch contacts if empty
+    useEffect(() => {
+        if (contactStore.contacts.length === 0) {
+            jsonGet('contacts').then(resp => {
+                if (resp && resp.success) {
+                    contactDispatch({ type: 'setContacts', payload: { contacts: resp.data, total: resp.total } });
+                }
+            });
+        }
+    }, [contactStore.contacts.length, contactDispatch]);
 
     function validateBeforeReview() {
         // reset errors
@@ -142,7 +184,7 @@ function SendCrypto() {
                 pin: fields.pin.value
             };
 
-            const resp = await jsonPost(`trade/${selectedAsset?.symbol.toLowerCase()}/send`, payload, null);
+            const resp = await jsonPost(`trade / ${selectedAsset?.symbol.toLowerCase()}/send`, payload, null);
             console.log('payload', resp);
             if (resp && resp.success) {
                 if (resp.transaction) {
@@ -279,17 +321,57 @@ function SendCrypto() {
 
                 {/* Recipient & Note */}
                 <div className="bg-white rounded-4 border shadow-sm p-4 mb-4">
-                    <FieldBlock
-                        id="toAddress"
-                        name="toAddress"
-                        value={fields.toAddress.value}
-                        onChange={handleFieldChange}
-                        label="Recipient Address"
-                        placeholder="Paste or type address"
-                        isInvalid={fields.toAddress.isInvalid}
-                        feedback={fields.toAddress.msg}
-                        className="rounded-3 border-light-subtle"
-                    />
+                    <div className="mb-4">
+                        <div className="d-flex justify-content-between align-items-center mb-2">
+                            <label className="form-label mb-0 fw-semibold">Recipient Address</label>
+                            {contactStore.contacts.length > 0 && (
+                                <div className="dropdown">
+                                    <button className="btn btn-link btn-sm text-decoration-none p-0" type="button" data-bs-toggle="dropdown">
+                                        Select from Address Book
+                                    </button>
+                                    <ul className="dropdown-menu dropdown-menu-end shadow border-0">
+                                        {contactStore.contacts.filter(c => c.wallet_address).map(c => (
+                                            <li key={c.id}>
+                                                <button
+                                                    className="dropdown-item py-2"
+                                                    onClick={() => {
+                                                        setFields(prev => ({ ...prev, toAddress: { ...prev.toAddress, value: c.wallet_address } }));
+                                                        if (c.coin_symbol) {
+                                                            const found = walletStore.wallets.find(w => w.wallet_symbol?.toUpperCase() === c.coin_symbol.toUpperCase());
+                                                            if (found) setSelectedAsset({
+                                                                id: found.wallet_id,
+                                                                symbol: found.wallet_symbol,
+                                                                name: found.wallet_crypto_name,
+                                                                address: found.wallet_address,
+                                                                balance: found.dataValues?.wallet_balance || 0,
+                                                                price: found.dataValues?.price_usd || 0,
+                                                                logo: found.dataValues?.logo_url || '',
+                                                                balanceFiatFormatted: found.dataValues?.balance_fiat_formatted || '$0.00',
+                                                                rawInfo: found
+                                                            });
+                                                        }
+                                                    }}
+                                                >
+                                                    <div className="fw-bold">{c.nickname || `${c.fname} ${c.lname}`}</div>
+                                                    <div className="text-muted small">{c.coin_symbol} - {c.wallet_address.substring(0, 10)}...</div>
+                                                </button>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
+                        </div>
+                        <input
+                            type="text"
+                            className={`form-control rounded-3 py-2 border-slate shadow-none bg-light bg-opacity-50 ${fields.toAddress.isInvalid ? 'is-invalid' : ''}`}
+                            placeholder="Paste or type recipient address"
+                            value={fields.toAddress.value}
+                            onChange={(e) => handleFieldChange({ target: { name: 'toAddress', value: e.target.value } })}
+                        />
+                        {fields.toAddress.isInvalid && (
+                            <div className="invalid-feedback d-block">{fields.toAddress.msg}</div>
+                        )}
+                    </div>
 
                     <div className="mt-4">
                         <FieldBlock

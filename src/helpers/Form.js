@@ -34,7 +34,7 @@ export class Form {
     }
 
     handleInputChanges = (evt) => {
-        const key = evt.target.name;
+        const key = evt.target.name || evt.target.id;
         const value = evt.target.value;
 
         const newFields = this.fields;

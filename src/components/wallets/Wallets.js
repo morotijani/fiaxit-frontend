@@ -177,7 +177,7 @@ function Wallets() {
 
             <div className="mb-3 mx-auto" style={{ width: "40px", height: "4px", backgroundColor: "#e2e8f0", borderRadius: "10px", marginTop: "12px" }}></div>
 
-            <div className="d-flex justify-content-between align-items-center p-3 border-bottom sticky-top bg-white glass">
+            <div className="d-flex border-0 justify-content-between align-items-center p-3 border-bottom sticky-top bg-white glass">
                 <button className="btn btn-light rounded-circle p-2 shadow-sm" onClick={() => navigate(-1)}>
                     <span className="material-symbols-outlined text-secondary" style={{ fontSize: '20px' }}>arrow_back</span>
                 </button>

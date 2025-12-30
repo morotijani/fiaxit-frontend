@@ -7,6 +7,7 @@ function MainFooter() {
     const tabs = [
         { path: '/', label: 'Home', icon: 'home' },
         { path: '/converter', label: 'Converter', icon: 'currency_exchange' },
+        { path: '/contacts', label: 'Contacts', icon: 'contact_page' },
         { path: '/transactions', label: 'Activity', icon: 'account_balance_wallet' },
         { path: '/settings', label: 'Settings', icon: 'settings' }
     ];

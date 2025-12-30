@@ -2,7 +2,7 @@ import { useContext } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { TransactionContext } from '../../contexts/TransactionContext'
 import { AuthContext } from '../../contexts/AuthContext'
-import { jsonDelete } from '../../helpers/Ajax'
+import { jsonDelete, jsonGet, rawGet } from '../../helpers/Ajax'
 import Button from '../elements/Button'
 import toast from 'react-hot-toast';
 import { formatDistanceToNow } from 'date-fns';
@@ -47,6 +47,37 @@ function Transactions() {
             return formatDistanceToNow(new Date(date), { addSuffix: true });
         } catch (e) {
             return '';
+        }
+    }
+
+    async function handleExport() {
+        try {
+            const token = localStorage.getItem('userJWTToken');
+            const baseUrl = (process.env.REACT_APP_API_URL || 'http://localhost:8000/v1').trim().replace(/\/$/, '');
+            // const response = await fetch(`${baseUrl}/transactions/export`, {
+            //     headers: {
+            //         'Authorization': `Bearer ${token}`
+            // const response = await jsonGet(`transactions/export`);
+
+            const response = await rawGet(`transactions/export`);
+
+            if (response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `transactions_${new Date().getTime()}.csv`;
+                document.body.appendChild(a);
+                a.click();
+                a.remove();
+                window.URL.revokeObjectURL(url);
+                toast.success("Transactions exported successfully");
+            } else {
+                toast.error("Failed to export transactions");
+            }
+        } catch (error) {
+            console.error("Export error:", error);
+            toast.error("An error occurred during export");
         }
     }
 
@@ -152,20 +183,20 @@ function Transactions() {
 
     return (
         <div className="animate-fade-in">
-            {/* Top Handle for App-like feel */}
-            <div className="mb-3 mx-auto" style={{ width: "40px", height: "4px", backgroundColor: "#e2e8f0", borderRadius: "10px", marginTop: "12px" }}></div>
-
-            {/* Header / Top Bar */}
-            <div className="p-3 border-0 border-bottom d-flex align-items-center justify-content-between sticky-top bg-white glass">
-                <button className="btn btn-light rounded-circle p-2 shadow-sm" onClick={() => navigate(-1)}>
-                    <span className="material-symbols-outlined text-secondary" style={{ fontSize: '20px' }}>arrow_back</span>
-                </button>
-                <h6 className="m-0 fw-bold">Transaction History</h6>
-                <button className="btn btn-light rounded-circle p-2 shadow-sm" onClick={() => navigate("/notifications")}>
-                    <span className="material-symbols-outlined text-secondary" style={{ fontSize: '20px' }}>notifications</span>
-                </button>
+            <div className="bg-white rounded-5 rounded-top-0 mb-4 shadow-sm border-bottom">
+                <div className="mb-3 mx-auto" style={{ width: "40px", height: "4px", backgroundColor: "#e2e8f0", borderRadius: "10px", marginTop: "12px" }}></div>
+                <div className="p-3 d-flex justify-content-between align-items-center">
+                    <div className="d-flex align-items-center">
+                        <button onClick={() => navigate(-1)} className="btn btn-link link-dark p-0 me-3 text-decoration-none">
+                            <span className="material-symbols-outlined align-middle" style={{ fontSize: 24 }}>arrow_back</span>
+                        </button>
+                        <h5 className="fw-bold mb-0">Transaction History</h5>
+                    </div>
+                    <button onClick={handleExport} className="btn btn-outline-primary btn-sm rounded-pill px-3 d-flex align-items-center">
+                        <span className="material-symbols-outlined me-1" style={{ fontSize: 18 }}>download</span> Export
+                    </button>
+                </div>
             </div>
-
             <div className="p-4">
                 {/* Statistics Header */}
                 <div className="text-center mb-4">

@@ -94,6 +94,7 @@ function SettingsForm() {
                         <label className="form-label small text-muted">Gender</label>
                         <select
                             id="gender"
+                            name="gender"
                             className="form-select border-0 bg-light p-3"
                             style={{ borderRadius: '12px' }}
                             value={fields.gender.value}

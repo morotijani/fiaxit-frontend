@@ -5,6 +5,7 @@ import { CoinContext } from '../../contexts/CoinContext';
 import { jsonGet, jsonPost, jsonDelete, jsonPatch } from '../../helpers/Ajax';
 import toast from 'react-hot-toast';
 import { Switch } from 'antd';
+import { validateWalletAddress } from '../../helpers/Validators';
 
 function WhitelistingSettings() {
     const navigate = useNavigate();
@@ -55,6 +56,13 @@ function WhitelistingSettings() {
             toast.error('Address and Coin are required');
             return;
         }
+
+        const validation = validateWalletAddress(newAddr.address, newAddr.coin_symbol);
+        if (!validation.isValid) {
+            toast.error(validation.message);
+            return;
+        }
+
         setLoading(true);
         try {
             const res = await jsonPost('user/whitelisting', newAddr);
@@ -144,7 +152,7 @@ function WhitelistingSettings() {
 
             {/* Add Address Modal-like Backdrop */}
             {showAdd && (
-                <div className="position-fixed top-0 start-0 w-100 h-100 bg-black bg-opacity-50 d-flex align-items-end z-3 animate-fade-in" onClick={() => setShowAdd(false)}>
+                <div className="position-fixed start-0 w-100 h-100 bg-black bg-opacity-50 d-flex align-items-end z-1050 animate-fade-in" style={{ zIndex: 1060, top: '95px' }} onClick={() => setShowAdd(false)}>
                     <div className="bg-white w-100 rounded-top-5 p-4 animate-slide-up" onClick={e => e.stopPropagation()}>
                         <div className="mb-3 mx-auto" style={{ width: "40px", height: "4px", backgroundColor: "#e2e8f0", borderRadius: "10px" }}></div>
                         <h5 className="fw-bold mb-4">Add Whitelisted Address</h5>

@@ -6,6 +6,7 @@ import Avatar from '../../assets/avatar.jpeg'
 import { jsonGet } from '../../helpers/Ajax'
 
 import CreateWalletModal from '../wallets/CreateWalletModal'
+import PortfolioChart from './PortfolioChart'
 
 function Main() {
     const [authStore, authDispatch] = useContext(AuthContext);
@@ -203,6 +204,12 @@ function Main() {
                         </div>
                     </div>
                 )}
+                {/* Portfolio Chart Section */}
+                <div className="px-3 pb-4">
+                    <div className="bg-white rounded-4 border shadow-sm p-4">
+                        <PortfolioChart />
+                    </div>
+                </div>
             </div>
 
             <div className="px-3 pb-5">

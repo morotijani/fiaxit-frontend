@@ -263,6 +263,13 @@ function Profile() {
                         </div>
                         <span className="material-symbols-outlined text-muted">chevron_right</span>
                     </div>
+                    <div className="list-group-item d-flex justify-content-between align-items-center py-3 border-0 border-bottom" onClick={() => navigate('/price-alerts')} style={{ cursor: 'pointer' }}>
+                        <div className="d-flex align-items-center">
+                            <span className="material-symbols-outlined me-3 text-primary">notifications_active</span>
+                            <span className="fw-semibold">Price Alerts</span>
+                        </div>
+                        <span className="material-symbols-outlined text-muted">chevron_right</span>
+                    </div>
                     <div className="list-group-item d-flex justify-content-between align-items-center py-3 border-0 text-danger" onClick={() => navigate('/auth/logout')} style={{ cursor: 'pointer' }}>
                         <div className="d-flex align-items-center">
                             <span className="material-symbols-outlined me-3">logout</span>

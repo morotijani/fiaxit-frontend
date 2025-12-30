@@ -106,3 +106,37 @@ export function jsonPatch(url, data, callback) {
 export function jsonDelete(url, callback) {
     return runFetch(url, 'DELETE', {}, callback);
 }
+
+/**
+ * For raw responses (blobs, text, etc)
+ */
+export function rawRequest(url, method = 'GET', data = null) {
+    let domain = process.env.REACT_APP_API || process.env.REACT_APP_API_URL || '';
+    while (domain.includes('undefined')) {
+        domain = domain.replace('undefined', '');
+    }
+    if (domain && !domain.endsWith('/')) domain += '/';
+    const relative = url.startsWith('/') ? url.substring(1) : url;
+    const fullUrl = domain ? domain + relative : (url.startsWith('/') ? url : '/' + url);
+
+    const isFormData = data instanceof FormData;
+    const options = {
+        method: method,
+        headers: {
+            'Authorization': `Bearer ${localStorage.getItem('userJWTToken')}`
+        }
+    };
+
+    if (!isFormData && data) {
+        options.headers['Content-Type'] = 'application/json';
+        options['body'] = JSON.stringify(data);
+    } else if (isFormData) {
+        options['body'] = data;
+    }
+
+    return fetch(fullUrl, options);
+}
+
+export function rawGet(url) {
+    return rawRequest(url, 'GET');
+}

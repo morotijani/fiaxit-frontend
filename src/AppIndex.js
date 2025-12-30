@@ -34,6 +34,7 @@ import TwoFactorSettings from './components/profile/TwoFactorSettings'
 import WhitelistingSettings from './components/profile/WhitelistingSettings'
 import SessionsSettings from './components/profile/SessionsSettings'
 import AntiPhishingSettings from './components/profile/AntiPhishingSettings'
+import PriceAlerts from './components/profile/PriceAlerts'
 import AddCoin from './components/admin/AddCoin'
 import Notifications from './components/notifications/Notifications'
 import Converter from './components/converter/Converter'
@@ -171,6 +172,7 @@ function AppIndex() {
                             <Route path="/whitelisting" element={<WhitelistingSettings />} />
                             <Route path="/sessions" element={<SessionsSettings />} />
                             <Route path="/anti-phishing" element={<AntiPhishingSettings />} />
+                            <Route path="/price-alerts" element={<PriceAlerts />} />
                             <Route path="/notifications" element={<Notifications />} />
                             <Route path="/profile" element={<Profile />} />
                             <Route path="/kyc-submit" element={<KYCSubmit />} />
