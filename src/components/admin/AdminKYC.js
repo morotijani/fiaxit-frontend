@@ -7,6 +7,7 @@ function AdminKYC() {
     const [selectedKyc, setSelectedKyc] = useState(null);
     const [rejectionReason, setRejectionReason] = useState('');
     const [processing, setProcessing] = useState(false);
+    const [assignedTier, setAssignedTier] = useState(2); // Default to ID Verified (Tier 2)
 
     const apiBase = process.env.REACT_APP_API || 'http://localhost:8000/v1/';
     const baseUrl = apiBase.replace('/v1/', '/');
@@ -34,12 +35,14 @@ function AdminKYC() {
             setProcessing(true);
             const resp = await jsonPatch(`user/kyc/verify/${userId}`, {
                 status,
+                tier: assignedTier,
                 reason: status === 'rejected' ? rejectionReason : null
             });
 
             if (resp && resp.success) {
                 setSelectedKyc(null);
                 setRejectionReason('');
+                setAssignedTier(2);
                 fetchPending();
             } else {
                 alert(resp?.message || "Operation failed");
@@ -168,6 +171,22 @@ function AdminKYC() {
                                         value={rejectionReason}
                                         onChange={(e) => setRejectionReason(e.target.value)}
                                     ></textarea>
+                                </div>
+
+                                <div className="mb-4 d-flex align-items-center bg-white p-3 rounded border">
+                                    <div className="me-4 flex-shrink-0">
+                                        <div className="small fw-bold text-muted text-uppercase" style={{ fontSize: '10px' }}>Assign KYC Tier</div>
+                                        <div className="small text-muted">Determine user limits</div>
+                                    </div>
+                                    <select
+                                        className="form-select border-0 bg-light shadow-none fw-medium"
+                                        value={assignedTier}
+                                        onChange={(e) => setAssignedTier(parseInt(e.target.value))}
+                                        disabled={processing}
+                                    >
+                                        <option value={2}>Tier 2 (ID Verified - $10,000 Limit)</option>
+                                        <option value={3}>Tier 3 (Proof of Address - Unlimited)</option>
+                                    </select>
                                 </div>
 
                                 <div className="d-flex gap-3 justify-content-end">

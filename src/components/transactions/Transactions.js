@@ -52,13 +52,6 @@ function Transactions() {
 
     async function handleExport() {
         try {
-            const token = localStorage.getItem('userJWTToken');
-            const baseUrl = (process.env.REACT_APP_API_URL || 'http://localhost:8000/v1').trim().replace(/\/$/, '');
-            // const response = await fetch(`${baseUrl}/transactions/export`, {
-            //     headers: {
-            //         'Authorization': `Bearer ${token}`
-            // const response = await jsonGet(`transactions/export`);
-
             const response = await rawGet(`transactions/export`);
 
             if (response.ok) {
@@ -185,13 +178,11 @@ function Transactions() {
         <div className="animate-fade-in">
             <div className="bg-white rounded-5 rounded-top-0 mb-4 shadow-sm border-bottom">
                 <div className="mb-3 mx-auto" style={{ width: "40px", height: "4px", backgroundColor: "#e2e8f0", borderRadius: "10px", marginTop: "12px" }}></div>
-                <div className="p-3 d-flex justify-content-between align-items-center">
-                    <div className="d-flex align-items-center">
-                        <button onClick={() => navigate(-1)} className="btn btn-link link-dark p-0 me-3 text-decoration-none">
-                            <span className="material-symbols-outlined align-middle" style={{ fontSize: 24 }}>arrow_back</span>
-                        </button>
-                        <h5 className="fw-bold mb-0">Transaction History</h5>
-                    </div>
+                <div className="d-flex border-0 justify-content-between align-items-center px-3 py-2 border-bottom sticky-top bg-white glass">
+                    <button onClick={() => navigate(-1)} className="btn btn-light rounded-circle p-2 d-flex align-items-center justify-content-center shadow-sm">
+                        <span className="material-symbols-outlined align-middle" style={{ fontSize: 24 }}>arrow_back</span>
+                    </button>
+                    <h5 className="fw-bold mb-0">Transaction History</h5>
                     <button onClick={handleExport} className="btn btn-outline-primary btn-sm rounded-pill px-3 d-flex align-items-center">
                         <span className="material-symbols-outlined me-1" style={{ fontSize: 18 }}>download</span> Export
                     </button>

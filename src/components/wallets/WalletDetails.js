@@ -242,7 +242,8 @@ function WalletDetails() {
                 <div className="mb-2 mx-auto" style={{ width: "40px", height: "4px", backgroundColor: "#e2e8f0", borderRadius: "10px", marginTop: "12px" }}></div>
 
                 {/* Header Navigation */}
-                <div className="d-flex justify-content-between align-items-center px-3 py-2">
+                <div className="d-flex justify-content-between align-items-center px-3 py-2 bg-white glass sticky-top">
+
                     <button
                         className="btn btn-light rounded-circle p-2 d-flex align-items-center justify-content-center"
                         onClick={() => navigate(-1)}

@@ -205,9 +205,33 @@ function Main() {
                     </div>
                 )}
                 {/* Portfolio Chart Section */}
-                <div className="px-3 pb-4">
-                    <div className="bg-white rounded-4 border shadow-sm p-4">
-                        <PortfolioChart />
+                <div className="bg-white rounded-4 border shadow-sm p-4">
+                    <PortfolioChart />
+                </div>
+            </div>
+
+            {/* Staking / Savings Entry */}
+            <div className="px-3 pb-4">
+                <div
+                    className="rounded-4 p-4 shadow-sm border border-0 hover-fade animate-pulse-slow"
+                    style={{
+                        background: 'linear-gradient(135deg, #0052ff 0%, #002c89 100%)',
+                        cursor: 'pointer'
+                    }}
+                    onClick={() => navigate('/staking')}
+                >
+                    <div className="d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 className="text-white fw-bold mb-1">Grow your USDT</h5>
+                            <div className="text-white opacity-75 small mb-0">Earn up to 12% APY with Fiaxit Staking</div>
+                        </div>
+                        <div className="bg-white bg-opacity-20 rounded-circle p-2 text-white">
+                            <span className="material-symbols-outlined" style={{ fontSize: '32px' }}>savings</span>
+                        </div>
+                    </div>
+                    <div className="mt-3 d-flex align-items-center">
+                        <span className="badge bg-white text-primary rounded-pill px-3 py-2 fw-bold me-2">Start Staking</span>
+                        <span className="text-white small fw-bold">Free & Instant</span>
                     </div>
                 </div>
             </div>
@@ -268,7 +292,7 @@ function Main() {
                 isOpen={isCreateModalOpen}
                 onClose={() => setIsCreateModalOpen(false)}
             />
-        </div>
+        </div >
 
     );
 }

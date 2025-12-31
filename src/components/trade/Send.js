@@ -38,6 +38,8 @@ function SendCrypto() {
         pin: { value: '', isInvalid: false, msg: '' }
     });
 
+    const [usage, setUsage] = useState({ total_sent_24h: 0, limit: 0, tier: 0 });
+
     // helper to update fields similar to Form.handleInputChanges
     const handleFieldChange = (evt) => {
         const key = evt.target.name;
@@ -119,6 +121,22 @@ function SendCrypto() {
         }
     }, [contactStore.contacts.length, contactDispatch]);
 
+    // Fetch Daily Usage
+    useEffect(() => {
+        jsonGet('transactions/usage').then(resp => {
+            if (resp && resp.success) {
+                setUsage(resp.data);
+            }
+        });
+    }, []);
+
+    const combinedUsd = usage.total_sent_24h + usdAmount;
+    const progressPercent = usage.limit > 0 && usage.limit !== Infinity
+        ? Math.min(100, (combinedUsd / usage.limit) * 100)
+        : 0;
+
+    const remainingLimit = usage.limit !== Infinity ? (usage.limit - usage.total_sent_24h) : Infinity;
+
     function validateBeforeReview() {
         // reset errors
         setFields(prev => {
@@ -138,7 +156,15 @@ function SendCrypto() {
             return false;
         }
         if (!fields.toAddress.value || String(fields.toAddress.value).trim() === '') {
-            setFields(prev => ({ ...prev, toAddress: { ...prev.toAddress, isInvalid: true, msg: 'Recipient address required' } }));
+            setFields(prev => ({ ...prev, toAddress: { ...prev.toAddress, isInvalid: true, msg: 'Recipient address, email, or User ID required' } }));
+            return false;
+        }
+
+        const isInternal = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(fields.toAddress.value) || (fields.toAddress.value.includes('-') && fields.toAddress.value.length > 20);
+
+        // If not internal, validate as wallet address (could use Validators.js here)
+        if (!isInternal && fields.toAddress.value.length < 26) {
+            setFields(prev => ({ ...prev, toAddress: { ...prev.toAddress, isInvalid: true, msg: 'Invalid wallet address or recipient' } }));
             return false;
         }
         if (pricePerUnit <= 0) {
@@ -227,24 +253,47 @@ function SendCrypto() {
             <div className="mb-3 mx-auto" style={{ width: "40px", height: "4px", backgroundColor: "#e2e8f0", borderRadius: "10px", marginTop: "12px" }}></div>
 
             {/* Header / Top Bar */}
-            <div className="p-3 border-0 border-bottom d-flex align-items-center justify-content-between sticky-top bg-white glass">
-                <button className="btn btn-light rounded-circle p-2 shadow-sm" onClick={() => navigate(-1)}>
+            <div className="border-0 border-bottom d-flex justify-content-between align-items-center px-3 py-2 bg-white glass sticky-top">
+                <button className="btn btn-light rounded-circle p-2 d-flex align-items-center justify-content-center shadow-sm" onClick={() => navigate(-1)}>
                     <span className="material-symbols-outlined text-secondary" style={{ fontSize: '20px' }}>arrow_back</span>
                 </button>
                 <h6 className="m-0 fw-bold">Send Crypto</h6>
-                <button className="btn btn-light rounded-circle p-2 shadow-sm" onClick={() => navigate("/transactions")}>
+                <button className="btn btn-light rounded-circle p-2 d-flex align-items-center justify-content-center shadow-sm" onClick={() => navigate("/transactions")}>
                     <span className="material-symbols-outlined text-secondary" style={{ fontSize: '20px' }}>history</span>
                 </button>
             </div>
 
             <div className="p-4">
                 {/* KYC Limit Banner */}
-                {authStore?.user?.kyc_status !== 'verified' && (
-                    <div className="alert bg-warning-subtle border-0 rounded-4 p-3 mb-4 d-flex align-items-center">
-                        <span className="material-symbols-outlined text-warning me-3">info</span>
+                {/* Daily Limit Indicator */}
+                <div className="bg-white rounded-4 border shadow-sm p-3 mb-4">
+                    <div className="d-flex justify-content-between align-items-center mb-2">
+                        <div className="small fw-bold text-muted text-uppercase" style={{ fontSize: '10px' }}>Daily Send Limit</div>
+                        <div className="small fw-bold" style={{ color: 'var(--primary)' }}>
+                            Tier {usage.tier || authStore?.user?.kyc_tier || 0}
+                        </div>
+                    </div>
+                    <div className="progress rounded-pill bg-light" style={{ height: '8px' }}>
+                        <div
+                            className="progress-bar rounded-pill bg-primary"
+                            style={{ width: `${progressPercent}%`, transition: 'width 0.3s ease' }}
+                        ></div>
+                    </div>
+                    <div className="d-flex justify-content-between mt-2">
+                        <span className="small text-muted" style={{ fontSize: '11px' }}>Used Today: ${usage.total_sent_24h.toFixed(2)}</span>
+                        <span className="small text-muted" style={{ fontSize: '11px' }}>
+                            Limit: {usage.limit === Infinity ? 'Unlimited' : `$${usage.limit.toLocaleString()}`}
+                        </span>
+                    </div>
+                </div>
+
+                {/* KYC Upgrade Banner (only if not Tier 2+) */}
+                {(authStore?.user?.kyc_tier || 0) < 2 && (
+                    <div className="alert bg-primary bg-opacity-10 border-0 rounded-4 p-3 mb-4 d-flex align-items-center">
+                        <span className="material-symbols-outlined text-primary me-3">verified</span>
                         <div className="small">
-                            <span className="fw-bold d-block text-warning-emphasis">Daily Send Limit</span>
-                            <span className="text-muted">Unverified accounts are limited to 5 sends per day.
+                            <span className="fw-bold d-block text-primary">Upgrade your account</span>
+                            <span className="text-muted">Verify your identity to increase your daily limit to $10,000.
                                 <button className="btn btn-link p-0 ms-1 small fw-bold text-decoration-none" onClick={() => navigate('/kyc-submit')}>Verify Now</button>
                             </span>
                         </div>
@@ -308,7 +357,7 @@ function SendCrypto() {
                         feedback={fields.amount.msg}
                         className="fw-bold w-100 bg-transparent text-center border-0 shadow-none px-0"
                         style={{ fontSize: "3.5rem", letterSpacing: "-1px", color: 'var(--text-main)' }}
-                        placeholder="0.00"
+                        label="Amount (USD)"
                         autoFocus={true}
                     />
                     <div className="d-inline-flex align-items-center px-3 py-1 bg-light rounded-pill border shadow-sm mt-3">
@@ -364,7 +413,7 @@ function SendCrypto() {
                         <input
                             type="text"
                             className={`form-control rounded-3 py-2 border-slate shadow-none bg-light bg-opacity-50 ${fields.toAddress.isInvalid ? 'is-invalid' : ''}`}
-                            placeholder="Paste or type recipient address"
+                            placeholder="Wallet address, Email, or User ID"
                             value={fields.toAddress.value}
                             onChange={(e) => handleFieldChange({ target: { name: 'toAddress', value: e.target.value } })}
                         />

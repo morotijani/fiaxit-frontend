@@ -2,23 +2,19 @@ import PropTypes from 'prop-types';
 
 const FieldBlock = (props) => {
     const invalidClass = props.isInvalid ? 'is-invalid' : '';
-    let klass = `form-control ${props.hasOwnProperty('className')? props.className : ""}`;
-    
-    if (props.hasOwnProperty('className')) {
-        klass += " " +props.className;
-    }
+    let klass = `form-control ${props.className || ""}`;
 
     return (
         <div className={`form-floating form-group ${invalidClass}`}>
-            <input 
-                className={klass} 
-                id={props.id} 
-                name={props.name || props.id} 
-                value={props.value} 
-                type={props.type} 
-                onChange={props.onChange} 
-                placeholder={props.label} 
-                autoComplete = {props.autocomp || 'off'} 
+            <input
+                className={`${klass} ${invalidClass}`}
+                id={props.id}
+                name={props.name || props.id}
+                value={props.value}
+                type={props.type}
+                onChange={props.onChange}
+                placeholder={props.label}
+                autoComplete={props.autocomp || 'off'}
                 autoFocus={props.autoFocus || false}
                 style={props.style || {}}
             />
@@ -29,21 +25,21 @@ const FieldBlock = (props) => {
 }
 
 FieldBlock.defaultProps = {
-    type: "text", 
+    type: "text",
     value: "",
-    isInvalid: false, 
+    isInvalid: false,
 }
 
 FieldBlock.propTypes = {
-    id: PropTypes.string.isRequired, 
-    name: PropTypes.string, 
-    label: PropTypes.string.isRequired, 
-    type: PropTypes.string.isRequired, 
-    feedback: PropTypes.string, 
-    onChange: PropTypes.func.isRequired, 
-    autoFocus: PropTypes.bool, 
-    autocomp: PropTypes.string, 
-    isInvalid: PropTypes.bool.isRequired, 
+    id: PropTypes.string.isRequired,
+    name: PropTypes.string,
+    label: PropTypes.string.isRequired,
+    type: PropTypes.string.isRequired,
+    feedback: PropTypes.string,
+    onChange: PropTypes.func.isRequired,
+    autoFocus: PropTypes.bool,
+    autocomp: PropTypes.string,
+    isInvalid: PropTypes.bool.isRequired,
     style: PropTypes.object,
 }
 

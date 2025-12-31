@@ -108,7 +108,7 @@ function Converter() {
             {/* Main Converter Card */}
             <div className="glass-card converter-main-card p-4 rounded-5 shadow-sm border bg-white position-relative mb-4">
                 <div className="position-absolute top-0 end-0 p-4 opacity-10">
-                    <span className="material-symbols-outlined" style={{ fontSize: '120px' }}>currency_exchange</span>
+                    <span className="material-symbols-outlined" style={{ fontSize: '' }}>currency_exchange</span>
                 </div>
 
                 <div className="position-relative">

@@ -13,6 +13,8 @@ import { CoinContext } from './contexts/CoinContext';
 import Receive from './components/trade/Receive'
 import SendCrypto from './components/trade/Send'
 import ReceiveAsset from './components/trade/ReceiveAsset'
+import Staking from './components/trade/Staking'
+import Withdraw from './components/trade/Withdraw'
 
 import Transactions from './components/transactions/Transactions'
 import { TransactionContext } from './contexts/TransactionContext'
@@ -158,13 +160,19 @@ function AppIndex() {
                     <div className="flex-grow-1 overflow-auto main-page-scroll">
                         <Routes>
                             <Route path="/trade/receive/:id" element={<ReceiveAsset />} />
-                            <Route path="/trade/send" element={<SendCrypto />} />
                             <Route path="/trade/receive" element={<Receive />} />
+                            <Route path="/receive-asset" element={<ReceiveAsset />} />
+                            <Route path="/receive" element={<Receive />} />
+                            <Route path="/trade/send" element={<SendCrypto />} />
+                            <Route path="/send" element={<SendCrypto />} />
+                            <Route path="/staking" element={<Staking />} />
+                            <Route path="/withdraw" element={<Withdraw />} />
                             <Route path="/crypto/:id" element={<Crypto />} />
                             <Route path="/wallet/:id" element={<WalletDetails />} />
                             <Route path="/wallets" element={<Wallets />} />
                             <Route path="/transactions" element={<Transactions />} />
                             <Route path="/settings" element={<SettingsForm />} />
+                            <Route path="/trade/swap" element={<Converter />} />
                             <Route path="/converter" element={<Converter />} />
                             <Route path="/change-password" element={<ChangePassword />} />
                             <Route path="/change-pin" element={<ChangePIN />} />
